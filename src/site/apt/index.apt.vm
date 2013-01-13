@@ -1,0 +1,55 @@
+~~
+~~ asdfasdfasf
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 12. January 2013
+ ------
+
+Iterator Executor Invoker Maven Plugin
+
+
+  asdfadf
+  
+
+* Goals Overview
+
+  There is currently only a single goal  <{{{./asdlfkjasdfljk-mojo.html}verify}}>.
+
+* Usage
+
+  aslödjkfalsdfj  
+
++-----
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>executor</goal>
+            </goals>
+            <configuration>
+               configuration
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  ...
+</project>
++-----
+
+
+  []
