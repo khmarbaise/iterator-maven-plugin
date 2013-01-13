@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    The (Su)bversion Re(po)sitory (S)earch (E)ngine (SupoSE for short).
+
+    Copyright (c) 2007-2011 by SoftwareEntwicklung Beratung Schulung (SoEBeS)
+    Copyright (c) 2007-2011 by Karl Heinz Marbaise
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+    The License can viewed online under http://www.gnu.org/licenses/gpl.html
+    If you have any questions about the Software or about the license
+    just write an email to license@soebes.de
+
+-->
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+
+    <application>
+        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+    </application>
+    <managed-bean>
+        <managed-bean-name>testBean</managed-bean-name>
+        <managed-bean-class>com.soebes.supose.release.web.TestSession</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>repositoryBean</managed-bean-name>
+        <managed-bean-class>com.soebes.supose.release.web.RepositoryBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>SUCCESS</from-outcome>
+            <to-view-id>/result.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>ERROR</from-outcome>
+            <to-view-id>/error.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/result.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>SUCCESS</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>
