@@ -418,7 +418,10 @@
                 </goals>
                 <configuration>
                   <extraArtifacts>
+                    <extraArtifact>junit:junit:4.8:jar</extraArtifact>
                     <extraArtifact>com.soebes.maven.plugins:maven-echo-plugin:0.1:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.surefire:surefire-junit4:2.10:jar</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.10:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.4:maven-plugin</extraArtifact>
                   </extraArtifacts>
                 </configuration>
