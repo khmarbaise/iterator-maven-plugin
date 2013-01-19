@@ -17,7 +17,7 @@ Homepage
 Description
 -----------
 
-It might be helpful to create a plugin which is able to call mvn based on
+It might be helpful to create a plugin which is able to call a plugin on
 iterating through some kind of data.
 
 For example:
@@ -76,61 +76,51 @@ will be called three times like the following:
     [INFO] ------------------------------------------------------------------------
 
 
-The result of the above can of course be achieved by using the following pom
-file:
+The result of the above can of course be achieved by using an appropriate number
+of execution blocks, but it will become cumbersome in particular if you have
+a larger number of executions (for example 10 or more).
 
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>com.soebes.maven.plugins</groupId>
-          <artifactId>maven-echo--plugin</artifactId>
-          <version>0.1</version>
-          <executions>
-            <execution>
-              <id>run-item1</id>
-              <phase>package</phase>
-              <goals>
-                <goal>echo</goal>
-              </goals>
-              <configuration>
-                <echos>
-                  <echo>This is a message: one</echo>
-                </echos>
-              </configuration>
-            </execution>
-            <execution>
-              <id>run-item2</id>
-              <phase>package</phase>
-              <goals>
-                <goal>echo</goal>
-              </goals>
-              <configuration>
-                <echos>
-                  <echo>This is a message: two</echo>
-                </echos>
-              </configuration>
-            </execution>
-            <execution>
-              <id>run-item3</id>
-              <phase>package</phase>
-              <goals>
-                <goal>echo</goal>
-              </goals>
-              <configuration>
-                <echos>
-                  <echo>This is a message: three</echo>
-                </echos>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
+An other example how the itexin-maven-plugin can make your life easier will be shown 
+here:
 
-But as you may already observed that the former configuration of the 
-itexin-maven-plugin is shorter the more iterations you have. 
-Think of ten executions in the previous example furthermore
-you can not use the iteration variable as a parameter.
+
+      <plugin>
+        <groupId>com.soebes.maven.plugins</groupId>
+        <artifactId>itexin-maven-plugin</artifactId>
+        <version>0.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>executor</goal>
+            </goals>
+            <configuration>
+              <items>
+                <item>test</item>
+                <item>prod</item>
+                <item>dev</item>
+              </items>
+
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+              </plugin>
+              <goal>single</goal>
+              <configuration>
+                <descriptors>
+                  <descriptor>${project.basedir}/@item@.xml</descriptor>
+                </descriptors>
+              </configuration>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+In the above example the iteration variable *@item@* is used to access
+the different assembly descriptor files in the project base directory.
+
 
 
 Having a property which contains a list of servers like this:
@@ -176,6 +166,7 @@ key1, value11, value12, value13
 key2, value21, value22, value23
 
   First iteration:
+
     @item.value.0@ => value11
     @item.value.1@ => value12
 
