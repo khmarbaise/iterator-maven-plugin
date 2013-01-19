@@ -22,14 +22,21 @@ import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
 public class ExecutorMojo extends AbstractMojo {
 
     /**
-     * Plugin to execute.
+     * The plugin to be executed.
+     * <pre>
+     *   <plugin> 
+     *     <groupId>...</groupId>
+     *     <artifactId>..</artifactId>
+     *     <version>...</version>
+     *   </plugin>
+     * </pre>
      * 
      */
     @Parameter(required = true)
     private Plugin plugin;
 
     /**
-     * Plugin goal to execute.
+     * The plugin goal to be executed.
      * 
      */
     @Parameter(required = true)
@@ -37,7 +44,11 @@ public class ExecutorMojo extends AbstractMojo {
 
     /**
      * Plugin configuration to use in the execution.
-     * 
+     * <pre>
+     *   <configuration>
+     *     Plugin Configuration
+     *   </configuration>
+     * </pre>
      */
     @Parameter
     private XmlPlexusConfiguration configuration;
@@ -56,14 +67,35 @@ public class ExecutorMojo extends AbstractMojo {
     @Parameter(required = true, readonly = true, defaultValue = "${session}")
     private MavenSession mavenSession;
 
+    /**
+     * Here you can define the items which will be iterated through.
+     * 
+     * <pre>
+     *   <items>
+     *     <item>one</item>
+     *     <item>two</item>
+     *     <item>three</item>
+     *     ..
+     *   </items>
+     * </pre>
+     */
     @Parameter(readonly = true)
     private List<String> items;
 
+    /**
+     * The token the iterator placeholder begins with.
+     */
     @Parameter(required = true, readonly = true, defaultValue = "@")
     private String beginToken;
+    /**
+     * The token the iterator placeholder ends with.
+     */
     @Parameter(required = true, readonly = true, defaultValue = "@")
     private String endToken;
 
+    /**
+     * The defined name of the iterator.
+     */
     @Parameter(required = true, readonly = true, defaultValue = "item")
     private String iteratorName;
 
@@ -78,6 +110,11 @@ public class ExecutorMojo extends AbstractMojo {
     // for Maven 3 only
     private PluginDescriptor pluginDescriptor;
 
+    /**
+     * This will copy the configuration from src to the result
+     * whereas the placeholder will be replaced with the current value.
+     * 
+     */
     private PlexusConfiguration copyConfiguration(PlexusConfiguration src, String iteratorName, String value) {
 
         XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
