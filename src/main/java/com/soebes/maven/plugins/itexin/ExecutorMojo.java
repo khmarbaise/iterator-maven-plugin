@@ -1,4 +1,4 @@
-package com.soebes.maven.plugins;
+package com.soebes.maven.plugins.itexin;
 
 import java.util.List;
 
@@ -23,13 +23,6 @@ public class ExecutorMojo extends AbstractMojo {
 
     /**
      * The plugin to be executed.
-     * <pre>
-     *   <plugin> 
-     *     <groupId>...</groupId>
-     *     <artifactId>..</artifactId>
-     *     <version>...</version>
-     *   </plugin>
-     * </pre>
      * 
      */
     @Parameter(required = true)
@@ -44,6 +37,7 @@ public class ExecutorMojo extends AbstractMojo {
 
     /**
      * Plugin configuration to use in the execution.
+     * 
      * <pre>
      *   <configuration>
      *     Plugin Configuration
@@ -83,6 +77,14 @@ public class ExecutorMojo extends AbstractMojo {
     private List<String> items;
 
     /**
+     * <pre>
+     *   <content>one, two, three</content>
+     * </pre>
+     */
+    @Parameter(readonly = true)
+    private String content;
+
+    /**
      * The token the iterator placeholder begins with.
      */
     @Parameter(required = true, readonly = true, defaultValue = "@")
@@ -111,57 +113,58 @@ public class ExecutorMojo extends AbstractMojo {
     private PluginDescriptor pluginDescriptor;
 
     /**
-     * This will copy the configuration from src to the result
-     * whereas the placeholder will be replaced with the current value.
+     * This will copy the configuration from src to the result whereas the
+     * placeholder will be replaced with the current value.
      * 
      */
     private PlexusConfiguration copyConfiguration(PlexusConfiguration src, String iteratorName, String value) {
 
-        XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
-        
-        if (src.getValue() != null) {
-            if (src.getValue().contains(iteratorName)) {
-                dom.setValue(src.getValue().replaceAll(iteratorName, value));
-            } else {
-                dom.setValue(src.getValue());
-            }
-        } else {
-            dom.setValue(src.getValue(null));
-        }
+	XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
 
-        for (String attributeName : src.getAttributeNames()) {
-            dom.setAttribute(attributeName, src.getAttribute(attributeName, null));
-        }
+	if (src.getValue() != null) {
+	    if (src.getValue().contains(iteratorName)) {
+		dom.setValue(src.getValue().replaceAll(iteratorName, value));
+	    } else {
+		dom.setValue(src.getValue());
+	    }
+	} else {
+	    dom.setValue(src.getValue(null));
+	}
 
-        for (PlexusConfiguration child : src.getChildren()) {
-            dom.addChild(copyConfiguration(child, iteratorName, value));
-        }
+	for (String attributeName : src.getAttributeNames()) {
+	    dom.setAttribute(attributeName, src.getAttribute(attributeName, null));
+	}
 
-        return dom;
+	for (PlexusConfiguration child : src.getChildren()) {
+	    dom.addChild(copyConfiguration(child, iteratorName, value));
+	}
+
+	return dom;
     }
 
     public void execute() throws MojoExecutionException {
 
-        if (items != null) {
-            for (String item : items) {
-                getLog().debug("Configuration(before): " + configuration.toString());
-                PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, beginToken + iteratorName + endToken, item);
-                getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+	if (items != null) {
+	    for (String item : items) {
+		getLog().debug("Configuration(before): " + configuration.toString());
+		PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, beginToken + iteratorName + endToken, item);
+		getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
 
-                StringBuilder sb = new StringBuilder("]] ");
-                // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-                sb.append(plugin.getKey());
-                sb.append(":");
-                sb.append(plugin.getVersion());
+		StringBuilder sb = new StringBuilder("]] ");
+		// --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
+		sb.append(plugin.getKey());
+		sb.append(":");
+		sb.append(plugin.getVersion());
 
-                getLog().info(sb.toString());
-                MojoExecutor
-                        .executeMojo(plugin, goal, PlexusConfigurationUtils
-                                .toXpp3Dom(plexusConfiguration), MojoExecutor
-                                .executionEnvironment(mavenProject,
-                                        mavenSession, pluginManager));
+		getLog().info(sb.toString());
 
-            }
-        }
+		// Put the value of the current iteration into the properties
+		mavenProject.getProperties().put(iteratorName, item);
+
+		MojoExecutor.executeMojo(plugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
+			MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+
+	    }
+	}
     }
 }
