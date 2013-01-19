@@ -1,5 +1,6 @@
 package com.soebes.maven.plugins.itexin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.execution.MavenSession;
@@ -18,12 +19,24 @@ import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
 
+/**
+ * Executor will execute a given plugin by iterating throught the given items.
+ * 
+ * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
+ *
+ */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
 public class ExecutorMojo extends AbstractMojo {
 
     /**
      * The plugin to be executed.
-     * 
+     * <pre>{@code
+     * <plugin>
+     *   <groupId>..</groupId>
+     *   <artifactId>..</artifactId>
+     *   <version>..</version>
+     * </plugin>
+     * }</pre>
      */
     @Parameter(required = true)
     private Plugin plugin;
@@ -37,12 +50,11 @@ public class ExecutorMojo extends AbstractMojo {
 
     /**
      * Plugin configuration to use in the execution.
-     * 
-     * <pre>
-     *   <configuration>
-     *     Plugin Configuration
-     *   </configuration>
-     * </pre>
+     * <pre>{@code
+     * <configuration>
+     *   Plugin Configuration
+     * </configuration>
+     * }</pre>
      */
     @Parameter
     private XmlPlexusConfiguration configuration;
@@ -63,42 +75,48 @@ public class ExecutorMojo extends AbstractMojo {
 
     /**
      * Here you can define the items which will be iterated through.
-     * 
-     * <pre>
+     * <pre>{@code 
      *   <items>
      *     <item>one</item>
      *     <item>two</item>
      *     <item>three</item>
      *     ..
-     *   </items>
-     * </pre>
+     *   </items>}</pre>
      */
-    @Parameter(readonly = true)
+    @Parameter
     private List<String> items;
 
     /**
-     * <pre>
-     *   <content>one, two, three</content>
-     * </pre>
+     * The list of items which will be iterated through.
+     * 
+     * {@code <content>one, two, three</content>}
      */
-    @Parameter(readonly = true)
+    @Parameter
     private String content;
+    
+    /**
+     * The delimiter which will be used to split the
+     * {@link #content}.
+     */
+    @Parameter(defaultValue = ",")
+    private String delimiter;
+    
 
     /**
      * The token the iterator placeholder begins with.
      */
-    @Parameter(required = true, readonly = true, defaultValue = "@")
+    @Parameter(required = true, defaultValue = "@")
     private String beginToken;
     /**
      * The token the iterator placeholder ends with.
      */
-    @Parameter(required = true, readonly = true, defaultValue = "@")
+    @Parameter(required = true, defaultValue = "@")
     private String endToken;
 
     /**
-     * The defined name of the iterator.
+     * The name of the iterator variable.
      */
-    @Parameter(required = true, readonly = true, defaultValue = "item")
+    @Parameter(required = true, defaultValue = "item")
     private String iteratorName;
 
     /**
@@ -142,29 +160,54 @@ public class ExecutorMojo extends AbstractMojo {
 	return dom;
     }
 
+    private List<String> getContentAsList() {
+	List<String> result = new ArrayList<String>();
+	String[] resultArray = content.split(delimiter);
+	for (String item : resultArray) {
+	    result.add(item.trim());
+	}
+	return result;
+    }
+
+    private List<String> getItems() throws MojoExecutionException {
+	List<String> result = new ArrayList<String>();
+	if (!items.isEmpty()) {
+	    result = items;
+	} else if (content != null && content.trim().length() > 0) {
+	    result = getContentAsList();
+	} 
+	    
+	return result;
+    }
+
     public void execute() throws MojoExecutionException {
+	if (items == null && content == null) {
+	    throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
+	}
 
-	if (items != null) {
-	    for (String item : items) {
-		getLog().debug("Configuration(before): " + configuration.toString());
-		PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, beginToken + iteratorName + endToken, item);
-		getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+	if (!items.isEmpty() && content != null & content.trim().length() > 0) {
+	    throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
+	}
 
-		StringBuilder sb = new StringBuilder("]] ");
-		// --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-		sb.append(plugin.getKey());
-		sb.append(":");
-		sb.append(plugin.getVersion());
-
-		getLog().info(sb.toString());
-
-		// Put the value of the current iteration into the properties
-		mavenProject.getProperties().put(iteratorName, item);
-
-		MojoExecutor.executeMojo(plugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
-			MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
-
-	    }
+	for (String item : getItems()) {
+	    getLog().debug("Configuration(before): " + configuration.toString());
+	    PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, beginToken + iteratorName + endToken, item);
+	    getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+	    
+	    StringBuilder sb = new StringBuilder("]] ");
+	    // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
+	    sb.append(plugin.getKey());
+	    sb.append(":");
+	    sb.append(plugin.getVersion());
+	    
+	    getLog().info(sb.toString());
+	    
+	    // Put the value of the current iteration into the properties
+	    mavenProject.getProperties().put(iteratorName, item);
+	    
+	    MojoExecutor.executeMojo(plugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
+		    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+	    
 	}
     }
 }

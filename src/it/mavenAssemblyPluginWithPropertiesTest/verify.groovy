@@ -5,7 +5,6 @@ import java.util.zip.ZipFile;
 
 t = new IntegrationBase()
 
-
 def getInformation (File warFile) {
     def devZipFile = new ZipFile(warFile)
     def result = null
@@ -33,9 +32,7 @@ def projectVersion = getProjectVersion();
 
 println "Project version: ${projectVersion}"
 
-
 def buildLogFile = new File( basedir, "build.log");
-
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
