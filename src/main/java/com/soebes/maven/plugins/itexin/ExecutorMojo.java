@@ -185,7 +185,7 @@ public class ExecutorMojo extends AbstractMojo {
 	    throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
 	}
 
-	if (!items.isEmpty() && content != null & content.trim().length() > 0) {
+	if (!items.isEmpty() && content != null && content.trim().length() > 0) {
 	    throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
 	}
 
