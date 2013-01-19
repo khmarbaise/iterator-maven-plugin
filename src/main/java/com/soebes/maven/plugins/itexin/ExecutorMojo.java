@@ -171,9 +171,9 @@ public class ExecutorMojo extends AbstractMojo {
 
     private List<String> getItems() throws MojoExecutionException {
 	List<String> result = new ArrayList<String>();
-	if (!items.isEmpty()) {
+	if (isItemsSet()) {
 	    result = items;
-	} else if (content != null && content.trim().length() > 0) {
+	} else if (isContentSet()) {
 	    result = getContentAsList();
 	} 
 	    
@@ -181,11 +181,11 @@ public class ExecutorMojo extends AbstractMojo {
     }
 
     public void execute() throws MojoExecutionException {
-	if (items == null && content == null) {
+	if (isItemsNull() && isContentNull()) {
 	    throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
 	}
 
-	if (!items.isEmpty() && content != null && content.trim().length() > 0) {
+	if (isItemsSet() && isContentSet()) {
 	    throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
 	}
 
@@ -210,4 +210,21 @@ public class ExecutorMojo extends AbstractMojo {
 	    
 	}
     }
+
+    private boolean isItemsNull() {
+	return items == null;
+    }
+    
+    private boolean isItemsSet() {
+	return !isItemsNull() && !items.isEmpty(); 
+    }
+
+    private boolean isContentNull() {
+	return content == null;
+    }
+    
+    private boolean isContentSet() {
+	return content != null && content.trim().length() > 0;
+    }
+    
 }
