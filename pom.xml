@@ -13,7 +13,7 @@
   <name>The Iterator Executor Invoker Maven Plugin.</name>
   <description>The idea is to execute other plugins multiple times
     based on information given in the configuration of the plugin.
-    Or invoker a separate maven instance based on the a list 
+    Or invoke a separate maven instance based on the a list 
     of elements.</description>
 
   <prerequisites>
