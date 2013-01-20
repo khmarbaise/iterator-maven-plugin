@@ -10,14 +10,10 @@
 
 Usage
 
-   aslökjdfalöskjdf
+   Lets assume you would like to call the {{{http://...}maven-echo-plugin}} serveral times. Apart form being really 
+   useful just as an example. This can be achieved by the following:
    
-+-----
-   +-- pom.xml
-   +-- src
-        +--- main
-        
-+-----
+%{include|source=target/it/basicTest/pom.xml|snippet=#start}
 
 
   []

@@ -1,9 +1,8 @@
 Iterator Executor Invoker Maven Plugin
 ======================================
 
-Better shorter name  ItExIn
-
-itexin-maven-plugin
+The iterator executor invoker maven plugin (itexin-maven-plugin for short) is intended
+to make iterations of a list and an appropriate call of a maven plugin suitable.
 
 
 License
@@ -12,7 +11,7 @@ License
 
 Homepage
 --------
-
+[http://khmarbaise.github.com/itexin-maven-plugin/](http://khmarbaise.github.com/itexin-maven-plugin/)
 
 Description
 -----------
@@ -179,7 +178,7 @@ key2, value21, value22, value23
 Status
 ------
 - First realized ideas
-- Some more thoughts.
+- Currently missing invoking a separate maven instance.
 
 
 TODOs
@@ -190,3 +189,4 @@ TODOs
 Usage
 -----
 
+sie homepage.

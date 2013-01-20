@@ -26,7 +26,8 @@ Iterator Executor Invoker Maven Plugin
 
 * Usage
 
-  The itexin-maven-plugin can be bound to any lifecycle phase as usual.
+  The itexin-maven-plugin can be bound to any {{{http://maven.apache.org/ref/current/maven-core/lifecycles.html}lifecycle phase}}
+  as usual.
   
 
 +-----
