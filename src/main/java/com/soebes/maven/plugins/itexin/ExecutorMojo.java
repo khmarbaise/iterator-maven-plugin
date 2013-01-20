@@ -1,11 +1,8 @@
 package com.soebes.maven.plugins.itexin;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -26,7 +23,7 @@ import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
  *
  */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
-public class ExecutorMojo extends AbstractMojo {
+public class ExecutorMojo extends AbstractItExInMojo {
 
     /**
      * The plugin to be executed.
@@ -74,52 +71,6 @@ public class ExecutorMojo extends AbstractMojo {
     private MavenSession mavenSession;
 
     /**
-     * Here you can define the items which will be iterated through.
-     * <pre>{@code 
-     *   <items>
-     *     <item>one</item>
-     *     <item>two</item>
-     *     <item>three</item>
-     *     ..
-     *   </items>}</pre>
-     */
-    @Parameter
-    private List<String> items;
-
-    /**
-     * The list of items which will be iterated through.
-     * 
-     * {@code <content>one, two, three</content>}
-     */
-    @Parameter
-    private String content;
-    
-    /**
-     * The delimiter which will be used to split the
-     * {@link #content}.
-     */
-    @Parameter(defaultValue = ",")
-    private String delimiter;
-    
-
-    /**
-     * The token the iterator placeholder begins with.
-     */
-    @Parameter(required = true, defaultValue = "@")
-    private String beginToken;
-    /**
-     * The token the iterator placeholder ends with.
-     */
-    @Parameter(required = true, defaultValue = "@")
-    private String endToken;
-
-    /**
-     * The name of the iterator variable.
-     */
-    @Parameter(required = true, defaultValue = "item")
-    private String iteratorName;
-
-    /**
      * The Maven BuildPluginManager component.
      * 
      */
@@ -160,26 +111,6 @@ public class ExecutorMojo extends AbstractMojo {
 	return dom;
     }
 
-    private List<String> getContentAsList() {
-	List<String> result = new ArrayList<String>();
-	String[] resultArray = content.split(delimiter);
-	for (String item : resultArray) {
-	    result.add(item.trim());
-	}
-	return result;
-    }
-
-    private List<String> getItems() throws MojoExecutionException {
-	List<String> result = new ArrayList<String>();
-	if (isItemsSet()) {
-	    result = items;
-	} else if (isContentSet()) {
-	    result = getContentAsList();
-	} 
-	    
-	return result;
-    }
-
     public void execute() throws MojoExecutionException {
 	if (isItemsNull() && isContentNull()) {
 	    throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
@@ -191,7 +122,7 @@ public class ExecutorMojo extends AbstractMojo {
 
 	for (String item : getItems()) {
 	    getLog().debug("Configuration(before): " + configuration.toString());
-	    PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, beginToken + iteratorName + endToken, item);
+	    PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, getBeginToken() + getIteratorName() + getEndToken(), item);
 	    getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
 	    
 	    StringBuilder sb = new StringBuilder("]] ");
@@ -203,7 +134,7 @@ public class ExecutorMojo extends AbstractMojo {
 	    getLog().info(sb.toString());
 	    
 	    // Put the value of the current iteration into the properties
-	    mavenProject.getProperties().put(iteratorName, item);
+	    mavenProject.getProperties().put(getIteratorName(), item);
 	    
 	    MojoExecutor.executeMojo(plugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
 		    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
@@ -211,20 +142,20 @@ public class ExecutorMojo extends AbstractMojo {
 	}
     }
 
-    private boolean isItemsNull() {
-	return items == null;
-    }
-    
-    private boolean isItemsSet() {
-	return !isItemsNull() && !items.isEmpty(); 
+    public MavenProject getMavenProject() {
+        return mavenProject;
     }
 
-    private boolean isContentNull() {
-	return content == null;
+    public void setMavenProject(MavenProject mavenProject) {
+        this.mavenProject = mavenProject;
     }
-    
-    private boolean isContentSet() {
-	return content != null && content.trim().length() > 0;
+
+    public MavenSession getMavenSession() {
+        return mavenSession;
+    }
+
+    public void setMavenSession(MavenSession mavenSession) {
+        this.mavenSession = mavenSession;
     }
     
 }
