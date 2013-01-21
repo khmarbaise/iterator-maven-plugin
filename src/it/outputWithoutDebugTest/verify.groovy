@@ -4,7 +4,6 @@ import java.util.*
 
 t = new IntegrationBase()
 
-
 def getProjectVersion() {
 	def pom = new XmlSlurper().parse(new File(basedir, 'pom.xml'))
    
@@ -20,12 +19,29 @@ def getProjectVersion() {
 def projectVersion = getProjectVersion();
    
 println "Project version: ${projectVersion}"
-   
 
-def buildLogFile = new File( basedir, "build.log");
+def currentFolder = new File(basedir, ".").getCanonicalPath() + "/";
+
+def logFileInput = new File(basedir, "build.log")
+
+new File(basedir, "build-filtered.log").withWriter { out ->
+    logFileInput.eachLine { line ->
+
+        if (line.contains(currentFolder)) {
+            line = line.replace(currentFolder, "/home/itexin/");
+        }
+       
+        if (    !line.startsWith("Download") 
+            &&  !line.startsWith(" wagon http use")
+            &&  !line.startsWith("Running post-build")
+            &&  !line.startsWith("Finished post-build ")) {
+            out.println line;
+        }
+    }
+}
 
 
-t.checkExistenceAndContentOfAFile(buildLogFile, [
+t.checkExistenceAndContentOfAFile(logFileInput, [
   '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
   '[INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1',
   '[INFO] This is a message: eins',
