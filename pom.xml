@@ -345,6 +345,11 @@
       <artifactId>maven-filtering</artifactId>
     </dependency>
 
+      <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-invoker</artifactId>
+      </dependency>
+
   </dependencies>
 
   <profiles>

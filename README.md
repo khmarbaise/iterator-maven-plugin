@@ -138,6 +138,46 @@ Having a property which contains a list of servers like this:
       call $server/mvn -Dserver=$server clean package
     }
 
+
+
+      <plugin>
+        <groupId>com.soebes.maven.plugins</groupId>
+        <artifactId>itexin-maven-plugin</artifactId>
+        <version>0.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>invoker</goal>
+            </goals>
+            <configuration>
+              <items>
+                <item>test</item>
+                <item>prod</item>
+                <item>dev</item>
+              </items>
+
+              <mavenGoals>
+                <mavenGoal>clean</mavenGoal>
+                <mavenGoal>package</mavenGoal>
+              </mavenGoals>
+              <mavenBaseDir></mavenBaseDir>
+              <pomFile>${project.basedir}/maven-calls/@item@/pom.xml</pomFile>
+              <properties>
+                <goal>@item@</goal>
+              </properties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      cd maven-calls/@item@/
+      mvn -Dgoal=@item@ -f pom.xml clean package
+
+
+
+
     <configuration>
       <servers>host1,host2,host3</servers>
       <separator>,</separator> <!-- RegEx? -->
