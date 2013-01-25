@@ -18,7 +18,7 @@ import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 
 /**
- * Invoker will execute a maven by iterating throught the given items.
+ * Invoker will execute a maven by iterating through the given items.
  * 
  * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
  * 
@@ -51,7 +51,7 @@ public class InvokerMojo extends AbstractItExInMojo {
     // for Maven 3 only
     private PluginDescriptor pluginDescriptor;
     
-    private final Invoker invoker;
+    private Invoker invoker;
 
 
     public void execute() throws MojoExecutionException {
@@ -62,6 +62,7 @@ public class InvokerMojo extends AbstractItExInMojo {
         if (isItemsSet() && isContentSet()) {
             throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
         }
+
 
         for (String item : getItems()) {
             // Call mvn ....
