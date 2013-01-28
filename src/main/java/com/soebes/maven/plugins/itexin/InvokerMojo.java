@@ -16,6 +16,7 @@ import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 
 /**
  * Invoker will execute a maven by iterating through the given items.
@@ -66,7 +67,7 @@ public class InvokerMojo extends AbstractItExInMojo {
 
         for (String item : getItems()) {
             // Call mvn ....
-            mavenCall(item);
+//            mavenCall(item);
         }
     }
 
@@ -78,7 +79,7 @@ public class InvokerMojo extends AbstractItExInMojo {
     @Parameter(defaultValue = "clean")
     private List<String> goals;
     
-    private void mavenCall(String item) {
+    private void mavenCall(String item) throws MavenInvocationException {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setBaseDirectory( new File("./") );
         request.setInteractive( false );
@@ -92,13 +93,13 @@ public class InvokerMojo extends AbstractItExInMojo {
         {
             if ( result.getExecutionException() != null )
             {
-                throw new PublishException( "Failed to publish site.",
-                                            result.getExecutionException() );
+//                throw new PublishException( "Failed to publish site.",
+//                                            result.getExecutionException() );
             }
             else
             {
-                throw new PublishException( "Failed to publish site. Exit code: " + 
-                                             result.getExitCode() );
+//                throw new PublishException( "Failed to publish site. Exit code: " + 
+//                                             result.getExitCode() );
             }
         }    }
 }

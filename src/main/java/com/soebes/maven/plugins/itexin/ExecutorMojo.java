@@ -1,5 +1,7 @@
 package com.soebes.maven.plugins.itexin;
 
+import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
@@ -19,21 +21,25 @@ import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
 /**
  * Executor will execute a given plugin by iterating throught the given items.
  * 
- * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
- *
+ * @author Karl-Heinz Marbaise <a
+ *         href="mailto:kama@soebes.de">kama@soebes.de</a>
+ * 
  */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
 public class ExecutorMojo extends AbstractItExInMojo {
 
     /**
      * The plugin to be executed.
-     * <pre>{@code
+     * 
+     * <pre>
+     * {@code
      * <plugin>
      *   <groupId>..</groupId>
      *   <artifactId>..</artifactId>
      *   <version>..</version>
      * </plugin>
-     * }</pre>
+     * }
+     * </pre>
      */
     @Parameter(required = true)
     private Plugin plugin;
@@ -47,11 +53,14 @@ public class ExecutorMojo extends AbstractItExInMojo {
 
     /**
      * Plugin configuration to use in the execution.
-     * <pre>{@code
+     * 
+     * <pre>
+     * {@code
      * <configuration>
      *   Plugin Configuration
      * </configuration>
-     * }</pre>
+     * }
+     * </pre>
      */
     @Parameter
     private XmlPlexusConfiguration configuration;
@@ -88,58 +97,85 @@ public class ExecutorMojo extends AbstractItExInMojo {
      */
     private PlexusConfiguration copyConfiguration(PlexusConfiguration src, String iteratorName, String value) {
 
-	XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
+        XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
 
-	if (src.getValue() != null) {
-	    if (src.getValue().contains(iteratorName)) {
-		dom.setValue(src.getValue().replaceAll(iteratorName, value));
-	    } else {
-		dom.setValue(src.getValue());
-	    }
-	} else {
-	    dom.setValue(src.getValue(null));
-	}
+        if (src.getValue() != null) {
+            if (src.getValue().contains(iteratorName)) {
+                dom.setValue(src.getValue().replaceAll(iteratorName, value));
+            } else {
+                dom.setValue(src.getValue());
+            }
+        } else {
+            dom.setValue(src.getValue(null));
+        }
 
-	for (String attributeName : src.getAttributeNames()) {
-	    dom.setAttribute(attributeName, src.getAttribute(attributeName, null));
-	}
+        for (String attributeName : src.getAttributeNames()) {
+            dom.setAttribute(attributeName, src.getAttribute(attributeName, null));
+        }
 
-	for (PlexusConfiguration child : src.getChildren()) {
-	    dom.addChild(copyConfiguration(child, iteratorName, value));
-	}
+        for (PlexusConfiguration child : src.getChildren()) {
+            dom.addChild(copyConfiguration(child, iteratorName, value));
+        }
 
-	return dom;
+        return dom;
+    }
+
+
+    private Plugin getPluginVersionFromPluginManagement(Plugin plugin) {
+
+        if (!isPluginManagementDefined()) {
+            return plugin;
+        }
+        
+        Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
+        Plugin result = plugins.get(plugin.getId());
+        if (result == null) {
+            return plugin;
+        } else {
+            return result;
+        }
+    }
+
+
+    private boolean isPluginManagementDefined() {
+        return mavenProject.getPluginManagement() != null;
     }
 
     public void execute() throws MojoExecutionException {
-	if (isItemsNull() && isContentNull()) {
-	    throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
-	}
+        if (isItemsNull() && isContentNull()) {
+            throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
+        }
 
-	if (isItemsSet() && isContentSet()) {
-	    throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
-	}
+        if (isItemsSet() && isContentSet()) {
+            throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
+        }
 
-	for (String item : getItems()) {
-	    getLog().debug("Configuration(before): " + configuration.toString());
-	    PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, getBeginToken() + getIteratorName() + getEndToken(), item);
-	    getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
-	    
-	    StringBuilder sb = new StringBuilder("]] ");
-	    // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-	    sb.append(plugin.getKey());
-	    sb.append(":");
-	    sb.append(plugin.getVersion());
-	    
-	    getLog().info(sb.toString());
-	    
-	    // Put the value of the current iteration into the properties
-	    mavenProject.getProperties().put(getIteratorName(), item);
-	    
-	    MojoExecutor.executeMojo(plugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
-		    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
-	    
-	}
+        Plugin executePlugin = getPluginVersionFromPluginManagement(plugin);
+        if (executePlugin.getVersion() == null) {
+            throw new MojoExecutionException("Unknown plugin version.");
+        }
+
+        for (String item : getItems()) {
+            getLog().debug("Configuration(before): " + configuration.toString());
+            PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, getBeginToken() + getIteratorName()
+                    + getEndToken(), item);
+            getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+
+            StringBuilder sb = new StringBuilder("]] ");
+            // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
+            sb.append(executePlugin.getKey());
+            sb.append(":");
+            sb.append(executePlugin.getVersion());
+
+            getLog().info(sb.toString());
+
+            // Put the value of the current iteration into the properties
+            mavenProject.getProperties().put(getIteratorName(), item);
+
+            MojoExecutor.executeMojo(executePlugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
+                    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+
+        }
     }
 
     public MavenProject getMavenProject() {
@@ -157,5 +193,5 @@ public class ExecutorMojo extends AbstractItExInMojo {
     public void setMavenSession(MavenSession mavenSession) {
         this.mavenSession = mavenSession;
     }
-    
+
 }
