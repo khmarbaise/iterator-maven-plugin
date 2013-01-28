@@ -128,12 +128,25 @@ public class ExecutorMojo extends AbstractItExInMojo {
         }
         
         Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
-        Plugin result = plugins.get(plugin.getId());
+//        for (Map.Entry<String, Plugin> entry : plugins.entrySet()) {
+//            getLog().info(" Key:" + entry.getKey() + " g:" + entry.getValue().getGroupId() + " a:" + entry.getValue().getArtifactId() + " v:" + entry.getValue().getVersion());
+//        }
+        
+        if (isPluginVersionDefined(plugin)) {
+            return plugin;
+        }
+
+        Plugin result = plugins.get(plugin.getKey());
         if (result == null) {
             return plugin;
         } else {
             return result;
         }
+    }
+
+
+    private boolean isPluginVersionDefined(Plugin plugin) {
+        return plugin.getVersion() != null;
     }
 
 
