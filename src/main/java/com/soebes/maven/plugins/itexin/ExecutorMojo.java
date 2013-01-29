@@ -121,20 +121,29 @@ public class ExecutorMojo extends AbstractItExInMojo {
     }
 
 
+    /**
+     * 
+     * This method will give back the plugin information which has been given
+     * as parameter in case of an not existing pluginManagement section or
+     * if the version of the plugin is already defined.
+     * Otherwise the version will be got from the pluginManagement
+     * area if the plugin can be found in it.
+     * @param plugin The plugin which should be checked against the pluginManagement area.
+     * @return The plugin version. If the plugin version is not defined it means
+     *  that neither the version has been defined by the pluginManagement section
+     *  nor by the user itself.
+     */
     private Plugin getPluginVersionFromPluginManagement(Plugin plugin) {
 
         if (!isPluginManagementDefined()) {
             return plugin;
         }
         
-        Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
-//        for (Map.Entry<String, Plugin> entry : plugins.entrySet()) {
-//            getLog().info(" Key:" + entry.getKey() + " g:" + entry.getValue().getGroupId() + " a:" + entry.getValue().getArtifactId() + " v:" + entry.getValue().getVersion());
-//        }
-        
         if (isPluginVersionDefined(plugin)) {
             return plugin;
         }
+        
+        Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
 
         Plugin result = plugins.get(plugin.getKey());
         if (result == null) {
@@ -148,7 +157,6 @@ public class ExecutorMojo extends AbstractItExInMojo {
     private boolean isPluginVersionDefined(Plugin plugin) {
         return plugin.getVersion() != null;
     }
-
 
     private boolean isPluginManagementDefined() {
         return mavenProject.getPluginManagement() != null;
@@ -165,7 +173,7 @@ public class ExecutorMojo extends AbstractItExInMojo {
 
         Plugin executePlugin = getPluginVersionFromPluginManagement(plugin);
         if (executePlugin.getVersion() == null) {
-            throw new MojoExecutionException("Unknown plugin version.");
+            throw new MojoExecutionException("Unknown plugin version. You have to define the version either directly or via pluginManagement.");
         }
 
         for (String item : getItems()) {

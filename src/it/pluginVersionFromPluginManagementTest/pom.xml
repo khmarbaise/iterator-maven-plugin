@@ -40,6 +40,7 @@
           <version>2.6</version>
         </plugin>
         <plugin>
+          <!--  The following will define the version for the iterator. -->
           <groupId>com.soebes.maven.plugins</groupId>
           <artifactId>maven-echo-plugin</artifactId>
           <version>0.1</version>
