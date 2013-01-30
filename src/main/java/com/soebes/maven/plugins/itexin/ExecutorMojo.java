@@ -1,6 +1,5 @@
 package com.soebes.maven.plugins.itexin;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
