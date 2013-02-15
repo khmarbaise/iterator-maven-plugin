@@ -30,14 +30,13 @@ t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
     '[INFO] ]] org.apache.maven.plugins:maven-assembly-plugin:2.4',
     '[INFO] Reading assembly descriptor: ' + basedir + '/test.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war'),
     '[INFO] Reading assembly descriptor: ' + basedir + '/dev.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyTest-0.1-SNAPSHOT-dev.war',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-dev.war'),
     '[INFO] Reading assembly descriptor: ' + basedir + '/prod.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyTest-0.1-SNAPSHOT-production.war',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-production.war'),
     '[INFO] BUILD SUCCESS',
 ])
-
 def test_war = new File (basedir, "/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war");
 if (!test_war.exists()) {
     throw new FileNotFoundException("The file " + test_war + " does not exist!");

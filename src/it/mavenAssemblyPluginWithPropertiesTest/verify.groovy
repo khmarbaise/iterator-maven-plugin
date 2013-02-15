@@ -32,24 +32,26 @@ def projectVersion = getProjectVersion();
 
 println "Project version: ${projectVersion}"
 
+
 def buildLogFile = new File( basedir, "build.log");
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
     '[INFO] ]] org.apache.maven.plugins:maven-assembly-plugin:2.4',
-        
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-dev.war',
-    
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-test.war',
 
     '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-production.war',
-    
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-dev.war'),
+
     '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
-    '[INFO] Building war: ' + basedir + '/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-qa.war',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-test.war'),
+
+
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-production.war'),
+
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-qa.war'),
     '[INFO] BUILD SUCCESS',
 ])
 

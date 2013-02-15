@@ -24,4 +24,15 @@ class IntegrationBase {
 			}
 		}
 	}
+    
+    def String convertPathIntoPlatform(String contents) {
+        def result = "";
+        if (File.separator.equals("\\")) {
+            result = contents.replaceAll("/", "\\\\");
+        } else {
+            result = contents;
+        }
+        
+        return result;
+    }
 }
