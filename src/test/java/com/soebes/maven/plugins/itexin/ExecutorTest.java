@@ -3,28 +3,29 @@ package com.soebes.maven.plugins.itexin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
+
 
 public class ExecutorTest extends UnitTestBase {
 
     @Test
     public void first() {
-	List<String> items = new ArrayList<String>();
+        List<String> items = new ArrayList<String>();
 
-	items.add("one");
-	items.add("two");
-	items.add("three");
+        items.add("one");
+        items.add("two");
+        items.add("three");
 
     }
 
     @Test
     public void secondTest() {
-	List<String> results = new ArrayList<String>();
-	String items = "one, two, three";
+        List<String> results = new ArrayList<String>();
+        String items = "one, two, three";
 
-	String[] result = items.split(",");
-	for (String string : result) {
-	    results.add(string.trim());
-	}
+        String[] result = items.split(",");
+        for (String string : result) {
+            results.add(string.trim());
+        }
     }
 }

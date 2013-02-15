@@ -218,7 +218,8 @@ key2, value21, value22, value23
 Status
 ------
 - First realized ideas
-- Currently missing invoking a separate maven instance.
+- Currently invoking a separate maven instance is basically working
+  except for the automatic injection via plexus/guice.
 
 
 TODOs

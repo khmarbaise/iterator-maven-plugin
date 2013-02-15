@@ -76,6 +76,15 @@ public abstract class AbstractItExInMojo extends AbstractMojo {
         return result;
     }
 
+    /**
+     * This is just a convenience method to get the combination
+     * of {@link #getBeginToken()}, {@link #getIteratorName()} and {@link #getEndToken()}.
+     * @return The combined string.
+     */
+    protected String getPlaceHolder() {
+        return getBeginToken() + getIteratorName() + getEndToken();
+    }
+
     protected boolean isItemsNull() {
         return items == null;
     }
@@ -89,6 +98,7 @@ public abstract class AbstractItExInMojo extends AbstractMojo {
     }
 
     protected boolean isContentSet() {
+        //@TODO: Check if content.trim() couldn't be done more efficient?
         return content != null && content.trim().length() > 0;
     }
 
