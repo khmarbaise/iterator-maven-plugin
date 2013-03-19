@@ -1,0 +1,22 @@
+~~
+~~ Copyright.
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 19. March 2013
+ ------
+
+Iterator Executor Invoker Maven Plugin
+
+
+* Overview
+
+  The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate instance of Maven.
+   
+
+
+  []

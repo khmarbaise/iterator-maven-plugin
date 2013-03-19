@@ -14,21 +14,21 @@ Iterator Executor Invoker Maven Plugin
 
 
   The basic idea behind this plugin is to make iterations over a list of values possible. This 
-  means having a list of values like this: <<<one, two, three>>> and execute an other plugin and give the
-  current value as a parameter to the plugin.
+  means having a list of values like this: <<<one, two, three>>> and execute an other plugin or
+  an Maven instance and give the current value as a parameter to the plugin or to the Maven call.
 
 * Goals Overview
 
-  There is currently only a single goal  <{{{./executor-mojo.html}executor}}> which will 
-  call a plugin during the usual run of Maven.
+  There are currently two goals <{{{./executor-mojo.html}executor}}> which is able to
+  call a plugin during the usual run of Maven and the 
+  <{{{./invoker-mojo.html}invoker}}> goal which will call Maven like you have called 
+  Maven separately on command line. 
   
-  The second goal which is planned will call a new instance of Maven (invoke; like the maven-invoker-plugin).
-
 * Usage
 
   The itexin-maven-plugin can be bound to any {{{http://maven.apache.org/ref/current/maven-core/lifecycles.html}lifecycle phase}}
-  as usual.
-  
+  as you like.
+
 
 +-----
 <project>

@@ -52,9 +52,9 @@
             </goals>
             <configuration>
               <items>
-                <item>eins</item>
-                <item>zwei</item>
-                <item>drei</item>
+                <item>one</item>
+                <item>two</item>
+                <item>three</item>
               </items>
               <plugin>
                 <groupId>com.soebes.maven.plugins</groupId>

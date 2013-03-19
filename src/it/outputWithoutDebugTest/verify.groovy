@@ -44,11 +44,11 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 t.checkExistenceAndContentOfAFile(logFileInput, [
   '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
   '[INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1',
-  '[INFO] This is a message: eins',
+  '[INFO] This is a message: one',
   '[INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1',
-  '[INFO] This is a message: zwei',
+  '[INFO] This is a message: two',
   '[INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1',
-  '[INFO] This is a message: drei',
+  '[INFO] This is a message: three',
   '[INFO] BUILD SUCCESS',
 ])
 

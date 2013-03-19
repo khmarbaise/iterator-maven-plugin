@@ -10,15 +10,17 @@
 
 Usage
 
-   Lets assume you would like to call the {{{http://...}maven-echo-plugin}} 
-   serveral times. Apart form being really useful just as an example. 
+   Lets assume you would like to call the 
+   {{{http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22maven-echo-plugin%22}maven-echo-plugin}} 
+   several times. Apart form being really useful it's in for an example. 
    This can be achieved by the following:
    
 %{include|source=target/it/outputWithoutDebugTest/pom.xml|snippet=#start}
 
    This will produce the following output during a <<<mvn clean package>>> call
-   which will show you the messages produced by the maven-echo-plugin and
-   their appropriate values.
+   which will show you the messages produced by the 
+   {{{http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22maven-echo-plugin%22}maven-echo-plugin}} 
+   and their appropriate values.
 
 %{include|source=target/it/outputWithoutDebugTest/build-filtered.log|highlight-type=text}
 
