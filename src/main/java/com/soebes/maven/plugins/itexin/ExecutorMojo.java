@@ -18,10 +18,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
 
 /**
- * Executor will execute a given plugin by iterating throught the given items.
+ * Executor will execute a given plugin by iterating through the given items.
  * 
- * @author Karl-Heinz Marbaise <a
- *         href="mailto:kama@soebes.de">kama@soebes.de</a>
+ * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
  * 
  */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
@@ -181,11 +180,13 @@ public class ExecutorMojo extends AbstractItExInMojo {
                     + getEndToken(), item);
             getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
 
-            StringBuilder sb = new StringBuilder("]] ");
+            StringBuilder sb = new StringBuilder("------ ");
             // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
             sb.append(executePlugin.getKey());
             sb.append(":");
             sb.append(executePlugin.getVersion());
+            sb.append(":");
+            sb.append(goal);
 
             getLog().info(sb.toString());
 
