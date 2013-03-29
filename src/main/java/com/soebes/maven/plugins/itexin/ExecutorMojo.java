@@ -136,7 +136,6 @@ public class ExecutorMojo extends AbstractItExInMojo {
             throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
         }
 
-
         for (String item : getItems()) {
             for (PluginExecutor pluginExecutor : pluginExecutors) {
 
@@ -149,15 +148,7 @@ public class ExecutorMojo extends AbstractItExInMojo {
                 PlexusConfiguration plexusConfiguration = copyConfiguration(pluginExecutor.getConfiguration(), getPlaceHolder(), item);
                 getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
                 
-                StringBuilder sb = new StringBuilder("------ ");
-                // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-                sb.append(executePlugin.getKey());
-                sb.append(":");
-                sb.append(executePlugin.getVersion());
-                sb.append(":");
-                sb.append(pluginExecutor.getGoal());
-                
-                getLog().info(sb.toString());
+                createLogOutput(pluginExecutor, executePlugin);
                 
                 // Put the value of the current iteration into the properties
                 mavenProject.getProperties().put(getIteratorName(), item);
@@ -169,6 +160,23 @@ public class ExecutorMojo extends AbstractItExInMojo {
 
         }
     }
+
+
+	/**
+	 * Will create the output during the executions for the plugins
+	 * like <code>groupId:artifactId:version:goal</code>.
+	 * @param pluginExecutor
+	 * @param executePlugin
+	 */
+	private void createLogOutput(PluginExecutor pluginExecutor, Plugin executePlugin) {
+		StringBuilder sb = new StringBuilder("------ ");
+		sb.append(executePlugin.getKey());
+		sb.append(":");
+		sb.append(executePlugin.getVersion());
+		sb.append(":");
+		sb.append(pluginExecutor.getGoal());
+		getLog().info(sb.toString());
+	}
 
     public MavenProject getMavenProject() {
         return mavenProject;
