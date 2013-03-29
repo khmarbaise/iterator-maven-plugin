@@ -15,8 +15,9 @@ Iterator Maven Plugin
 
 * Overview
 
-  The <{{{./executor-mojo.html}executor}}> goal is intended to call a maven plugin.
-  
+  The <{{{./executor-mojo.html}executor}}> goal is intended to call one or more maven plugins
+  during the iteration of the values.
+
   Let us take a look at a real example which makes explanations simpler. We have the following 
   layout of the project:
 
@@ -46,19 +47,8 @@ Iterator Maven Plugin
 
 %{include|source=target/it/mavenAssemblyPluginTest/build-filtered.log|highlight-type=text}
 
-  As you can see the maven-assembly-plugin has been called three time with the
+  As you can see the maven-assembly-plugin is being called three times with the
   parameter <<<test>>>, <<<prod>>> and <<<dev>>> which adresses the appropriate
   descriptor in the folder.
-
-* Using Property
-
-  The iterator-maven-plugin will inject the current value as a property which means you can
-  use this property to parameterize your build in other ways like the following:
-
-%{include|source=target/it/mavenAssemblyPluginWithPropertiesTest/pom.xml|snippet=#start}
-
-  The assembly descriptor contains the appropriate configuration via a property <<<$\{item}>>>
-
-%{include|source=src/it/mavenAssemblyPluginWithPropertiesTest/src/main/assembly/archive.xml}
 
   []

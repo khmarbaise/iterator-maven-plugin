@@ -7,15 +7,16 @@
 	  <item name="Goals" href="plugin-info.html"/>
 	</menu>
 	
-	<menu name="Usage">
-	  <item name="Overview" href="overview.html"/>
+	<menu name="Usage Executor">
+	  <item name="Overview" href="executor-overview.html"/>
+	  <item name="Property" href="executor-property.html"/>
+	</menu>
+	<menu name="Usage Invoker">
+	  <item name="Overview" href="overview-invoker.html"/>
 	  <item name="Invoker" href="invoker.html"/>
-	  <item name="Executor" href="executor.html"/>
 	</menu>
 
   <menu ref="modules" />
   <menu ref="reports" />
   </body>
 </project>
-
-

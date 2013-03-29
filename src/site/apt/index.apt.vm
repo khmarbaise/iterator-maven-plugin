@@ -12,24 +12,67 @@
 
 Iterator Maven Plugin
 
-  The basic idea of this plugin is to make iterations over a list of values possible. This 
+  The basic idea of this plugin is to make iterations over a list of values possible. This
   means having a list of values like: <<<one, two, three>>> and execute other plugins or
   Maven instances and give the current value as a parameter to the plugin or to the appropriate
   Maven call.
 
+  But more practical might be to think about the list as a list of environments like production,
+  test, qa, development etc. This list of environments can be defined in the configuration area 
+  of the plugin like this:
+  
++-------
+<items>
+  <item>production</item>
+  <item>test</item>
+  <item>qa</item>
+  <item>development</item>
+</items>
++-------
+
+  It is also possible to define the list of environments like this:
+  
++-------
+  <content>production,test,qa,development</content>
++-------
+
+ Use whatever fits your needs better.
+
+
 * Goals Overview
 
   There are currently two goals <{{{./executor-mojo.html}executor}}> and <{{{./invoker-mojo.html}invoker}}>.
-  The <{{{./executor-mojo.html}executor}}> goal is intended to call one or serval plugins during the iterations
-  over the given list of items. 
+  The <{{{./executor-mojo.html}executor}}> goal is intended to call one or more plugins during the iterations
+  over the given list of items.
   
+  A pseudo code equivalent would look like the following: 
+  
++----
+List items = [prod, test, qa]
+  
+foreach (item : items) {
+  execute.Plugin (item)
+}
++----
+
   The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate maven instance, like
   calling maven on command line, with the different possibilities of giving the iterated item. 
+
+  A pseudo code equivalent would look like the following: 
+
++----
+List items = [prod, test, qa]
   
+foreach (item : items) {
+  mvn -P${item} package
+}
++----
+
+
 * Usage
 
   The iterator-maven-plugin can be bound to any {{{http://maven.apache.org/ref/current/maven-core/lifecycles.html}lifecycle phase}}
-  as you like.
+  you like.
 
 +-----
 <project>
