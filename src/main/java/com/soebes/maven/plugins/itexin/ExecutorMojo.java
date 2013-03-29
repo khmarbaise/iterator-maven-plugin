@@ -136,32 +136,36 @@ public class ExecutorMojo extends AbstractItExInMojo {
             throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
         }
 
-        Plugin executePlugin = getPluginVersionFromPluginManagement(pluginExecutor.getPlugin());
-        if (executePlugin.getVersion() == null) {
-            throw new MojoExecutionException("Unknown plugin version. You have to define the version either directly or via pluginManagement.");
-        }
 
         for (String item : getItems()) {
-            getLog().debug("Configuration(before): " + pluginExecutor.getConfiguration().toString());
-            PlexusConfiguration plexusConfiguration = copyConfiguration(pluginExecutor.getConfiguration(), getBeginToken() + getIteratorName()
-                    + getEndToken(), item);
-            getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+            for (PluginExecutor pluginExecutor : pluginExecutors) {
 
-            StringBuilder sb = new StringBuilder("------ ");
-            // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-            sb.append(executePlugin.getKey());
-            sb.append(":");
-            sb.append(executePlugin.getVersion());
-            sb.append(":");
-            sb.append(pluginExecutor.getGoal());
+                Plugin executePlugin = getPluginVersionFromPluginManagement(pluginExecutor.getPlugin());
+                if (executePlugin.getVersion() == null) {
+                    throw new MojoExecutionException("Unknown plugin version. You have to define the version either directly or via pluginManagement.");
+                }
 
-            getLog().info(sb.toString());
-
-            // Put the value of the current iteration into the properties
-            mavenProject.getProperties().put(getIteratorName(), item);
-
-            MojoExecutor.executeMojo(executePlugin, pluginExecutor.getGoal(), PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
-                    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+                getLog().debug("Configuration(before): " + pluginExecutor.getConfiguration().toString());
+                PlexusConfiguration plexusConfiguration = copyConfiguration(pluginExecutor.getConfiguration(), getPlaceHolder(), item);
+                getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+                
+                StringBuilder sb = new StringBuilder("------ ");
+                // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
+                sb.append(executePlugin.getKey());
+                sb.append(":");
+                sb.append(executePlugin.getVersion());
+                sb.append(":");
+                sb.append(pluginExecutor.getGoal());
+                
+                getLog().info(sb.toString());
+                
+                // Put the value of the current iteration into the properties
+                mavenProject.getProperties().put(getIteratorName(), item);
+                
+                MojoExecutor.executeMojo(executePlugin, pluginExecutor.getGoal(), PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
+                        MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+                
+            }
 
         }
     }

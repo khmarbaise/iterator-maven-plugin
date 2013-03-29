@@ -53,17 +53,21 @@
                 <item>dev</item>
               </items>
 
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-              </plugin>
-              <goal>single</goal>
-              <configuration>
-                <descriptors>
-                  <descriptor>${project.basedir}/@item@.xml</descriptor>
-                </descriptors>
-              </configuration>
+              <pluginExecutors>
+                <pluginExecutor>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                  </plugin>
+                  <goal>single</goal>
+                  <configuration>
+                    <descriptors>
+                      <descriptor>${project.basedir}/@item@.xml</descriptor>
+                    </descriptors>
+                  </configuration>
+                </pluginExecutor>
+              </pluginExecutors>
             </configuration>
           </execution>
         </executions>
