@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -46,17 +50,21 @@
             </goals>
             <configuration>
               <content>eins, zwei, drei</content>
-              <plugin>
-                <groupId>com.soebes.maven.plugins</groupId>
-                <artifactId>maven-echo-plugin</artifactId>
-                <version>0.1</version>
-              </plugin>
-              <goal>echo</goal>
-              <configuration>
-                <echos>
-                  <echo>This is a message: @item@</echo>
-                </echos>
-              </configuration>
+              <pluginExecutors>
+                <pluginExecutor>
+                  <plugin>
+                    <groupId>com.soebes.maven.plugins</groupId>
+                    <artifactId>maven-echo-plugin</artifactId>
+                    <version>0.1</version>
+                  </plugin>
+                  <goal>echo</goal>
+                  <configuration>
+                    <echos>
+                      <echo>This is a message: @item@</echo>
+                    </echos>
+                  </configuration>
+                </pluginExecutor>
+              </pluginExecutors>
             </configuration>
           </execution>
         </executions>
