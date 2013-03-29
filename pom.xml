@@ -12,7 +12,7 @@
   </parent>
 
   <groupId>com.soebes.maven.plugins</groupId>
-  <artifactId>itexin-maven-plugin</artifactId>
+  <artifactId>iterator-maven-plugin</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
@@ -239,7 +239,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <configuration>
-          <goalPrefix>itexin</goalPrefix>
+          <goalPrefix>iterator</goalPrefix>
         </configuration>
         <executions>
           <execution>
