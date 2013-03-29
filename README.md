@@ -11,7 +11,7 @@ License
 
 Homepage
 --------
-[http://khmarbaise.github.com/itexin-maven-plugin/](http://khmarbaise.github.com/itexin-maven-plugin/)
+[http://khmarbaise.github.com/iterator-maven-plugin/](http://khmarbaise.github.com/iterator-maven-plugin/)
 
 Description
 -----------
