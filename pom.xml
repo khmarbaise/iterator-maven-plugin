@@ -54,6 +54,12 @@
     <org.codehaus.gmaven.runtime-gmaven-runtime-1.8>1.4</org.codehaus.gmaven.runtime-gmaven-runtime-1.8>
   </properties>
 
+  <!-- Must be overwritten in every project. -->
+  <issueManagement>
+    <system>default</system>
+    <url>https://github.com/khmarbaise/iterator-maven-plugin/issues</url>
+  </issueManagement>
+
   <scm>
     <developerConnection>scm:git:git@github.com:khmarbaise/iterator-maven-plugin.git</developerConnection>
     <connection>scm:git:git@github.com:khmarbaise/iterator-maven-plugin.git</connection>
