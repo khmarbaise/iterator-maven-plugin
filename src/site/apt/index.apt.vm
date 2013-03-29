@@ -10,25 +10,26 @@
  12. January 2013
  ------
 
-Iterator Executor Invoker Maven Plugin
+Iterator Maven Plugin
 
-
-  The basic idea behind this plugin is to make iterations over a list of values possible. This 
-  means having a list of values like this: <<<one, two, three>>> and execute an other plugin or
-  an Maven instance and give the current value as a parameter to the plugin or to the Maven call.
+  The basic idea of this plugin is to make iterations over a list of values possible. This 
+  means having a list of values like: <<<one, two, three>>> and execute other plugins or
+  Maven instances and give the current value as a parameter to the plugin or to the appropriate
+  Maven call.
 
 * Goals Overview
 
-  There are currently two goals <{{{./executor-mojo.html}executor}}> which is able to
-  call a plugin during the usual run of Maven and the 
-  <{{{./invoker-mojo.html}invoker}}> goal which will call Maven like you have called 
-  Maven separately on command line. 
+  There are currently two goals <{{{./executor-mojo.html}executor}}> and <{{{./invoker-mojo.html}invoker}}>.
+  The <{{{./executor-mojo.html}executor}}> goal is intended to call one or serval plugins during the iterations
+  over the given list of items. 
+  
+  The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate maven instance, like
+  calling maven on command line, with the different possibilities of giving the iterated item. 
   
 * Usage
 
-  The itexin-maven-plugin can be bound to any {{{http://maven.apache.org/ref/current/maven-core/lifecycles.html}lifecycle phase}}
+  The iterator-maven-plugin can be bound to any {{{http://maven.apache.org/ref/current/maven-core/lifecycles.html}lifecycle phase}}
   as you like.
-
 
 +-----
 <project>
@@ -46,7 +47,14 @@ Iterator Executor Invoker Maven Plugin
               <goal>executor</goal>
             </goals>
             <configuration>
-              ....
+            	<pluginExecutors>
+            	  <pluginExecutor>
+            	    ..
+            	  </pluginExecutor>
+            	  <pluginExecutor>
+            	    ..
+            	  </pluginExecutor>
+            	</pluginExecutors>
             </configuration>
           </execution>
         </executions>

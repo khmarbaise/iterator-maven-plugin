@@ -35,7 +35,9 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    
     <plugins>
+      <!-- START SNIPPET: start -->
       <plugin>
         <groupId>@project.groupId@</groupId>
         <artifactId>@project.artifactId@</artifactId>
@@ -72,6 +74,7 @@
           </execution>
         </executions>
       </plugin>
+      <!-- END SNIPPET: start -->
     </plugins>
 
   </build>

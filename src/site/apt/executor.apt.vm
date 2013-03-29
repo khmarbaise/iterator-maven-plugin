@@ -1,0 +1,28 @@
+~~
+~~ Copyright.
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 19. March 2013
+ ------
+
+Iterator Maven Plugin
+
+
+* Overview
+
+  The <{{{./executor-mojo.html}executor}}> goal is intended to call a maven plugin.
+  
+  Let us take a look at a real example which makes explanations simpler:
+
+%{include|source=target/it/mavenAssemblyPluginTest/pom.xml|snippet=#start}
+
+  The above call will produce an output like the following:
+
+%{include|source=target/it/mavenAssemblyPluginTest/build-filtered.log|highlight-type=text}
+
+  []

@@ -5,7 +5,12 @@
 	<menu name="Overview">
 	  <item name="Introduction" href="index.html"/>
 	  <item name="Goals" href="plugin-info.html"/>
-	  <item name="Usage" href="usage.html"/>
+	</menu>
+	
+	<menu name="Usage">
+	  <item name="Overview" href="overview.html"/>
+	  <item name="Invoker" href="invoker.html"/>
+	  <item name="Executor" href="executor.html"/>
 	</menu>
 
   <menu ref="modules" />

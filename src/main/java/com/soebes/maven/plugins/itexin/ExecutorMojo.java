@@ -25,8 +25,51 @@ import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
  * 
  */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
-public class ExecutorMojo extends AbstractItExInMojo {
+public class ExecutorMojo extends AbstractIteratorMojo {
 
+    /**
+     * By using the pluginExecutors you can define a list of 
+     * plugins which will be executed during executor.
+     * 
+     * <pre>
+     * {@code
+     * <pluginExecutors>
+     *   <pluginExecutor>
+     *     ..Plugin
+     *   </pluginExecutor>
+     * </pluginExecutors>
+     * }
+     * </pre>
+     * A plugin must be defined by using the plugin tag. You can omit the version tag
+     * if you have defined the plugin's version in the pluginManagement section.  
+     * <pre>
+     * {@code
+     * <plugin>
+     *   <groupId>..</groupId>
+     *   <artifactId>..</artifactId>
+     *   <version>..</version>
+     * </plugin>
+     * }
+     * </pre>
+     * Furthremore you need to define the goal of the given
+     * plugin by using the tag:
+     * 
+     * <pre>
+     * {@code
+     * <goal>...</goal>
+     * }
+     * </pre>
+     * And finally you need to define the configuration for the plugin by using the following:
+     *
+     * <pre>
+     * {@code
+     * <configuration>
+     *   Plugin Configuration
+     * </configuration>
+     * }
+     * </pre>
+     * 
+     */
     @Parameter(required = true)
     private List<PluginExecutor> pluginExecutors;
 

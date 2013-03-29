@@ -16,9 +16,9 @@
   <version>0.1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>The Iterator Executor Invoker Maven Plugin.</name>
+  <name>The Iterator Maven Plugin.</name>
   <description>The idea is to execute other plugins multiple times
-    based on information given in the configuration of the plugin.
+    based on a list of items which will be iterated over.
     Or invoke a separate maven instance based on the a list 
     of elements.</description>
 
@@ -34,7 +34,7 @@
     <!-- Different plugins versions -->
     <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
     <maven.invoker.version>1.8</maven.invoker.version>
-    <gmaven.plugin.version>1.3</gmaven.plugin.version>
+    <gmaven.plugin.version>1.5</gmaven.plugin.version>
 
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.surefire.plugin.version>2.13</maven.surefire.plugin.version>
@@ -55,9 +55,9 @@
   </properties>
 
   <scm>
-    <developerConnection>scm:git:git@github.com:khmarbaise/itexin-maven-plugin.git</developerConnection>
-    <connection>scm:git:git@github.com:khmarbaise/itexin-maven-plugin.git</connection>
-    <url>https://github.com/khmarbaise/itexin-maven-plugin</url>
+    <developerConnection>scm:git:git@github.com:khmarbaise/iterator-maven-plugin.git</developerConnection>
+    <connection>scm:git:git@github.com:khmarbaise/iterator-maven-plugin.git</connection>
+    <url>https://github.com/khmarbaise/iterator-maven-plugin</url>
   </scm>
 
   <dependencyManagement>
