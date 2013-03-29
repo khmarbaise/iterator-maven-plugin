@@ -28,13 +28,14 @@ new File(basedir, "build-filtered.log").withWriter { out ->
     logFileInput.eachLine { line ->
 
         if (line.contains(currentFolder)) {
-            line = line.replace(currentFolder, "/home/itexin/");
+            line = line.replace(currentFolder, "/home/iterator/");
         }
        
         if (    !line.startsWith("Download") 
             &&  !line.startsWith(" wagon http use")
             &&  !line.startsWith("Running post-build")
-            &&  !line.startsWith("Finished post-build ")) {
+            &&  !line.startsWith("Finished post-build ")
+			&&  !line.startsWith("Project version:")) {
             out.println line;
         }
     }

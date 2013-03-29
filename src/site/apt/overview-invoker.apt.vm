@@ -1,0 +1,48 @@
+~~
+~~ Copyright.
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 19. March 2013
+ ------
+
+Iterator Maven Plugin
+
+
+* Overview
+
+  The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate instance of Maven.
+
+
+* Different folder
+
+  You can change the working directory for the maven call by using:
+
++------
+  ..  
+  <baseDirector>some-folder/@item@</baseDirector>
+  ..
++------
+
+        // cd @item@
+        // mvn clean package
+        request.setBaseDirectory(getBaseDirectoryAfterPlaceHolderIsReplaced(currentValue));
+        // goals:
+        // mvn plugin-name:@item@
+        //
+        request.setGoals(getGoalsAfterPlaceHolderIsReplaced(currentValue));
+        // Profiles:
+        // mvn -Pxyz-@item@ clean package
+        // mvn -P@item@
+        request.setProfiles(getProfilesAfterPlaceHolderIsReplaced(currentValue));
+        // Projects:
+        // mvn -pl xyz-@item@ clean package
+        request.setProjects(getProjectsAfterPlaceHolderIsReplaced(currentValue));
+
+
+
+  []

@@ -1,7 +1,7 @@
-Iterator Executor Invoker Maven Plugin
-======================================
+Iterator Maven Plugin
+=====================
 
-The iterator executor invoker maven plugin (itexin-maven-plugin for short) is intended
+The iterator maven plugin (iterator-maven-plugin for short) is intended
 to make iterations of a list and an appropriate call of a maven plugin suitable.
 
 
@@ -27,7 +27,7 @@ The following possible solutions exist:
       <plugins>
         <plugin>
           <groupId>com.soebes.maven.plugins</groupId>
-          <artifactId>itexin-maven-plugin</artifactId>
+          <artifactId>iterator-maven-plugin</artifactId>
           <version>0.1</version>
           <executions>
             <execution>
@@ -63,12 +63,12 @@ The result of the above configuration is that the [maven-echo-plugin](https://gi
 will be called three times like the following:
 
     [INFO] 
-    [INFO] --- itexin-maven-plugin:0.1.0-SNAPSHOT:executor (default) @ basic-test ---
-    [INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1
+    [INFO] --- iterator-maven-plugin:0.1.0-SNAPSHOT:executor (default) @ basic-test ---
+    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: one
-    [INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1
+    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: two
-    [INFO] ]] com.soebes.maven.plugins:maven-echo-plugin:0.1
+    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: three
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
@@ -85,7 +85,7 @@ here:
 
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
-        <artifactId>itexin-maven-plugin</artifactId>
+        <artifactId>iterator-maven-plugin</artifactId>
         <version>0.1</version>
         <executions>
           <execution>
@@ -142,7 +142,7 @@ Having a property which contains a list of servers like this:
 
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
-        <artifactId>itexin-maven-plugin</artifactId>
+        <artifactId>iterator-maven-plugin</artifactId>
         <version>0.1</version>
         <executions>
           <execution>
@@ -217,17 +217,12 @@ key2, value21, value22, value23
 
 Status
 ------
-- First realized ideas
-- Currently invoking a separate maven instance is basically working
-  except for the automatic injection via plexus/guice.
 
 
 TODOs
 -----
- * Make more configuration options
- * Make Mojo for the invoker based on Maven-Invoker
 
 Usage
 -----
 
-sie homepage.
+see homepage.

@@ -10,7 +10,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 
-public abstract class AbstractInvokerMojo extends AbstractItExInMojo {
+public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
 
     /**
      * The list of goals which will be called during each invocation of Maven.

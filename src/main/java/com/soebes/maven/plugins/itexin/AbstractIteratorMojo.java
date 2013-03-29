@@ -8,7 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 
-public abstract class AbstractItExInMojo extends AbstractMojo {
+public abstract class AbstractIteratorMojo extends AbstractMojo {
 
     /**
      * The token the iterator placeholder begins with.

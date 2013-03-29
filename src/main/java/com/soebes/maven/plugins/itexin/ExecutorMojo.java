@@ -1,5 +1,6 @@
 package com.soebes.maven.plugins.itexin;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
@@ -24,11 +25,23 @@ import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
  * 
  */
 @Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
-public class ExecutorMojo extends AbstractItExInMojo {
+public class ExecutorMojo extends AbstractIteratorMojo {
 
     /**
-     * The plugin to be executed.
+     * By using the pluginExecutors you can define a list of 
+     * plugins which will be executed during executor.
      * 
+     * <pre>
+     * {@code
+     * <pluginExecutors>
+     *   <pluginExecutor>
+     *     ..Plugin
+     *   </pluginExecutor>
+     * </pluginExecutors>
+     * }
+     * </pre>
+     * A plugin must be defined by using the plugin tag. You can omit the version tag
+     * if you have defined the plugin's version in the pluginManagement section.  
      * <pre>
      * {@code
      * <plugin>
@@ -38,20 +51,16 @@ public class ExecutorMojo extends AbstractItExInMojo {
      * </plugin>
      * }
      * </pre>
-     */
-    @Parameter(required = true)
-    private Plugin plugin;
-
-    /**
-     * The plugin goal to be executed.
+     * Furthremore you need to define the goal of the given
+     * plugin by using the tag:
      * 
-     */
-    @Parameter(required = true)
-    private String goal;
-
-    /**
-     * Plugin configuration to use in the execution.
-     * 
+     * <pre>
+     * {@code
+     * <goal>...</goal>
+     * }
+     * </pre>
+     * And finally you need to define the configuration for the plugin by using the following:
+     *
      * <pre>
      * {@code
      * <configuration>
@@ -59,9 +68,10 @@ public class ExecutorMojo extends AbstractItExInMojo {
      * </configuration>
      * }
      * </pre>
+     * 
      */
-    @Parameter
-    private XmlPlexusConfiguration configuration;
+    @Parameter(required = true)
+    private List<PluginExecutor> pluginExecutors;
 
     /**
      * The project currently being build.
@@ -169,35 +179,47 @@ public class ExecutorMojo extends AbstractItExInMojo {
             throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
         }
 
-        Plugin executePlugin = getPluginVersionFromPluginManagement(plugin);
-        if (executePlugin.getVersion() == null) {
-            throw new MojoExecutionException("Unknown plugin version. You have to define the version either directly or via pluginManagement.");
-        }
-
         for (String item : getItems()) {
-            getLog().debug("Configuration(before): " + configuration.toString());
-            PlexusConfiguration plexusConfiguration = copyConfiguration(configuration, getBeginToken() + getIteratorName()
-                    + getEndToken(), item);
-            getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+            for (PluginExecutor pluginExecutor : pluginExecutors) {
 
-            StringBuilder sb = new StringBuilder("------ ");
-            // --- maven-jar-plugin:2.3.2:jar (default-jar) @ basic-test ---
-            sb.append(executePlugin.getKey());
-            sb.append(":");
-            sb.append(executePlugin.getVersion());
-            sb.append(":");
-            sb.append(goal);
+                Plugin executePlugin = getPluginVersionFromPluginManagement(pluginExecutor.getPlugin());
+                if (executePlugin.getVersion() == null) {
+                    throw new MojoExecutionException("Unknown plugin version. You have to define the version either directly or via pluginManagement.");
+                }
 
-            getLog().info(sb.toString());
-
-            // Put the value of the current iteration into the properties
-            mavenProject.getProperties().put(getIteratorName(), item);
-
-            MojoExecutor.executeMojo(executePlugin, goal, PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
-                    MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+                getLog().debug("Configuration(before): " + pluginExecutor.getConfiguration().toString());
+                PlexusConfiguration plexusConfiguration = copyConfiguration(pluginExecutor.getConfiguration(), getPlaceHolder(), item);
+                getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+                
+                createLogOutput(pluginExecutor, executePlugin);
+                
+                // Put the value of the current iteration into the properties
+                mavenProject.getProperties().put(getIteratorName(), item);
+                
+                MojoExecutor.executeMojo(executePlugin, pluginExecutor.getGoal(), PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration),
+                        MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager));
+                
+            }
 
         }
     }
+
+
+	/**
+	 * Will create the output during the executions for the plugins
+	 * like <code>groupId:artifactId:version:goal</code>.
+	 * @param pluginExecutor
+	 * @param executePlugin
+	 */
+	private void createLogOutput(PluginExecutor pluginExecutor, Plugin executePlugin) {
+		StringBuilder sb = new StringBuilder("------ ");
+		sb.append(executePlugin.getKey());
+		sb.append(":");
+		sb.append(executePlugin.getVersion());
+		sb.append(":");
+		sb.append(pluginExecutor.getGoal());
+		getLog().info(sb.toString());
+	}
 
     public MavenProject getMavenProject() {
         return mavenProject;

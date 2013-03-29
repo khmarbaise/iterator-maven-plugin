@@ -21,12 +21,29 @@ def projectVersion = getProjectVersion();
 
 println "Project version: ${projectVersion}"
 
+def currentFolder = new File(basedir, ".").getCanonicalPath() + "/";
 
-def buildLogFile = new File( basedir, "build.log");
+def logFileInput = new File(basedir, "build.log")
+
+new File(basedir, "build-filtered.log").withWriter { out ->
+    logFileInput.eachLine { line ->
+
+        if (line.contains(currentFolder)) {
+            line = line.replace(currentFolder, "/home/iterator/");
+        }
+       
+        if (    !line.startsWith("Download") 
+            &&  !line.startsWith(" wagon http use")
+            &&  !line.startsWith("Running post-build")
+            &&  !line.startsWith("Finished post-build ")
+			&&  !line.startsWith("Project version:")) {
+            out.println line;
+        }
+    }
+}
 
 
-
-t.checkExistenceAndContentOfAFile(buildLogFile, [
+t.checkExistenceAndContentOfAFile(logFileInput, [
     '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
     '[INFO] ------ org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] Reading assembly descriptor: ' + basedir + '/test.xml',

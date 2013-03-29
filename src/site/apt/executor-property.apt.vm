@@ -1,0 +1,56 @@
+~~
+~~ Copyright.
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 29. March 2013
+ ------
+
+Iterator Maven Plugin
+
+
+* Using Property
+
+  The iterator-maven-plugin will inject the current value as a property which means you can
+  use this property to parameterize your build. First let us take a view on an example
+  project:
+  
++-----
+.
+├── pom.xml
+└── src
+    ├── main
+    │   ├── assembly
+    │   │   └── archive.xml
+    │   ├── environment
+    │   │   ├── dev
+    │   │   │   └── server.properties
+    │   │   ├── production
+    │   │   │   └── server.properties
+    │   │   ├── qa
+    │   │   │   └── server.properties
+    │   │   └── test
+    │   │       └── server.properties
+    │   ├── java
+    │   │   └── ...
+    └── test
+        └── java
+            └── ...
++-----
+
+  The next step is to look at the <<<pom.xml>>> file which will define the iteration
+  over the values <dev>, <production>, <qa>, <test> which is defined by:
+
+%{include|source=target/it/mavenAssemblyPluginWithPropertiesTest/pom.xml|snippet=#start}
+
+  During the execution the values for item will be injected as property in the maven model
+  which means they can be accessed by the usual property usage like <<<$\{item}>>>. This
+  is done in the assembly descriptor to fulfill the needs in this case.
+
+%{include|source=src/it/mavenAssemblyPluginWithPropertiesTest/src/main/assembly/archive.xml}
+
+  []

@@ -5,12 +5,18 @@
 	<menu name="Overview">
 	  <item name="Introduction" href="index.html"/>
 	  <item name="Goals" href="plugin-info.html"/>
-	  <item name="Usage" href="usage.html"/>
+	</menu>
+	
+	<menu name="Usage Executor">
+	  <item name="Overview" href="executor-overview.html"/>
+	  <item name="Property" href="executor-property.html"/>
+	</menu>
+	<menu name="Usage Invoker">
+	  <item name="Overview" href="overview-invoker.html"/>
+	  <item name="Invoker" href="invoker.html"/>
 	</menu>
 
   <menu ref="modules" />
   <menu ref="reports" />
   </body>
 </project>
-
-
