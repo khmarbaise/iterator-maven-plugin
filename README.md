@@ -41,17 +41,21 @@ The following possible solutions exist:
                   <item>two</item>
                   <item>three</item>
                 </items>
-                <plugin>
-                  <groupId>com.soebes.maven.plugins</groupId>
-                  <artifactId>maven-echo-plugin</artifactId>
-                  <version>0.1</version>
-                </plugin>
-                <goal>echo</goal>
-                <configuration>
-                  <echos>
-                    <echo>This is a message: @item@</echo>
-                  </echos>
-                </configuration>
+                <pluginExecutors>
+                  <pluginExecutor>
+                    <plugin>
+                      <groupId>com.soebes.maven.plugins</groupId>
+                      <artifactId>maven-echo-plugin</artifactId>
+                      <version>0.1</version>
+                    </plugin>
+                    <goal>echo</goal>
+                    <configuration>
+                      <echos>
+                        <echo>This is a message: @item@</echo>
+                      </echos>
+                    </configuration>
+                  </pluginExecutor>
+                </pluginExecutors>
               </configuration>
             </execution>
           </executions>
@@ -79,7 +83,7 @@ The result of the above can of course be achieved by using an appropriate number
 of execution blocks, but it will become cumbersome in particular if you have
 a larger number of executions (for example 10 or more).
 
-An other example how the itexin-maven-plugin can make your life easier will be shown 
+An other example how the iterator-maven-plugin can make your life easier will be shown 
 here:
 
 
@@ -99,18 +103,21 @@ here:
                 <item>prod</item>
                 <item>dev</item>
               </items>
-
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-              </plugin>
-              <goal>single</goal>
-              <configuration>
-                <descriptors>
-                  <descriptor>${project.basedir}/@item@.xml</descriptor>
-                </descriptors>
-              </configuration>
+              <pluginExecutors>
+                <pluginExecutor>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                  </plugin>
+                  <goal>single</goal>
+                  <configuration>
+                    <descriptors>
+                      <descriptor>${project.basedir}/@item@.xml</descriptor>
+                    </descriptors>
+                  </configuration>
+                </pluginExecutor>
+              </pluginExecutors>
             </configuration>
           </execution>
         </executions>
