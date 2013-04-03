@@ -15,7 +15,9 @@ Iterator Maven Plugin
 
 * Overview
 
-  The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate instance of Maven.
+  The <{{{./invoker-mojo.html}invoker}}> goal is intended to call a separate instance of Maven during your
+  current Maven build. This is more or less equivalent to call maven from command line separately but
+  with the help of Maven itself.
 
 
 * Different folder

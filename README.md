@@ -1,8 +1,23 @@
 Iterator Maven Plugin
 =====================
 
+[![Build Status](https://buildhive.cloudbees.com/job/khmarbaise/job/iterator-maven-plugin/badge/icon)](https://buildhive.cloudbees.com/job/khmarbaise/job/iterator-maven-plugin/)
+
+Overview
+--------
+
 The iterator maven plugin (iterator-maven-plugin for short) is intended
 to make iterations of a list and an appropriate call of a maven plugin suitable.
+
+This is in the majority of the cases based on wrong decoupling the configuration
+from the artifacts (like webapp, ear etc.).
+
+
+- - -
+
+__BY USING THIS PLUGIN YOU ACKNOWLEDGE THAT YOU ARE A BAD CITIZEN OF THE MAVEN ECOSYSTEM.__
+
+- - -
 
 
 License
