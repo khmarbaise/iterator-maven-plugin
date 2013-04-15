@@ -20,30 +20,117 @@ Iterator Maven Plugin
   with the help of Maven itself.
 
 
-* Different folder
+* Different Working Directory
 
-  You can change the working directory for the maven call by using:
+  You can change the working directory for the Maven call by using:
 
 +------
-  ..  
-  <baseDirector>some-folder/@item@</baseDirector>
-  ..
+<executions>
+  <execution>
+    <phase>package</phase>
+    <goals>
+      <goal>invoker</goal>
+    </goals>
+    <configuration>
+      <items>
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+      </items>
+      <workingDirectory>configurations/@item@</workingDirectory>
+      <goals>
+        <goal>clean</goal>
+        <goal>package</goal>
+      </goals>
+    </configuration>
+  </execution>
+</executions>
 +------
 
-        // cd @item@
-        // mvn clean package
-        request.setBaseDirectory(getBaseDirectoryAfterPlaceHolderIsReplaced(currentValue));
-        // goals:
-        // mvn plugin-name:@item@
-        //
-        request.setGoals(getGoalsAfterPlaceHolderIsReplaced(currentValue));
-        // Profiles:
-        // mvn -Pxyz-@item@ clean package
-        // mvn -P@item@
-        request.setProfiles(getProfilesAfterPlaceHolderIsReplaced(currentValue));
-        // Projects:
-        // mvn -pl xyz-@item@ clean package
-        request.setProjects(getProjectsAfterPlaceHolderIsReplaced(currentValue));
+
+* Different Base Directory
+
+  You can change the base directory directory for the Maven call by using:
+
++------
+<executions>
+  <execution>
+    <phase>package</phase>
+    <goals>
+      <goal>invoker</goal>
+    </goals>
+    <configuration>
+      <items>
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+      </items>
+      <baseDirectory>folder/@item@</baseDirectory>
+      <goals>
+        <goal>clean</goal>
+        <goal>package</goal>
+      </goals>
+    </configuration>
+  </execution>
+</executions>
++------
+
+
+* Different goal
+
+  You can change the goal for the Maven call by using:
+
++------
+<executions>
+  <execution>
+    <phase>package</phase>
+    <goals>
+      <goal>invoker</goal>
+    </goals>
+    <configuration>
+      <items>
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+      </items>
+      <goals>plugin-name:@item@<goals>
+    </configuration>
+  </execution>
+</executions>
++------
+
+* Different Profiles
+
+  You can change the profile for the Maven call by using:
+
++------
+<executions>
+  <execution>
+    <phase>package</phase>
+    <goals>
+      <goal>invoker</goal>
+    </goals>
+    <configuration>
+      <items>
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+      </items>
+      <profiles>@item@<profiles>
+    </configuration>
+  </execution>
+</executions>
++------
+
+
+~~        // Profiles:
+~~        // mvn -Pxyz-@item@ clean package
+~~        // mvn -P@item@
+~~        request.setProfiles(getProfilesAfterPlaceHolderIsReplaced(currentValue));
+~~ 
+~~        // Projects:
+~~        // mvn -pl xyz-@item@ clean package
+~~        request.setProjects(getProjectsAfterPlaceHolderIsReplaced(currentValue));
 
 
 
