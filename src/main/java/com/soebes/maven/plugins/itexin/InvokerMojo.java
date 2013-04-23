@@ -105,15 +105,15 @@ public class InvokerMojo extends AbstractInvokerMojo {
 		
 		InvocationResult result = invoker.execute(request);
 
-		if (result.getExitCode() != 0) {
+		if (result.getExitCode() == 0) {
+		    getLog().info("Maven call Ok.");
+		} else {
 			getLog().error("Maven call was NOT Ok. (" + result.getExitCode() + ")");
 			if (result.getExecutionException() != null) {
-				getLog().error(result.getExecutionException().getMessage(), result.getExecutionException().getCause());
+			    getLog().error(result.getExecutionException().getMessage(), result.getExecutionException().getCause());
 			} else {
-				getLog().error("No exception");
+			    getLog().error("No exception");
 			}
-		} else {
-			getLog().info("Maven call Ok.");
 		}
 	}
 
