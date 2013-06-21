@@ -24,7 +24,7 @@ public class AbstractInvokerMojoTest {
     }
 
     @Test
-	public void checkReplacementInBaseDirectory() {
+	public void shouldReplaceInBaseDirectory() {
 	    mock.setBaseDirectory(new File("first-@item@"));
 
 	    InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("one");
@@ -33,7 +33,7 @@ public class AbstractInvokerMojoTest {
 	}
 
     @Test
-    public void checkReplacementInGoal() {
+    public void shouldReplaceInGoal() {
         mock.setGoals(Collections.singletonList("java:@item@-environment"));
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("one");
@@ -43,7 +43,7 @@ public class AbstractInvokerMojoTest {
     }
 
     @Test
-    public void checkReplacementInGoals() {
+    public void shouldReplaceInMultipleGoals() {
         mock.setGoals(Arrays.asList("java:@item@-environment", "@item@", "selection-@item@-choice"));
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("one");
@@ -53,7 +53,7 @@ public class AbstractInvokerMojoTest {
     }
     
     @Test
-    public void checkReplacementInProfiles() {
+    public void shouldReplaceInProfile() {
         mock.setProfiles(Collections.singletonList("profile-@item@"));
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("two");
@@ -63,13 +63,33 @@ public class AbstractInvokerMojoTest {
     }
 
     @Test
-    public void checkReplacementInProjects() {
+    public void shouldReplaceInMultipleProfiles() {
+        mock.setProfiles(Arrays.asList("profile-@item@", "profile-second-@item@", "@item@-profile"));
+
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("two");
+
+        assertThat(createAndConfigureAnInvocationRequest.getProfiles()).hasSize(3);
+        assertThat(createAndConfigureAnInvocationRequest.getProfiles()).isEqualTo(Arrays.asList("profile-two", "profile-second-two", "two-profile"));
+    }
+    
+    @Test
+    public void shouldReplaceInProject() {
         mock.setProjects(Collections.singletonList("project-@item@-a"));
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("three");
 
         assertThat(createAndConfigureAnInvocationRequest.getProjects()).hasSize(1);
         assertThat(createAndConfigureAnInvocationRequest.getProjects()).isEqualTo(Collections.singletonList("project-three-a"));
+    }
+
+    @Test
+    public void shouldReplaceInMultipleProjects() {
+        mock.setProjects(Arrays.asList("project-@item@-a", "@item@project", "@item@"));
+
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest("three");
+
+        assertThat(createAndConfigureAnInvocationRequest.getProjects()).hasSize(3);
+        assertThat(createAndConfigureAnInvocationRequest.getProjects()).isEqualTo(Arrays.asList("project-three-a", "threeproject", "three"));
     }
 
 }
