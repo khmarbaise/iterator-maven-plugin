@@ -38,7 +38,7 @@ public abstract class AbstractIteratorMojo extends AbstractMojo {
      *     ..
      *   </items>}</pre>
      */
-    @Parameter
+    @Parameter(property = "iterator.items")
     private List<String> items;
     
     /**
