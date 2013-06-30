@@ -32,6 +32,8 @@ t.checkExistenceAndContentOfAFile(buildLogFile, [
   '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: mal',
   '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] This is a message: drei',
+  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: macht',
   '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: vier',
