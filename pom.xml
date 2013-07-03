@@ -32,13 +32,13 @@
     <compilerSourceTarget>1.6</compilerSourceTarget>
 
     <!-- Different plugins versions -->
-    <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     <maven.invoker.version>1.8</maven.invoker.version>
     <gmaven.plugin.version>1.5</gmaven.plugin.version>
 
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
-    <maven.surefire.plugin.version>2.13</maven.surefire.plugin.version>
-    <maven.failsafe.plugin.version>2.13</maven.failsafe.plugin.version>
+    <maven.surefire.plugin.version>2.15</maven.surefire.plugin.version>
+    <maven.failsafe.plugin.version>2.15</maven.failsafe.plugin.version>
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
     <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
     <maven-project-info-report-plugin.version>2.6</maven-project-info-report-plugin.version>
@@ -136,13 +136,13 @@
         <artifactId>maven-filtering</artifactId>
         <version>1.1</version>
       </dependency>
-
+<!--
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-interpolation</artifactId>
         <version>1.13</version>
       </dependency>
-
+-->
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-invoker</artifactId>
@@ -238,7 +238,6 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
         </plugin>
-
       </plugins>
     </pluginManagement>
 
@@ -472,17 +471,15 @@
                   <extraArtifacts>
                     <extraArtifact>junit:junit:4.8:jar</extraArtifact>
                     <extraArtifact>com.soebes.maven.plugins:maven-echo-plugin:0.1:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.surefire:surefire-junit4:2.10:jar</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:2.5.1:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.surefire:surefire-junit4:2.15:jar</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:3.1:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.4:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.4.1:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.10:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.5:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.15:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.4:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.3.2:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.1.1:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.4:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.3:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.6:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.5:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.4.3:maven-plugin</extraArtifact>
                     <extraArtifact>org.codehaus.plexus:plexus-utils:1.1:jar</extraArtifact>
                   </extraArtifacts>
                 </configuration>
