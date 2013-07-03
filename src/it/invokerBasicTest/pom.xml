@@ -6,6 +6,12 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.soebes.maven.plugins.test.integration</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.1</version>
+  </parent>
+
   <groupId>com.soebes.maven.plugins.test.integration</groupId>
   <artifactId>invoker-basic-test</artifactId>
   <version>0.1-SNAPSHOT</version>
@@ -21,21 +27,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.10</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <!-- START SNIPPET: start -->
       <plugin>

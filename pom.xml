@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -106,6 +109,7 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
         <version>3.0.4</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -118,6 +122,7 @@
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>3.2</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -444,16 +449,17 @@
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <projectsDirectory>src/it</projectsDirectory>
               <showVersion>false</showVersion>
+              <setupIncludes>
+                <setupInclude>setup/pom.xml</setupInclude>
+              </setupIncludes>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
               </pomIncludes>
               <preBuildHookScript>setup</preBuildHookScript>
               <postBuildHookScript>verify</postBuildHookScript>
               <settingsFile>src/it/settings.xml</settingsFile>
-              <!-- 
-                  Currently working with more than one thread does not work, cause it is not guaranteed that the 
-                  setup-config project is build at first. see also http://jira.codehaus.org/browse/MINVOKER-147 
-              -->
+              <!-- Currently working with more than one thread does not work, cause it is not guaranteed that the setup-config project 
+                is build at first. see also http://jira.codehaus.org/browse/MINVOKER-147 -->
               <parallelThreads>1</parallelThreads>
             </configuration>
             <executions>
@@ -467,7 +473,8 @@
                     <extraArtifact>junit:junit:4.8:jar</extraArtifact>
                     <extraArtifact>com.soebes.maven.plugins:maven-echo-plugin:0.1:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.surefire:surefire-junit4:2.10:jar</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:2.3.2:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:2.5.1:maven-plugin</extraArtifact>
+                    <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.4:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.4.1:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.10:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.4:maven-plugin</extraArtifact>
@@ -502,10 +509,7 @@
     </profile>
 
     <profile>
-      <!--
-        mvn -Pgithub site
-        will deploy the site to github site.
-       -->
+      <!-- mvn -Pgithub site will deploy the site to github site. -->
       <id>github</id>
       <activation>
         <activeByDefault>false</activeByDefault>
