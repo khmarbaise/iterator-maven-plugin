@@ -90,14 +90,14 @@ foreach (item : items) {
               <goal>executor</goal>
             </goals>
             <configuration>
-            	<pluginExecutors>
-            	  <pluginExecutor>
-            	    ..
-            	  </pluginExecutor>
-            	  <pluginExecutor>
-            	    ..
-            	  </pluginExecutor>
-            	</pluginExecutors>
+              <pluginExecutors>
+            	<pluginExecutor>
+            	  ..
+            	</pluginExecutor>
+            	<pluginExecutor>
+                  ..
+            	</pluginExecutor>
+              </pluginExecutors>
             </configuration>
           </execution>
         </executions>

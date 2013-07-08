@@ -26,6 +26,7 @@
     <maven>3.0.3</maven>
   </prerequisites>
 
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -40,12 +41,12 @@
     <maven.surefire.plugin.version>2.15</maven.surefire.plugin.version>
     <maven.failsafe.plugin.version>2.15</maven.failsafe.plugin.version>
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
-    <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
-    <maven-project-info-report-plugin.version>2.6</maven-project-info-report-plugin.version>
+    <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+    <maven-project-info-report-plugin.version>2.7</maven-project-info-report-plugin.version>
 
     <maven-install-plugin.version>2.4</maven-install-plugin.version>
 
-    <maven.site.plugin.version>3.2</maven.site.plugin.version>
+    <maven.site.plugin.version>3.3</maven.site.plugin.version>
 
     <maven.plugin.plugin.version>3.2</maven.plugin.plugin.version>
 
@@ -106,10 +107,16 @@
       </dependency>
 
       <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.9.5</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
         <version>3.0.4</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -131,18 +138,13 @@
         <version>2.2.1</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-filtering</artifactId>
-        <version>1.1</version>
-      </dependency>
-<!--
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-interpolation</artifactId>
-        <version>1.13</version>
-      </dependency>
--->
+      <!-- <dependency> -->
+      <!-- <groupId>org.apache.maven.shared</groupId> -->
+      <!-- <artifactId>maven-filtering</artifactId> -->
+      <!-- <version>1.1</version> -->
+      <!-- </dependency> -->
+      <!-- <dependency> <groupId>org.codehaus.plexus</groupId> <artifactId>plexus-interpolation</artifactId> <version>1.13</version> 
+        </dependency> -->
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-invoker</artifactId>
@@ -155,6 +157,11 @@
         <version>2.1</version>
       </dependency>
 
+     <dependency>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-filtering</artifactId>
+        <version>1.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -367,10 +374,10 @@
       <artifactId>maven-plugin-annotations</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-filtering</artifactId>
-    </dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>org.apache.maven.shared</groupId> -->
+    <!-- <artifactId>maven-filtering</artifactId> -->
+    <!-- </dependency> -->
 
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
@@ -386,9 +393,15 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>1.9.5</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-exec</artifactId>
+      <version>1.1</version>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -480,7 +493,7 @@
                     <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.4:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.3:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.6:maven-plugin</extraArtifact>
-                    <extraArtifact>org.codehaus.plexus:plexus-utils:1.1:jar</extraArtifact>
+                    <extraArtifact>org.codehaus.plexus:plexus-utils:3.0.9:jar</extraArtifact>
                   </extraArtifacts>
                 </configuration>
               </execution>
