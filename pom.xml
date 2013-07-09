@@ -71,11 +71,12 @@
   <dependencyManagement>
 
     <dependencies>
-      <dependency>
-        <groupId>org.twdata.maven</groupId>
-        <artifactId>mojo-executor</artifactId>
-        <version>2.0</version>
-      </dependency>
+
+<!--       <dependency> -->
+<!--         <groupId>org.twdata.maven</groupId> -->
+<!--         <artifactId>mojo-executor</artifactId> -->
+<!--         <version>2.0</version> -->
+<!--       </dependency> -->
 
       <dependency>
         <groupId>org.apache.maven</groupId>
@@ -333,10 +334,10 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>org.twdata.maven</groupId>
-      <artifactId>mojo-executor</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.twdata.maven</groupId> -->
+<!--       <artifactId>mojo-executor</artifactId> -->
+<!--     </dependency> -->
 
     <dependency>
       <groupId>org.testng</groupId>
@@ -493,7 +494,7 @@
                     <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.4:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-war-plugin:2.3:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.6:maven-plugin</extraArtifact>
-                    <extraArtifact>org.codehaus.plexus:plexus-utils:3.0.9:jar</extraArtifact>
+                    <extraArtifact>org.codehaus.plexus:plexus-utils:1.1:jar</extraArtifact>
                   </extraArtifacts>
                 </configuration>
               </execution>

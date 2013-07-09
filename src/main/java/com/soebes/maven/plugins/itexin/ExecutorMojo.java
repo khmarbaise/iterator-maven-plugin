@@ -1,7 +1,5 @@
 package com.soebes.maven.plugins.itexin;
 
-import static org.twdata.maven.mojoexecutor.PlexusConfigurationUtils.toXpp3Dom;
-
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +26,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomUtils;
-import org.twdata.maven.mojoexecutor.PlexusConfigurationUtils;
 
 /**
  * Executor will execute a given plugin by iterating through the given items.
@@ -223,7 +220,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
 
                 
                 try {
-                    executeMojo(executePlugin, pluginExecutor.getGoal(), PlexusConfigurationUtils.toXpp3Dom(plexusConfiguration));
+                    executeMojo(executePlugin, pluginExecutor.getGoal(), toXpp3Dom(plexusConfiguration));
                 } catch (PluginResolutionException e) {
                     getLog().error("PluginresourceException:", e);
                 } catch (PluginDescriptorParsingException e) {
@@ -287,6 +284,26 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     private MojoExecution mojoExecution(MojoDescriptor mojoDescriptor, Xpp3Dom configuration) {
         configuration = Xpp3DomUtils.mergeXpp3Dom(configuration, toXpp3Dom(mojoDescriptor.getMojoConfiguration()));
         return new MojoExecution(mojoDescriptor, configuration);
+    }
+
+    /**
+     * Taken from MojoExecutor of Don Brown. Converts PlexusConfiguration to a
+     * Xpp3Dom.
+     * 
+     * @param config
+     *            the PlexusConfiguration. Must not be {@code null}.
+     * @return the Xpp3Dom representation of the PlexusConfiguration
+     */
+    public Xpp3Dom toXpp3Dom(PlexusConfiguration config) {
+        Xpp3Dom result = new Xpp3Dom(config.getName());
+        result.setValue(config.getValue(null));
+        for (String name : config.getAttributeNames()) {
+            result.setAttribute(name, config.getAttribute(name));
+        }
+        for (PlexusConfiguration child : config.getChildren()) {
+            result.addChild(toXpp3Dom(child));
+        }
+        return result;
     }
 
     /**
