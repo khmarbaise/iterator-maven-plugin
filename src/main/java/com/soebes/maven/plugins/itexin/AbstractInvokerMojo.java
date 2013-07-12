@@ -19,21 +19,25 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter
     private List<String> goals = Collections.singletonList("clean");
+
     /**
      * This will set <code>--batch-mode</code>
      */
     @Parameter(defaultValue = "false")
     private boolean interactive;
+    
     /**
      * This will <code>--also-make</code>
      */
     @Parameter(defaultValue = "false")
     private boolean alsoMake;
+    
     /**
      * This will activate <code>--also-make-dependents</code>
      */
     @Parameter(defaultValue = "false")
     private boolean alsoMakeDependents;
+    
     /**
      * Sets the path to the base directory of the POM for the Maven invocation.
      * If {@link #getPomFile()} does not return <code>null</code>, this setting
@@ -44,11 +48,13 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter
     private File baseDirectory;
+    
     /**
-     * <code>--debug</code>
+     * <code>-Ddebug=true</code>
      */
     @Parameter(defaultValue = "false")
     private boolean debug;
+    
     /**
      * The valid values are {@link InvocationRequest#REACTOR_FAIL_AT_END},
      * {@link InvocationRequest#REACTOR_FAIL_FAST},
@@ -61,6 +67,7 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter(defaultValue = InvocationRequest.REACTOR_FAIL_FAST)
     private String failureBehaviour;
+
     /**
      * Sets the checksum mode of the Maven invocation. Equivalent of {@code -c}
      * or {@code --lax-checksums}, {@code -C} or {@code --strict-checksums}
@@ -72,39 +79,46 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter(defaultValue = InvocationRequest.CHECKSUM_POLICY_WARN)
     private String globalChecksumPolicy;
+    
     /**
      * The path to the global settings for the Maven invocation or
      * <code>null</code> to load the global settings from the default location.
      */
     @Parameter
     private File globalSettingsFile;
+    
     /**
      * If <code>null</code> the default location from <code>settings.xml</code>
      * will be used.
      */
     @Parameter
     private File localRepositoryDirectory;
+    
     /**
      * If <code>null</code>.
      */
     @Parameter
     private String mavenOpts;
+    
     /**
      * If true <code>--no-plugin-updates</code> will be used.
      */
     @Parameter
     private boolean nonPluginUpdates;
+    
     /**
      * <code>true</code> Maven will be executed in off-line mode (
      * <code>--offline</code>).
      */
     @Parameter
     private boolean offline;
+    
     /**
      * The list of profiles.
      */
     @Parameter
     private List<String> profiles;
+    
     /**
      * Sets the reactor project list. Equivalent of {@code -pl} or
      * {@code --projects}
@@ -113,23 +127,27 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter
     private List<String> projects;
+    
     /**
      * Sets the system properties for the Maven invocation, may be
      * <code>null</code> if not set.
      */
     @Parameter
     private Properties properties;
+    
     /**
      * Sets the recursion behavior of a reactor invocation. <em>Inverse</em>
      * equivalent of {@code -N} and {@code --non-recursive}
      */
     @Parameter(defaultValue = "false")
     private boolean recursive;
+    
     /**
      * Specify the reactor project to resume from.
      */
     @Parameter
     private String resumeFrom;
+    
     /**
      * Indicates whether the environment variables of the current process should
      * be propagated to the Maven invocation. By default, the current
@@ -138,28 +156,33 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter(defaultValue = "true")
     private boolean shellEnvironmentInherited;
+    
     /**
      * Gets the exception output mode of the Maven invocation. By default, Maven
      * will not print stack traces of build exceptions.
      */
     @Parameter(defaultValue = "false")
     private boolean showErrors;
+    
     /**
      * The show version behaviour {@code -V} option.
      * 
      */
     @Parameter(defaultValue = "false")
     private boolean showVersion;
+    
     /**
      * {@code -T} option of Maven.
      */
     @Parameter
     protected String threads;
+    
     /**
      * Set the path to the custom toolchains file
      */
     @Parameter
     private File toolchains;
+    
     /**
      * Indicates whether Maven should enforce an update check for plugins and
      * snapshots. By default, no update check is performed
@@ -168,6 +191,7 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
      */
     @Parameter(defaultValue = "false")
     private boolean updateSnapshots;
+    
     /**
      * Sets the path to the user settings for the Maven invocation.
      * 

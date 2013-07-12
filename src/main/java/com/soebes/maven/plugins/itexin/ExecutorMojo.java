@@ -65,7 +65,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * }
      * </pre>
      * 
-     * Furthremore you need to define the goal of the given plugin by using the
+     * Furthermore you need to define the goal of the given plugin by using the
      * tag:
      * 
      * <pre>
@@ -119,7 +119,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     private PluginDescriptor pluginDescriptor;
 
     /**
-     * This will copy the configuration from src to the result whereas the
+     * This will copy the configuration from <b>src</b> to the result whereas the
      * placeholder will be replaced with the current value.
      * 
      */
@@ -127,14 +127,14 @@ public class ExecutorMojo extends AbstractIteratorMojo {
 
         XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
 
-        if (src.getValue() != null) {
-            if (src.getValue().contains(iteratorName)) {
-                dom.setValue(src.getValue().replaceAll(iteratorName, value));
-            } else {
-                dom.setValue(src.getValue());
-            }
+        if (src.getValue() == null) {
+        	dom.setValue(src.getValue(null));
         } else {
-            dom.setValue(src.getValue(null));
+            if (src.getValue().contains(iteratorName)) {
+            	dom.setValue(src.getValue().replaceAll(iteratorName, value));
+            } else {
+            	dom.setValue(src.getValue());
+            }
         }
 
         for (String attributeName : src.getAttributeNames()) {
