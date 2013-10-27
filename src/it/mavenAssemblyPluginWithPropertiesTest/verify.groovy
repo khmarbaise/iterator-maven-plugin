@@ -38,8 +38,11 @@ def buildLogFile = new File( basedir, "build.log");
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
-    '[INFO] ------ org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
-
+    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+	'[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+	'[INFO] ------ (production) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+	'[INFO] ------ (qa) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+	
     '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-dev.war'),
 

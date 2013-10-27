@@ -27,15 +27,15 @@ def buildLogFile = new File( basedir, "build.log");
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
   '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
-  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (zwei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: zwei',
-  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (mal) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: mal',
-  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (drei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: drei',
-  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (macht) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: macht',
-  '[INFO] ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (vier) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: vier',
   '[INFO] BUILD SUCCESS',
 ])

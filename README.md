@@ -43,7 +43,7 @@ The following possible solutions exist:
         <plugin>
           <groupId>com.soebes.maven.plugins</groupId>
           <artifactId>iterator-maven-plugin</artifactId>
-          <version>0.1</version>
+          <version>0.2</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -105,7 +105,7 @@ here:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -165,7 +165,7 @@ Having a property which contains a list of servers like this:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -235,6 +235,28 @@ key2, value21, value22, value23
 
     @item.key@ => key1
 
+
+Strange Idea:
+
+for every package (folder) which is found in src/main/java/com/soebes the plugin
+will execute one iterattion with the name of the folder => @item@
+
+    <configuration>
+      <folderSet>
+        <folder>${basedir}/src/main/java/com/soebes/</folder>
+      </folderSet>
+
+      <plugins>
+        <plugin>
+          <groupId>...</groupId>
+          <artifactId>..</artifactId>
+          <version>..</version>
+          <configuration>
+           ..Whatever configuration Replacement @value@
+          </configuration>
+        </plugin>
+      </plugins>
+    </configuration>
 
 
 Status

@@ -45,13 +45,15 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
     '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
-    '[INFO] ------ org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+    '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+    '[INFO] ------ (prod) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] Reading assembly descriptor: ' + basedir + '/test.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war'),
     '[INFO] Reading assembly descriptor: ' + basedir + '/dev.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-dev.war'),
     '[INFO] Reading assembly descriptor: ' + basedir + '/prod.xml',
-    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-production.war'),
+    '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-prod.war'),
     '[INFO] BUILD SUCCESS',
 ])
 def test_war = new File (basedir, "/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war");
@@ -62,7 +64,7 @@ def dev_war = new File (basedir, "/target/mavenAssemblyTest-0.1-SNAPSHOT-dev.war
 if (!dev_war.exists()) {
     throw new FileNotFoundException("The file " + dev_war + " does not exist!");
 }
-def prod_war = new File (basedir, "/target/mavenAssemblyTest-0.1-SNAPSHOT-production.war");
+def prod_war = new File (basedir, "/target/mavenAssemblyTest-0.1-SNAPSHOT-prod.war");
 if (!prod_war.exists()) {
     throw new FileNotFoundException("The file " + prod_war + " does not exist!");
 }

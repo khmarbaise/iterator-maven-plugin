@@ -213,7 +213,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
                         item);
                 getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
 
-                createLogOutput(pluginExecutor, executePlugin);
+                createLogOutput(pluginExecutor, executePlugin, item);
 
                 // Put the value of the current iteration into the properties
                 mavenProject.getProperties().put(getIteratorName(), item);
@@ -313,8 +313,11 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * @param pluginExecutor
      * @param executePlugin
      */
-    private void createLogOutput(PluginExecutor pluginExecutor, Plugin executePlugin) {
+    private void createLogOutput(PluginExecutor pluginExecutor, Plugin executePlugin, String item) {
         StringBuilder sb = new StringBuilder("------ ");
+        sb.append("(");
+        sb.append(item);
+        sb.append(") ");
         sb.append(executePlugin.getKey());
         sb.append(":");
         sb.append(executePlugin.getVersion());
