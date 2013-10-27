@@ -1,6 +1,9 @@
 package com.soebes.maven.plugins.itexin;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -50,6 +53,13 @@ public abstract class AbstractIteratorMojo extends AbstractMojo {
     private String content;
     
     /**
+     * By using this folder you define a folder which sub
+     * folders will be used to iterate over.
+     */
+    @Parameter
+    private File folder;
+
+    /**
      * The delimiter which will be used to split the
      * {@link #content}.
      */
@@ -71,9 +81,21 @@ public abstract class AbstractIteratorMojo extends AbstractMojo {
             result = items;
         } else if (isContentSet()) {
             result = getContentAsList();
-        } 
+        } else if (isFolderSet()) {
+        	result = getFolders();
+        }
             
         return result;
+    }
+
+    private List<String> getFolders() {
+    	List <String> result = new ArrayList<String>();
+		FileFilter fileFilter = new FolderFilter();
+		File[] listFiles = folder.listFiles(fileFilter);
+		for (int i = 0; i < listFiles.length; i++) {
+			result.add(listFiles[i].getName());
+		}
+		return result;
     }
 
     /**
@@ -146,4 +168,10 @@ public abstract class AbstractIteratorMojo extends AbstractMojo {
         this.items = items;
     }
 
+    public boolean isFolderSet() {
+    	return this.folder != null;
+    }
+    public File getFolder() {
+    	return this.folder;
+    }
 }

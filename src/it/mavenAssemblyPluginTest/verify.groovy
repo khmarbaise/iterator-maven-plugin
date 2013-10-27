@@ -11,7 +11,7 @@ def getProjectVersion() {
     def allPlugins = pom.build.plugins.plugin;
 
     def configurationMavenPlugin = allPlugins.find { item ->
-	item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("itexin-maven-plugin");
+	item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
     }
 
     return configurationMavenPlugin.version;
@@ -36,7 +36,7 @@ new File(basedir, "build-filtered.log").withWriter { out ->
             &&  !line.startsWith(" wagon http use")
             &&  !line.startsWith("Running post-build")
             &&  !line.startsWith("Finished post-build ")
-			&&  !line.startsWith("Project version:")) {
+            &&  !line.startsWith("Project version:")) {
             out.println line;
         }
     }
@@ -44,7 +44,7 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
-    '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
+    '[INFO] --- iterator-maven-plugin:' +projectVersion + ':executor (default) @ mavenAssemblyTest ---',
     '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (prod) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',

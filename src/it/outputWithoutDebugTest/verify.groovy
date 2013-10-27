@@ -10,7 +10,7 @@ def getProjectVersion() {
 	  def allPlugins = pom.build.plugins.plugin;
    
 	  def configurationMavenPlugin = allPlugins.find {
-		  item -> item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("itexin-maven-plugin");
+		  item -> item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
 	  }
 	  
 	  return configurationMavenPlugin.version;
@@ -43,7 +43,7 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
-  '[INFO] --- itexin-maven-plugin:' +projectVersion + ':executor (default) @ basic-test ---',
+  '[INFO] --- iterator-maven-plugin:' + projectVersion + ':executor (default) @ basic-test ---',
   '[INFO] ------ (one) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: one',
   '[INFO] ------ (two) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
