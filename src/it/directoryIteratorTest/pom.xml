@@ -59,6 +59,20 @@
                     </echos>
                   </configuration>
                 </pluginExecutor>
+                <pluginExecutor>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                  </plugin>
+                  <goal>jar</goal>
+                  <configuration>
+                    <includes>
+                      <include>com/soebes/maven/multiple/@item@/**</include>
+                    </includes>
+                    <classifier>@item@</classifier>
+                  </configuration>
+                </pluginExecutor>
               </pluginExecutors>
             </configuration>
           </execution>
