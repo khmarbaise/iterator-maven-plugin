@@ -1,4 +1,4 @@
-package com.soebes.maven.plugins.itexin;
+package com.soebes.maven.plugins.iterator;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -7,6 +7,8 @@ import java.io.FileFilter;
 
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.testng.annotations.Test;
+
+import com.soebes.maven.plugins.iterator.FolderFilter;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 

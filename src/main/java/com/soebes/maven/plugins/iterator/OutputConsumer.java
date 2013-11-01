@@ -1,4 +1,4 @@
-package com.soebes.maven.plugins.itexin;
+package com.soebes.maven.plugins.iterator;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;

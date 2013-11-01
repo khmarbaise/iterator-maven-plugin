@@ -1,4 +1,4 @@
-package com.soebes.maven.plugins.itexin;
+package com.soebes.maven.plugins.iterator;
 
 import java.io.File;
 import java.io.FileFilter;
