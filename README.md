@@ -6,8 +6,9 @@ Iterator Maven Plugin
 Overview
 --------
 
-The iterator maven plugin (iterator-maven-plugin for short) is intended
-to make iterations of a list and an appropriate call of a maven plugin suitable.
+The iterator-maven-plugin is intended to make iterations on a list possible. This means
+to execute other plugins or Maven itself based on the iteratorion of the given
+elements.
 
 This is in the majority of the cases based on wrong decoupling the configuration
 from the artifacts (like webapp, ear etc.).
@@ -82,7 +83,7 @@ The result of the above configuration is that the [maven-echo-plugin](https://gi
 will be called three times like the following:
 
     [INFO] 
-    [INFO] --- iterator-maven-plugin:0.1.0-SNAPSHOT:executor (default) @ basic-test ---
+    [INFO] --- iterator-maven-plugin:0.2:executor (default) @ basic-test ---
     [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: one
     [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
