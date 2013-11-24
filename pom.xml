@@ -27,27 +27,21 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <compilerSourceTarget>1.6</compilerSourceTarget>
+    <compilerSourceTarget>1.5</compilerSourceTarget>
 
     <maven.version>3.0.3</maven.version>
 
     <!-- Different plugins versions -->
-    <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-    <maven.invoker.version>1.8</maven.invoker.version>
-    <gmaven.plugin.version>1.5</gmaven.plugin.version>
+    <maven-invoker-plugin.version>1.8</maven-invoker-plugin.version>
+    <gmaven-plugin.version>1.5</gmaven-plugin.version>
 
-    <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
-    <maven.surefire.plugin.version>2.15</maven.surefire.plugin.version>
-    <maven.failsafe.plugin.version>2.15</maven.failsafe.plugin.version>
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
     <maven-project-info-report-plugin.version>2.7</maven-project-info-report-plugin.version>
 
     <maven-install-plugin.version>2.4</maven-install-plugin.version>
 
-    <maven.site.plugin.version>3.3</maven.site.plugin.version>
-
-    <maven.plugin.plugin.version>3.2</maven.plugin.plugin.version>
+    <maven-site-plugin.version>3.3</maven-site-plugin.version>
 
     <!-- dependency versions -->
     <org.codehaus.groovy-groovy.version>1.8.4</org.codehaus.groovy-groovy.version>
@@ -170,7 +164,7 @@
         <plugin>
           <groupId>org.codehaus.gmaven</groupId>
           <artifactId>gmaven-plugin</artifactId>
-          <version>${gmaven.plugin.version}</version>
+          <version>${gmaven-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.codehaus.groovy</groupId>
@@ -186,12 +180,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>${maven.plugin.plugin.version}</version>
+          <version>${maven-plugin-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>${maven.site.plugin.version}</version>
+          <version>${maven-site-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.tinyjee.dim</groupId>
@@ -472,7 +466,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>${maven.invoker.version}</version>
+            <version>${maven-invoker-plugin.version}</version>
           </plugin>
         </plugins>
       </reporting>

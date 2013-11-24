@@ -8,10 +8,6 @@ import java.io.FileFilter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.testng.annotations.Test;
 
-import com.soebes.maven.plugins.iterator.FolderFilter;
-
-import edu.emory.mathcs.backport.java.util.Collections;
-
 public class DirectoryIteratorTest {
 	@Test
 	public void shouldResultInTwoDirectoriesSrcAndTarget() {
