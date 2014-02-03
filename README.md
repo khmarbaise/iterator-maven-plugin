@@ -14,13 +14,6 @@ This is in the majority of the cases based on wrong decoupling the configuration
 from the artifacts (like webapp, ear etc.).
 
 
-- - -
-
-__BY USING THIS PLUGIN YOU ACKNOWLEDGE THAT YOU ARE A BAD CITIZEN OF THE MAVEN ECOSYSTEM.__
-
-- - -
-
-
 License
 -------
 [Apache License, Version 2.0, January 2004](http://www.apache.org/licenses/)
@@ -44,7 +37,7 @@ The following possible solutions exist:
         <plugin>
           <groupId>com.soebes.maven.plugins</groupId>
           <artifactId>iterator-maven-plugin</artifactId>
-          <version>0.2</version>
+          <version>0.3</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -106,7 +99,7 @@ here:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -166,7 +159,7 @@ Having a property which contains a list of servers like this:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.2</version>
+        <version>0.3</version>
         <executions>
           <execution>
             <phase>package</phase>
