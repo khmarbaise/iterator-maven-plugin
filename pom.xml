@@ -19,6 +19,9 @@
     Or invoke a separate maven instance based on the a list 
     of elements.</description>
 
+  <!-- The following is marked as deprecated for Maven 3. so using maven-enforcer-plugin as well -->
+  <!-- http://jira.codehaus.org/browse/MNG-4840 -->
+  <!-- http://jira.codehaus.org/browse/MNG-5297 -->
   <prerequisites>
     <maven>${maven.version}</maven>
   </prerequisites>
@@ -29,7 +32,7 @@
 
     <compilerSourceTarget>1.5</compilerSourceTarget>
 
-    <maven.version>3.0.3</maven.version>
+    <maven.version>3.0.5</maven.version>
 
     <!-- Different plugins versions -->
     <maven-invoker-plugin.version>1.8</maven-invoker-plugin.version>
