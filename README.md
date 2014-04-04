@@ -76,7 +76,7 @@ The result of the above configuration is that the [maven-echo-plugin](https://gi
 will be called three times like the following:
 
     [INFO] 
-    [INFO] --- iterator-maven-plugin:0.2:executor (default) @ basic-test ---
+    [INFO] --- iterator-maven-plugin:0.3:executor (default) @ basic-test ---
     [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: one
     [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
