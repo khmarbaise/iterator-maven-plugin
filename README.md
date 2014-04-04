@@ -7,7 +7,7 @@ Overview
 --------
 
 The iterator-maven-plugin is intended to make iterations on a list possible. This means
-to execute other plugins or Maven itself based on the iteratorion of the given
+to execute other plugins or Maven itself based on the iteratation of the given
 elements.
 
 This is in the majority of the cases based on wrong decoupling the configuration
