@@ -92,13 +92,13 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     /**
      * The project currently being build.
      */
-    @Component
+    @Parameter( defaultValue = "${project}" )
     private MavenProject mavenProject;
 
     /**
      * The current Maven session.
      */
-    @Component
+    @Parameter( defaultValue = "${session}" )
     private MavenSession mavenSession;
 
     /**
@@ -115,7 +115,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     @Component
     private BuildPluginManager pluginManager;
 
-    @Component
+    @Parameter( defaultValue = "${plugin}" )
     private PluginDescriptor pluginDescriptor;
 
     /**

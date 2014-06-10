@@ -9,10 +9,12 @@ def getInformation (File warFile) {
     def devZipFile = new ZipFile(warFile)
     def result = null
 
-    devZipFile.entries().findAll { !it.directory && it.name.equals("WEB-INF/server.properties") }.each {
-//	println "Entry: " + it.name
-	result = devZipFile.getInputStream(it).text
-    }
+    devZipFile.entries().findAll { 
+        !it.directory && it.name.equals("WEB-INF/server.properties") 
+      }.each {
+        //	println "Entry: " + it.name
+        result = devZipFile.getInputStream(it).text
+      }
     return result
 }
 
