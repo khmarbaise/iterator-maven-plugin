@@ -77,11 +77,11 @@ will be called three times like the following:
 
     [INFO] 
     [INFO] --- iterator-maven-plugin:0.3:executor (default) @ basic-test ---
-    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
+    [INFO]  ------ (one) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: one
-    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
+    [INFO]  ------ (two) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: two
-    [INFO]  ------ com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
+    [INFO]  ------ (three) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: three
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
