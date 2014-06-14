@@ -32,7 +32,9 @@ new File(basedir, "build-filtered.log").withWriter { out ->
             line = line.replace(currentFolder, "/home/iterator/");
         }
        
-        if (    !line.startsWith("Download") 
+        if (    !line.startsWith("Download: ") 
+            &&  !line.startsWith("[INFO] Downloaded: ")
+            &&  !line.startsWith("[INFO] Downloading: ")
             &&  !line.startsWith(" wagon http use")
             &&  !line.startsWith("Running post-build")
             &&  !line.startsWith("Finished post-build ")
