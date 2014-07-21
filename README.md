@@ -3,6 +3,8 @@ Iterator Maven Plugin
 
 [![Build Status](https://buildhive.cloudbees.com/job/khmarbaise/job/iterator-maven-plugin/badge/icon)](https://buildhive.cloudbees.com/job/khmarbaise/job/iterator-maven-plugin/)
 
+[![SoEBeS CI](http://ci.soebes.de:8080/buildStatus/icon?job=iterator-maven-plugin)](http://ci.soebes.de:8080/view/SoEBeS/job/iterator-maven-plugin/)
+
 Overview
 --------
 
