@@ -33,6 +33,8 @@ new File(basedir, "build-filtered.log").withWriter { out ->
         }
        
         if (    !line.startsWith("Download: ") 
+            &&  !line.startsWith("Downloaded: ")
+            &&  !line.startsWith("Downloading: ")
             &&  !line.startsWith("[INFO] Downloaded: ")
             &&  !line.startsWith("[INFO] Downloading: ")
             &&  !line.startsWith(" wagon http use")

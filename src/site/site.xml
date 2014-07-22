@@ -7,9 +7,9 @@
 	  <item name="Goals" href="plugin-info.html"/>
 	</menu>
 	
-	<menu name="Usage Executor">
-	  <item name="Overview" href="executor-overview.html"/>
-	  <item name="Property" href="executor-property.html"/>
+	<menu name="Usage Iterator">
+	  <item name="Overview" href="iterator-overview.html"/>
+	  <item name="Property" href="iterator-property.html"/>
 	</menu>
 	<menu name="Usage Invoker">
 	  <item name="Overview" href="overview-invoker.html"/>
