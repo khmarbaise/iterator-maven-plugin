@@ -44,7 +44,6 @@
 
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
-    <maven-project-info-report-plugin.version>2.7</maven-project-info-report-plugin.version>
 
     <maven-site-plugin.version>3.3</maven-site-plugin.version>
 
@@ -201,11 +200,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-report-plugin</artifactId>
-          <version>${maven-project-info-report-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
         </plugin>
@@ -246,7 +240,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-project-info-reports-plugin</artifactId>
-              <version>${maven-project-info-report-plugin.version}</version>
+              <version>${maven-project-info-reports-plugin.version}</version>
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
