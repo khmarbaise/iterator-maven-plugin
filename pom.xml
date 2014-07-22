@@ -38,7 +38,7 @@
     <maven.version>3.0.5</maven.version>
 
     <!-- Different plugins versions -->
-    <maven-invoker-plugin.version>1.8</maven-invoker-plugin.version>
+    <maven-invoker-plugin.version>1.9</maven-invoker-plugin.version><!-- Should be removed with smpp 0.6.5 -->
     <gmaven-plugin.version>1.5</gmaven-plugin.version>
 
     <maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
