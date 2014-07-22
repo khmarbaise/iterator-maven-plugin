@@ -1,3 +1,4 @@
 # generate output which is used during site generation
 mvn -Prun-its clean verify
-mvn site site:stage scm-publish:publish-scm
+#mvn site site:stage scm-publish:publish-scm
+mvn site scm-publish:publish-scm
