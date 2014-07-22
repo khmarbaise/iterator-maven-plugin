@@ -1,176 +1,288 @@
 package com.soebes.maven.plugins.iterator;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.io.comparator.NameFileComparator;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 
-public abstract class AbstractIteratorMojo extends AbstractMojo {
+public abstract class AbstractIteratorMojo
+    extends AbstractMojo
+{
 
     /**
      * The token the iterator placeholder begins with.
      */
-    @Parameter(required = true, defaultValue = "@")
+    @Parameter( required = true, defaultValue = "@" )
     private String beginToken;
 
     /**
      * The token the iterator placeholder ends with.
      */
-    @Parameter(required = true, defaultValue = "@")
+    @Parameter( required = true, defaultValue = "@" )
     private String endToken;
 
     /**
      * The name of the iterator variable.
      */
-    @Parameter(required = true, defaultValue = "item")
+    @Parameter( required = true, defaultValue = "item" )
     private String iteratorName;
-    
+
     /**
      * Here you can define the items which will be iterated through.
-     * <pre>{@code 
+     * 
+     * <pre>
+     * {@code 
      *   <items>
      *     <item>one</item>
      *     <item>two</item>
      *     <item>three</item>
      *     ..
-     *   </items>}</pre>
+     *   </items>}
+     * </pre>
      */
-    @Parameter(property = "iterator.items")
+    @Parameter( property = "iterator.items" )
     private List<String> items;
-    
+
     /**
-     * The list of items which will be iterated through.
-     * 
-     * {@code <content>one, two, three</content>}
+     * The list of items which will be iterated through. {@code <content>one, two, three</content>}
      */
     @Parameter
     private String content;
-    
+
     /**
-     * By using this folder you define a folder which sub
-     * folders will be used to iterate over.
+     * By using this folder you define a folder which sub folders will be used to iterate over. It will be iterated over
+     * the directories but not the sub folders so no recursion will be done. The order of the iterated elements is done
+     * by
      */
     @Parameter
     private File folder;
 
     /**
-     * The delimiter which will be used to split the
-     * {@link #content}.
+     * The delimiter which will be used to split the {@link #content}.
      */
-    @Parameter(defaultValue = ",")
+    @Parameter( defaultValue = "," )
     private String delimiter;
 
-    private List<String> getContentAsList() {
+    /**
+     * This defines the sort order for the folders which will be iterated over.
+     * {@link NameFileComparator#NAME_COMPARATOR} {@link NameFileComparator#NAME_INSENSITIVE_COMPARATOR}
+     * {@link NameFileComparator#NAME_INSENSITIVE_REVERSE} {@link NameFileComparator#NAME_REVERSE}
+     * {@link NameFileComparator#NAME_SYSTEM_COMPARATOR} {@link NameFileComparator#NAME_SYSTEM_REVERSE}
+     */
+    @Parameter( defaultValue = "NAME_COMPARATOR" )
+    private String sortOrder;
+
+    private List<String> getContentAsList()
+    {
         List<String> result = new ArrayList<String>();
-        String[] resultArray = content.split(delimiter);
-        for (String item : resultArray) {
-            result.add(item.trim());
+        String[] resultArray = content.split( delimiter );
+        for ( String item : resultArray )
+        {
+            result.add( item.trim() );
         }
         return result;
     }
 
-    protected List<String> getItems() throws MojoExecutionException {
+    protected List<String> getItems()
+        throws MojoExecutionException
+    {
         List<String> result = new ArrayList<String>();
-        if (isItemsSet()) {
+        if ( isItemsSet() )
+        {
             result = items;
-        } else if (isContentSet()) {
-            result = getContentAsList();
-        } else if (isFolderSet()) {
-        	result = getFolders();
         }
-            
+        else if ( isContentSet() )
+        {
+            result = getContentAsList();
+        }
+        else if ( isFolderSet() )
+        {
+            result = getFolders();
+        }
+
         return result;
     }
 
-    private List<String> getFolders() {
-    	List <String> result = new ArrayList<String>();
-		FileFilter fileFilter = new FolderFilter();
-		File[] listFiles = folder.listFiles(fileFilter);
-		for (int i = 0; i < listFiles.length; i++) {
-			result.add(listFiles[i].getName());
-		}
-		return result;
+    protected List<String> getFolders()
+    {
+        IOFileFilter folders = FileFilterUtils.and( HiddenFileFilter.VISIBLE, DirectoryFileFilter.DIRECTORY );
+        IOFileFilter makeSVNAware = FileFilterUtils.makeSVNAware( folders );
+        IOFileFilter makeCVSAware = FileFilterUtils.makeCVSAware( makeSVNAware );
+
+        String[] list = folder.list( makeCVSAware );
+        List<File> listOfDirectories = new ArrayList<File>();
+        for ( String item : list )
+        {
+            listOfDirectories.add( new File( folder, item ) );
+        }
+
+        Collections.sort( listOfDirectories, convertSortOrder() );
+        List<String> resultList = new ArrayList<String>();
+        for ( File file : listOfDirectories )
+        {
+            resultList.add( file.getName() );
+        }
+        return resultList;
     }
 
     /**
-     * This is just a convenience method to get the combination
-     * of {@link #getBeginToken()}, {@link #getIteratorName()} and {@link #getEndToken()}.
+     * This is just a convenience method to get the combination of {@link #getBeginToken()}, {@link #getIteratorName()}
+     * and {@link #getEndToken()}.
+     * 
      * @return The combined string.
      */
-    protected String getPlaceHolder() {
+    protected String getPlaceHolder()
+    {
         return getBeginToken() + getIteratorName() + getEndToken();
     }
 
-    protected boolean isItemsNull() {
+    protected boolean isItemsNull()
+    {
         return items == null;
     }
 
-    protected boolean isItemsSet() {
-        return !isItemsNull() && !items.isEmpty(); 
+    protected boolean isItemsSet()
+    {
+        return !isItemsNull() && !items.isEmpty();
     }
 
-    protected boolean isContentNull() {
+    protected boolean isContentNull()
+    {
         return content == null;
     }
 
-    protected boolean isContentSet() {
-        //@TODO: Check if content.trim() couldn't be done more efficient?
+    protected boolean isContentSet()
+    {
+        // @TODO: Check if content.trim() couldn't be done more efficient?
         return content != null && content.trim().length() > 0;
     }
 
-    public String getContent() {
+    public String getContent()
+    {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent( String content )
+    {
         this.content = content;
     }
 
-    public String getDelimiter() {
+    public String getDelimiter()
+    {
         return delimiter;
     }
 
-    public void setDelimiter(String delimiter) {
+    public void setDelimiter( String delimiter )
+    {
         this.delimiter = delimiter;
     }
 
-    public String getBeginToken() {
+    public String getBeginToken()
+    {
         return beginToken;
     }
 
-    public void setBeginToken(String beginToken) {
+    public void setBeginToken( String beginToken )
+    {
         this.beginToken = beginToken;
     }
 
-    public String getEndToken() {
+    public String getEndToken()
+    {
         return endToken;
     }
 
-    public void setEndToken(String endToken) {
+    public void setEndToken( String endToken )
+    {
         this.endToken = endToken;
     }
 
-    public String getIteratorName() {
+    public String getIteratorName()
+    {
         return iteratorName;
     }
 
-    public void setIteratorName(String iteratorName) {
+    public void setIteratorName( String iteratorName )
+    {
         this.iteratorName = iteratorName;
     }
 
-    public void setItems(List<String> items) {
+    public void setItems( List<String> items )
+    {
         this.items = items;
     }
 
-    public boolean isFolderSet() {
-    	return this.folder != null;
+    public boolean isFolderSet()
+    {
+        return this.folder != null;
     }
-    public File getFolder() {
-    	return this.folder;
+
+    public File getFolder()
+    {
+        return this.folder;
+    }
+
+    public void setFolder( File folder )
+    {
+        this.folder = folder;
+    }
+
+    public boolean isSortOrderValid( String sortOrder )
+    {
+        boolean result =
+            sortOrder.equalsIgnoreCase( "NAME_COMPARATOR" )
+                || sortOrder.equalsIgnoreCase( "NAME_INSENSITIVE_COMPARATOR" )
+                || sortOrder.equalsIgnoreCase( "NAME_INSENSITIVE_REVERSE" )
+                || sortOrder.equalsIgnoreCase( "NAME_REVERSE" )
+                || sortOrder.equalsIgnoreCase( "NAME_SYSTEM_COMPARATOR" )
+                || sortOrder.equalsIgnoreCase( "NAME_SYSTEM_REVERSE" );
+        return result;
+    }
+
+    protected Comparator<File> convertSortOrder()
+    {
+        Comparator<File> result = NameFileComparator.NAME_COMPARATOR;
+        if ( getSortOrder().equalsIgnoreCase( "NAME_INSENSITIVE_COMPARATOR" ) )
+        {
+            result = NameFileComparator.NAME_INSENSITIVE_COMPARATOR;
+        }
+        else if ( getSortOrder().equalsIgnoreCase( "NAME_INSENSITIVE_REVERSE" ) )
+        {
+            result = NameFileComparator.NAME_INSENSITIVE_REVERSE;
+        }
+        else if ( getSortOrder().equalsIgnoreCase( "NAME_REVERSE" ) )
+        {
+            result = NameFileComparator.NAME_REVERSE;
+        }
+        else if ( getSortOrder().equalsIgnoreCase( "NAME_SYSTEM_COMPARATOR" ) )
+        {
+            result = NameFileComparator.NAME_SYSTEM_COMPARATOR;
+        }
+        else if ( getSortOrder().equalsIgnoreCase( "NAME_SYSTEM_REVERSE" ) )
+        {
+            result = NameFileComparator.NAME_SYSTEM_REVERSE;
+        }
+        return result;
+    }
+
+    public void setSortOrder( String sortOrder )
+    {
+        this.sortOrder = sortOrder;
+    }
+
+    public String getSortOrder()
+    {
+        return sortOrder;
     }
 }

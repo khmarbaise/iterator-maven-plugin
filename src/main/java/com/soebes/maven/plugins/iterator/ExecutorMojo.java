@@ -30,16 +30,15 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 /**
  * Executor will execute a given plugin by iterating through the given items.
  * 
- * @author Karl-Heinz Marbaise <a
- *         href="mailto:kama@soebes.de">kama@soebes.de</a>
- * 
+ * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
  */
-@Mojo(name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
-public class ExecutorMojo extends AbstractIteratorMojo {
+@Mojo( name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
+public class ExecutorMojo
+    extends AbstractIteratorMojo
+{
 
     /**
-     * By using the pluginExecutors you can define a list of plugins which will
-     * be executed during executor.
+     * By using the pluginExecutors you can define a list of plugins which will be executed during executor.
      * 
      * <pre>
      * {@code
@@ -51,9 +50,8 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * }
      * </pre>
      * 
-     * A plugin must be defined by using the plugin tag. You can omit the
-     * version tag if you have defined the plugin's version in the
-     * pluginManagement section.
+     * A plugin must be defined by using the plugin tag. You can omit the version tag if you have defined the plugin's
+     * version in the pluginManagement section.
      * 
      * <pre>
      * {@code
@@ -65,8 +63,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * }
      * </pre>
      * 
-     * Furthermore you need to define the goal of the given plugin by using the
-     * tag:
+     * Furthermore you need to define the goal of the given plugin by using the tag:
      * 
      * <pre>
      * {@code
@@ -74,8 +71,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * }
      * </pre>
      * 
-     * And finally you need to define the configuration for the plugin by using
-     * the following:
+     * And finally you need to define the configuration for the plugin by using the following:
      * 
      * <pre>
      * {@code
@@ -84,9 +80,8 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * </configuration>
      * }
      * </pre>
-     * 
      */
-    @Parameter(required = true)
+    @Parameter( required = true )
     private List<PluginExecutor> pluginExecutors;
 
     /**
@@ -102,15 +97,13 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     private MavenSession mavenSession;
 
     /**
-     * This is the helper class to support Maven 3.1 
-     * and before.
+     * This is the helper class to support Maven 3.1 and before.
      */
     @Component
     protected MavenPluginManagerHelper mavenPluginManagerHelper;
 
     /**
      * The Maven BuildPluginManager component.
-     * 
      */
     @Component
     private BuildPluginManager pluginManager;
@@ -119,120 +112,151 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     private PluginDescriptor pluginDescriptor;
 
     /**
-     * This will copy the configuration from <b>src</b> to the result whereas the
-     * placeholder will be replaced with the current value.
-     * 
+     * This will copy the configuration from <b>src</b> to the result whereas the placeholder will be replaced with the
+     * current value.
      */
-    private PlexusConfiguration copyConfiguration(PlexusConfiguration src, String iteratorName, String value) {
+    private PlexusConfiguration copyConfiguration( PlexusConfiguration src, String iteratorName, String value )
+    {
 
-        XmlPlexusConfiguration dom = new XmlPlexusConfiguration(src.getName());
+        XmlPlexusConfiguration dom = new XmlPlexusConfiguration( src.getName() );
 
-        if (src.getValue() == null) {
-        	dom.setValue(src.getValue(null));
-        } else {
-            if (src.getValue().contains(iteratorName)) {
-            	dom.setValue(src.getValue().replaceAll(iteratorName, value));
-            } else {
-            	dom.setValue(src.getValue());
+        if ( src.getValue() == null )
+        {
+            dom.setValue( src.getValue( null ) );
+        }
+        else
+        {
+            if ( src.getValue().contains( iteratorName ) )
+            {
+                dom.setValue( src.getValue().replaceAll( iteratorName, value ) );
+            }
+            else
+            {
+                dom.setValue( src.getValue() );
             }
         }
 
-        for (String attributeName : src.getAttributeNames()) {
-            dom.setAttribute(attributeName, src.getAttribute(attributeName, null));
+        for ( String attributeName : src.getAttributeNames() )
+        {
+            dom.setAttribute( attributeName, src.getAttribute( attributeName, null ) );
         }
 
-        for (PlexusConfiguration child : src.getChildren()) {
-            dom.addChild(copyConfiguration(child, iteratorName, value));
+        for ( PlexusConfiguration child : src.getChildren() )
+        {
+            dom.addChild( copyConfiguration( child, iteratorName, value ) );
         }
 
         return dom;
     }
 
     /**
+     * This method will give back the plugin information which has been given as parameter in case of an not existing
+     * pluginManagement section or if the version of the plugin is already defined. Otherwise the version will be got
+     * from the pluginManagement area if the plugin can be found in it.
      * 
-     * This method will give back the plugin information which has been given as
-     * parameter in case of an not existing pluginManagement section or if the
-     * version of the plugin is already defined. Otherwise the version will be
-     * got from the pluginManagement area if the plugin can be found in it.
-     * 
-     * @param plugin
-     *            The plugin which should be checked against the
-     *            pluginManagement area.
-     * @return The plugin version. If the plugin version is not defined it means
-     *         that neither the version has been defined by the pluginManagement
-     *         section nor by the user itself.
+     * @param plugin The plugin which should be checked against the pluginManagement area.
+     * @return The plugin version. If the plugin version is not defined it means that neither the version has been
+     *         defined by the pluginManagement section nor by the user itself.
      */
-    private Plugin getPluginVersionFromPluginManagement(Plugin plugin) {
+    private Plugin getPluginVersionFromPluginManagement( Plugin plugin )
+    {
 
-        if (!isPluginManagementDefined()) {
+        if ( !isPluginManagementDefined() )
+        {
             return plugin;
         }
 
-        if (isPluginVersionDefined(plugin)) {
+        if ( isPluginVersionDefined( plugin ) )
+        {
             return plugin;
         }
 
         Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
 
-        Plugin result = plugins.get(plugin.getKey());
-        if (result == null) {
+        Plugin result = plugins.get( plugin.getKey() );
+        if ( result == null )
+        {
             return plugin;
-        } else {
+        }
+        else
+        {
             return result;
         }
     }
 
-    private boolean isPluginVersionDefined(Plugin plugin) {
+    private boolean isPluginVersionDefined( Plugin plugin )
+    {
         return plugin.getVersion() != null;
     }
 
-    private boolean isPluginManagementDefined() {
+    private boolean isPluginManagementDefined()
+    {
         return mavenProject.getPluginManagement() != null;
     }
 
-    public void execute() throws MojoExecutionException {
-        if (isItemsNull() && isContentNull()) {
-            throw new MojoExecutionException("You have to use at least one. Either items element or content element!");
+    public void execute()
+        throws MojoExecutionException
+    {
+        if ( isItemsNull() && isContentNull() )
+        {
+            throw new MojoExecutionException( "You have to use at least one. Either items element or content element!" );
         }
 
-        if (isItemsSet() && isContentSet()) {
-            throw new MojoExecutionException("You can use only one element. Either items element or content element but not both!");
+        if ( isItemsSet() && isContentSet() )
+        {
+            throw new MojoExecutionException(
+                                              "You can use only one element. Either items element or content element but not both!" );
         }
 
-        for (String item : getItems()) {
-            for (PluginExecutor pluginExecutor : pluginExecutors) {
+        for ( String item : getItems() )
+        {
+            for ( PluginExecutor pluginExecutor : pluginExecutors )
+            {
 
-                Plugin executePlugin = getPluginVersionFromPluginManagement(pluginExecutor.getPlugin());
-                if (executePlugin.getVersion() == null) {
+                Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
+                if ( executePlugin.getVersion() == null )
+                {
                     throw new MojoExecutionException(
-                            "Unknown plugin version. You have to define the version either directly or via pluginManagement.");
+                                                      "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
                 }
 
-                getLog().debug("Configuration(before): " + pluginExecutor.getConfiguration().toString());
-                PlexusConfiguration plexusConfiguration = copyConfiguration(pluginExecutor.getConfiguration(), getPlaceHolder(),
-                        item);
-                getLog().debug("plexusConfiguration(after): " + plexusConfiguration.toString());
+                getLog().debug( "Configuration(before): " + pluginExecutor.getConfiguration().toString() );
+                PlexusConfiguration plexusConfiguration =
+                    copyConfiguration( pluginExecutor.getConfiguration(), getPlaceHolder(), item );
+                getLog().debug( "plexusConfiguration(after): " + plexusConfiguration.toString() );
 
-                createLogOutput(pluginExecutor, executePlugin, item);
+                createLogOutput( pluginExecutor, executePlugin, item );
 
                 // Put the value of the current iteration into the properties
-                mavenProject.getProperties().put(getIteratorName(), item);
+                mavenProject.getProperties().put( getIteratorName(), item );
 
-                
-                try {
-                    executeMojo(executePlugin, pluginExecutor.getGoal(), toXpp3Dom(plexusConfiguration));
-                } catch (PluginResolutionException e) {
-                    getLog().error("PluginresourceException:", e);
-                } catch (PluginDescriptorParsingException e) {
-                    getLog().error("PluginDescriptorParsingException:", e);
-                } catch (InvalidPluginDescriptorException e) {
-                    getLog().error("InvalidPluginDescriptorException:", e);
-                } catch (MojoFailureException e) {
-                    getLog().error("MojoFailureException:", e);
-                } catch (PluginConfigurationException e) {
-                    getLog().error("PluginConfigurationException:", e);
-                } catch (PluginManagerException e) {
-                    getLog().error("PluginManagerException:", e);
+                try
+                {
+                    executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
+                }
+                catch ( PluginResolutionException e )
+                {
+                    getLog().error( "PluginresourceException:", e );
+                }
+                catch ( PluginDescriptorParsingException e )
+                {
+                    getLog().error( "PluginDescriptorParsingException:", e );
+                }
+                catch ( InvalidPluginDescriptorException e )
+                {
+                    getLog().error( "InvalidPluginDescriptorException:", e );
+                }
+                catch ( MojoFailureException e )
+                {
+                    getLog().error( "MojoFailureException:", e );
+                }
+                catch ( PluginConfigurationException e )
+                {
+                    getLog().error( "PluginConfigurationException:", e );
+                }
+                catch ( PluginManagerException e )
+                {
+                    getLog().error( "PluginManagerException:", e );
                 }
 
             }
@@ -241,9 +265,7 @@ public class ExecutorMojo extends AbstractIteratorMojo {
     }
 
     /**
-     * Taken from MojoExecutor of Don Brown.
-     * 
-     * Make it working with Maven 3.1.
+     * Taken from MojoExecutor of Don Brown. Make it working with Maven 3.1.
      * 
      * @param plugin
      * @param goal
@@ -253,92 +275,104 @@ public class ExecutorMojo extends AbstractIteratorMojo {
      * @throws PluginResolutionException
      * @throws PluginDescriptorParsingException
      * @throws InvalidPluginDescriptorException
-     * @throws PluginManagerException 
-     * @throws PluginConfigurationException 
-     * @throws MojoFailureException 
+     * @throws PluginManagerException
+     * @throws PluginConfigurationException
+     * @throws MojoFailureException
      */
-    private void executeMojo(Plugin plugin, String goal, Xpp3Dom configuration)
-            throws MojoExecutionException, PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException, MojoFailureException, PluginConfigurationException, PluginManagerException {
+    private void executeMojo( Plugin plugin, String goal, Xpp3Dom configuration )
+        throws MojoExecutionException, PluginResolutionException, PluginDescriptorParsingException,
+        InvalidPluginDescriptorException, MojoFailureException, PluginConfigurationException, PluginManagerException
+    {
 
-        if (configuration == null) {
-            throw new NullPointerException("configuration may not be null");
+        if ( configuration == null )
+        {
+            throw new NullPointerException( "configuration may not be null" );
         }
 
-        PluginDescriptor pluginDescriptor = getPluginDescriptor(plugin);
+        PluginDescriptor pluginDescriptor = getPluginDescriptor( plugin );
 
-        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo(goal);
-        if (mojoDescriptor == null) {
-            throw new MojoExecutionException("Could not find goal '" + goal + "' in plugin " + plugin.getGroupId() + ":"
-                    + plugin.getArtifactId() + ":" + plugin.getVersion());
+        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( goal );
+        if ( mojoDescriptor == null )
+        {
+            throw new MojoExecutionException( "Could not find goal '" + goal + "' in plugin " + plugin.getGroupId()
+                + ":" + plugin.getArtifactId() + ":" + plugin.getVersion() );
         }
 
-        MojoExecution exec = mojoExecution(mojoDescriptor, configuration);
-        pluginManager.executeMojo(mavenSession, exec);
+        MojoExecution exec = mojoExecution( mojoDescriptor, configuration );
+        pluginManager.executeMojo( mavenSession, exec );
     }
 
-    private PluginDescriptor getPluginDescriptor(Plugin plugin) throws PluginResolutionException, PluginDescriptorParsingException,
-            InvalidPluginDescriptorException {
-        return mavenPluginManagerHelper.getPluginDescriptor(plugin, mavenProject.getRemotePluginRepositories(), mavenSession);
+    private PluginDescriptor getPluginDescriptor( Plugin plugin )
+        throws PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException
+    {
+        return mavenPluginManagerHelper.getPluginDescriptor( plugin, mavenProject.getRemotePluginRepositories(),
+                                                             mavenSession );
     }
 
-    private MojoExecution mojoExecution(MojoDescriptor mojoDescriptor, Xpp3Dom configuration) {
-        configuration = Xpp3DomUtils.mergeXpp3Dom(configuration, toXpp3Dom(mojoDescriptor.getMojoConfiguration()));
-        return new MojoExecution(mojoDescriptor, configuration);
+    private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )
+    {
+        configuration = Xpp3DomUtils.mergeXpp3Dom( configuration, toXpp3Dom( mojoDescriptor.getMojoConfiguration() ) );
+        return new MojoExecution( mojoDescriptor, configuration );
     }
 
     /**
-     * Taken from MojoExecutor of Don Brown. Converts PlexusConfiguration to a
-     * Xpp3Dom.
+     * Taken from MojoExecutor of Don Brown. Converts PlexusConfiguration to a Xpp3Dom.
      * 
-     * @param config
-     *            the PlexusConfiguration. Must not be {@code null}.
+     * @param config the PlexusConfiguration. Must not be {@code null}.
      * @return the Xpp3Dom representation of the PlexusConfiguration
      */
-    public Xpp3Dom toXpp3Dom(PlexusConfiguration config) {
-        Xpp3Dom result = new Xpp3Dom(config.getName());
-        result.setValue(config.getValue(null));
-        for (String name : config.getAttributeNames()) {
-            result.setAttribute(name, config.getAttribute(name));
+    public Xpp3Dom toXpp3Dom( PlexusConfiguration config )
+    {
+        Xpp3Dom result = new Xpp3Dom( config.getName() );
+        result.setValue( config.getValue( null ) );
+        for ( String name : config.getAttributeNames() )
+        {
+            result.setAttribute( name, config.getAttribute( name ) );
         }
-        for (PlexusConfiguration child : config.getChildren()) {
-            result.addChild(toXpp3Dom(child));
+        for ( PlexusConfiguration child : config.getChildren() )
+        {
+            result.addChild( toXpp3Dom( child ) );
         }
         return result;
     }
 
     /**
-     * Will create the output during the executions for the plugins like
-     * <code>groupId:artifactId:version:goal</code>.
+     * Will create the output during the executions for the plugins like <code>groupId:artifactId:version:goal</code>.
      * 
      * @param pluginExecutor
      * @param executePlugin
      */
-    private void createLogOutput(PluginExecutor pluginExecutor, Plugin executePlugin, String item) {
-        StringBuilder sb = new StringBuilder("------ ");
-        sb.append("(");
-        sb.append(item);
-        sb.append(") ");
-        sb.append(executePlugin.getKey());
-        sb.append(":");
-        sb.append(executePlugin.getVersion());
-        sb.append(":");
-        sb.append(pluginExecutor.getGoal());
-        getLog().info(sb.toString());
+    private void createLogOutput( PluginExecutor pluginExecutor, Plugin executePlugin, String item )
+    {
+        StringBuilder sb = new StringBuilder( "------ " );
+        sb.append( "(" );
+        sb.append( item );
+        sb.append( ") " );
+        sb.append( executePlugin.getKey() );
+        sb.append( ":" );
+        sb.append( executePlugin.getVersion() );
+        sb.append( ":" );
+        sb.append( pluginExecutor.getGoal() );
+        getLog().info( sb.toString() );
     }
 
-    public MavenProject getMavenProject() {
+    public MavenProject getMavenProject()
+    {
         return mavenProject;
     }
 
-    public void setMavenProject(MavenProject mavenProject) {
+    public void setMavenProject( MavenProject mavenProject )
+    {
         this.mavenProject = mavenProject;
     }
 
-    public MavenSession getMavenSession() {
+    public MavenSession getMavenSession()
+    {
         return mavenSession;
     }
 
-    public void setMavenSession(MavenSession mavenSession) {
+    public void setMavenSession( MavenSession mavenSession )
+    {
         this.mavenSession = mavenSession;
     }
 

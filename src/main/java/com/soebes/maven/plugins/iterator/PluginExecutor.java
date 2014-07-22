@@ -3,7 +3,8 @@ package com.soebes.maven.plugins.iterator;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
-public class PluginExecutor {
+public class PluginExecutor
+{
     /**
      * The plugin to be executed.
      * 
@@ -18,11 +19,12 @@ public class PluginExecutor {
      * </pre>
      */
     private Plugin plugin;
+
     /**
      * The plugin goal to be executed.
-     * 
      */
     private String goal;
+
     /**
      * Plugin configuration to use in the execution.
      * 
@@ -36,30 +38,37 @@ public class PluginExecutor {
      */
     private XmlPlexusConfiguration configuration;
 
-    public PluginExecutor() {
+    public PluginExecutor()
+    {
     }
 
-    public Plugin getPlugin() {
+    public Plugin getPlugin()
+    {
         return plugin;
     }
 
-    public void setPlugin(Plugin plugin) {
+    public void setPlugin( Plugin plugin )
+    {
         this.plugin = plugin;
     }
 
-    public String getGoal() {
+    public String getGoal()
+    {
         return goal;
     }
 
-    public void setGoal(String goal) {
+    public void setGoal( String goal )
+    {
         this.goal = goal;
     }
 
-    public XmlPlexusConfiguration getConfiguration() {
+    public XmlPlexusConfiguration getConfiguration()
+    {
         return configuration;
     }
 
-    public void setConfiguration(XmlPlexusConfiguration configuration) {
+    public void setConfiguration( XmlPlexusConfiguration configuration )
+    {
         this.configuration = configuration;
     }
 }

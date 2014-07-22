@@ -10,260 +10,256 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 
-public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
+public abstract class AbstractInvokerMojo
+    extends AbstractIteratorMojo
+{
 
     /**
-     * The list of goals which will be called during each invocation of Maven.
-     * TODO: Change the name, cause we are calling life cylcle phases instead of
-     * goal but we can if we like things like site:site ?
+     * The list of goals which will be called during each invocation of Maven. TODO: Change the name, cause we are
+     * calling life cylcle phases instead of goal but we can if we like things like site:site ?
      */
     @Parameter
-    private List<String> goals = Collections.singletonList("clean");
+    private List<String> goals = Collections.singletonList( "clean" );
 
     /**
      * This will set <code>--batch-mode</code>
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean interactive;
-    
+
     /**
      * This will <code>--also-make</code>
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean alsoMake;
-    
+
     /**
      * This will activate <code>--also-make-dependents</code>
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean alsoMakeDependents;
-    
+
     /**
-     * Sets the path to the base directory of the POM for the Maven invocation.
-     * If {@link #getPomFile()} does not return <code>null</code>, this setting
-     * only affects the working directory for the Maven invocation.
-     * 
-     * Here you can use the placeholder like: EXAMPLE
-     * 
+     * Sets the path to the base directory of the POM for the Maven invocation. If {@link #getPomFile()} does not return
+     * <code>null</code>, this setting only affects the working directory for the Maven invocation. Here you can use the
+     * placeholder like: EXAMPLE
      */
     @Parameter
     private File baseDirectory;
-    
+
     /**
      * <code>-Ddebug=true</code>
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean debug;
-    
+
     /**
-     * The valid values are {@link InvocationRequest#REACTOR_FAIL_AT_END},
-     * {@link InvocationRequest#REACTOR_FAIL_FAST},
+     * The valid values are {@link InvocationRequest#REACTOR_FAIL_AT_END}, {@link InvocationRequest#REACTOR_FAIL_FAST},
      * {@link InvocationRequest#REACTOR_FAIL_NEVER}.
      * 
-     * @see {@link InvocationRequest#REACTOR_FAIL_AT_END},
-     *      {@link InvocationRequest#REACTOR_FAIL_FAST},
+     * @see {@link InvocationRequest#REACTOR_FAIL_AT_END}, {@link InvocationRequest#REACTOR_FAIL_FAST},
      *      {@link InvocationRequest#REACTOR_FAIL_NEVER}
      * @FIXME: Check if we need to create a setter which checks the valid values
      */
-    @Parameter(defaultValue = InvocationRequest.REACTOR_FAIL_FAST)
+    @Parameter( defaultValue = InvocationRequest.REACTOR_FAIL_FAST )
     private String failureBehaviour;
 
     /**
-     * Sets the checksum mode of the Maven invocation. Equivalent of {@code -c}
-     * or {@code --lax-checksums}, {@code -C} or {@code --strict-checksums}
+     * Sets the checksum mode of the Maven invocation. Equivalent of {@code -c} or {@code --lax-checksums}, {@code -C}
+     * or {@code --strict-checksums}
      * 
-     * @param globalChecksumPolicy
-     *            The checksum mode, must be one of
-     *            {@link InvocationRequest#CHECKSUM_POLICY_WARN} and
+     * @param globalChecksumPolicy The checksum mode, must be one of {@link InvocationRequest#CHECKSUM_POLICY_WARN} and
      *            {@link InvocationRequest#CHECKSUM_POLICY_FAIL}.
      */
-    @Parameter(defaultValue = InvocationRequest.CHECKSUM_POLICY_WARN)
+    @Parameter( defaultValue = InvocationRequest.CHECKSUM_POLICY_WARN )
     private String globalChecksumPolicy;
-    
+
     /**
-     * The path to the global settings for the Maven invocation or
-     * <code>null</code> to load the global settings from the default location.
+     * The path to the global settings for the Maven invocation or <code>null</code> to load the global settings from
+     * the default location.
      */
     @Parameter
     private File globalSettingsFile;
-    
+
     /**
-     * If <code>null</code> the default location from <code>settings.xml</code>
-     * will be used.
+     * If <code>null</code> the default location from <code>settings.xml</code> will be used.
      */
     @Parameter
     private File localRepositoryDirectory;
-    
+
     /**
      * If <code>null</code>.
      */
     @Parameter
     private String mavenOpts;
-    
+
     /**
      * If true <code>--no-plugin-updates</code> will be used.
      */
     @Parameter
     private boolean nonPluginUpdates;
-    
+
     /**
-     * <code>true</code> Maven will be executed in off-line mode (
-     * <code>--offline</code>).
+     * <code>true</code> Maven will be executed in off-line mode ( <code>--offline</code>).
      */
     @Parameter
     private boolean offline;
-    
+
     /**
      * The list of profiles.
      */
     @Parameter
     private List<String> profiles;
-    
+
     /**
-     * Sets the reactor project list. Equivalent of {@code -pl} or
-     * {@code --projects}
-     * 
-     * projects the reactor project list
+     * Sets the reactor project list. Equivalent of {@code -pl} or {@code --projects} projects the reactor project list
      */
     @Parameter
     private List<String> projects;
-    
+
     /**
-     * Sets the system properties for the Maven invocation, may be
-     * <code>null</code> if not set.
+     * Sets the system properties for the Maven invocation, may be <code>null</code> if not set.
      */
     @Parameter
     private Properties properties;
-    
+
     /**
-     * Sets the recursion behavior of a reactor invocation. <em>Inverse</em>
-     * equivalent of {@code -N} and {@code --non-recursive}
+     * Sets the recursion behavior of a reactor invocation. <em>Inverse</em> equivalent of {@code -N} and
+     * {@code --non-recursive}
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean recursive;
-    
+
     /**
      * Specify the reactor project to resume from.
      */
     @Parameter
     private String resumeFrom;
-    
+
     /**
-     * Indicates whether the environment variables of the current process should
-     * be propagated to the Maven invocation. By default, the current
-     * environment variables are inherited by the new Maven invocation.
-     * 
+     * Indicates whether the environment variables of the current process should be propagated to the Maven invocation.
+     * By default, the current environment variables are inherited by the new Maven invocation.
      */
-    @Parameter(defaultValue = "true")
+    @Parameter( defaultValue = "true" )
     private boolean shellEnvironmentInherited;
-    
+
     /**
-     * Gets the exception output mode of the Maven invocation. By default, Maven
-     * will not print stack traces of build exceptions.
+     * Gets the exception output mode of the Maven invocation. By default, Maven will not print stack traces of build
+     * exceptions.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean showErrors;
-    
+
     /**
      * The show version behaviour {@code -V} option.
-     * 
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean showVersion;
-    
+
     /**
      * {@code -T} option of Maven.
      */
     @Parameter
     protected String threads;
-    
+
     /**
      * Set the path to the custom toolchains file
      */
     @Parameter
     private File toolchains;
-    
+
     /**
-     * Indicates whether Maven should enforce an update check for plugins and
-     * snapshots. By default, no update check is performed
-     * {@code --update-snapshots}.
-     * 
+     * Indicates whether Maven should enforce an update check for plugins and snapshots. By default, no update check is
+     * performed {@code --update-snapshots}.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean updateSnapshots;
-    
+
     /**
      * Sets the path to the user settings for the Maven invocation.
-     * 
      */
     @Parameter
     private File userSettings;
 
-    private File getBaseDirectoryAfterPlaceHolderIsReplaced(String currentValue) {
+    private File getBaseDirectoryAfterPlaceHolderIsReplaced( String currentValue )
+    {
         File baseDir = getBaseDirectory();
-        if (baseDir != null && baseDir.toString().contains(getPlaceHolder())) {
-            baseDir = new File(baseDir.toString().replaceAll(getPlaceHolder(), currentValue)); 
+        if ( baseDir != null && baseDir.toString().contains( getPlaceHolder() ) )
+        {
+            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue ) );
         }
         return baseDir;
     }
 
-    private List<String> replacePlaceholderInElements(String currentValue, List<String> goals) {
+    private List<String> replacePlaceholderInElements( String currentValue, List<String> goals )
+    {
         List<String> result = new ArrayList<String>();
-        for (String string : goals) {
-            if (string.contains(getPlaceHolder())) {
-                result.add(string.replaceAll(getPlaceHolder(), currentValue));
-            } else {
-                result.add(string);
+        for ( String string : goals )
+        {
+            if ( string.contains( getPlaceHolder() ) )
+            {
+                result.add( string.replaceAll( getPlaceHolder(), currentValue ) );
+            }
+            else
+            {
+                result.add( string );
             }
         }
         return result;
     }
-    
-    private List<String> getGoalsAfterPlaceHolderIsReplaced(String currentValue) {
+
+    private List<String> getGoalsAfterPlaceHolderIsReplaced( String currentValue )
+    {
         List<String> goals = getGoals();
-        if (goals == null) {
+        if ( goals == null )
+        {
             return null;
         }
 
-        List<String> result = replacePlaceholderInElements(currentValue, goals);
+        List<String> result = replacePlaceholderInElements( currentValue, goals );
         return result;
     }
 
-    private List<String> getProfilesAfterPlaceHolderIsReplaced(String currentValue) {
+    private List<String> getProfilesAfterPlaceHolderIsReplaced( String currentValue )
+    {
         List<String> profiles = getProfiles();
-        if (profiles == null) {
+        if ( profiles == null )
+        {
             return null;
         }
 
-        List<String> result = replacePlaceholderInElements(currentValue, profiles);
+        List<String> result = replacePlaceholderInElements( currentValue, profiles );
         return result;
     }
 
-    private List<String> getProjectsAfterPlaceHolderIsReplaced(String currentValue) {
+    private List<String> getProjectsAfterPlaceHolderIsReplaced( String currentValue )
+    {
         List<String> projects = getProjects();
-        if (projects == null) {
+        if ( projects == null )
+        {
             return null;
         }
 
-        List<String> result = replacePlaceholderInElements(currentValue, projects);
+        List<String> result = replacePlaceholderInElements( currentValue, projects );
         return result;
     }
-    
-    protected InvocationRequest createAndConfigureAnInvocationRequest(String currentValue) {
+
+    protected InvocationRequest createAndConfigureAnInvocationRequest( String currentValue )
+    {
         InvocationRequest request = new DefaultInvocationRequest();
 
-        request.setAlsoMake(isAlsoMake());
-        request.setAlsoMakeDependents(isAlsoMakeDependents());
-        request.setDebug(isDebug());
-        request.setFailureBehavior(getFailureBehaviour());
-        request.setGlobalChecksumPolicy(getGlobalChecksumPolicy());
-        request.setGlobalSettingsFile(getGlobalSettingsFile());
-        request.setInteractive(isInteractive());
+        request.setAlsoMake( isAlsoMake() );
+        request.setAlsoMakeDependents( isAlsoMakeDependents() );
+        request.setDebug( isDebug() );
+        request.setFailureBehavior( getFailureBehaviour() );
+        request.setGlobalChecksumPolicy( getGlobalChecksumPolicy() );
+        request.setGlobalSettingsFile( getGlobalSettingsFile() );
+        request.setInteractive( isInteractive() );
 
-        request.setLocalRepositoryDirectory(getLocalRepositoryDirectory());
-        request.setMavenOpts(getMavenOpts());
-        request.setNonPluginUpdates(isNonPluginUpdates());
-        request.setOffline(isOffline());
+        request.setLocalRepositoryDirectory( getLocalRepositoryDirectory() );
+        request.setMavenOpts( getMavenOpts() );
+        request.setNonPluginUpdates( isNonPluginUpdates() );
+        request.setOffline( isOffline() );
 
         // @TODO: Think about it.
         // request.setPomFile(pomFile);
@@ -274,229 +270,278 @@ public abstract class AbstractInvokerMojo extends AbstractIteratorMojo {
         // base directory
         // cd @item@
         // mvn clean package
-        request.setBaseDirectory(getBaseDirectoryAfterPlaceHolderIsReplaced(currentValue));
+        request.setBaseDirectory( getBaseDirectoryAfterPlaceHolderIsReplaced( currentValue ) );
         // goals:
         // mvn plugin-name:@item@
         //
-        request.setGoals(getGoalsAfterPlaceHolderIsReplaced(currentValue));
+        request.setGoals( getGoalsAfterPlaceHolderIsReplaced( currentValue ) );
         // Profiles:
         // mvn -Pxyz-@item@ clean package
         // mvn -P@item@
-        request.setProfiles(getProfilesAfterPlaceHolderIsReplaced(currentValue));
+        request.setProfiles( getProfilesAfterPlaceHolderIsReplaced( currentValue ) );
         // Projects:
         // mvn -pl xyz-@item@ clean package
-        request.setProjects(getProjectsAfterPlaceHolderIsReplaced(currentValue));
+        request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue ) );
 
         // Properties
         // mvn -Dthis.is.property=@item@
-        request.setProperties(getProperties());
+        request.setProperties( getProperties() );
 
-        request.setRecursive(isRecursive());
-        request.setResumeFrom(getResumeFrom());
-        request.setShellEnvironmentInherited(isShellEnvironmentInherited());
-        request.setShowErrors(isShowErrors());
-        request.setShowVersion(isShowVersion());
-        request.setThreads(getThreads());
-        request.setToolchainsFile(getToolchains());
-        request.setUpdateSnapshots(isUpdateSnapshots());
-        request.setUserSettingsFile(getUserSettings());
+        request.setRecursive( isRecursive() );
+        request.setResumeFrom( getResumeFrom() );
+        request.setShellEnvironmentInherited( isShellEnvironmentInherited() );
+        request.setShowErrors( isShowErrors() );
+        request.setShowVersion( isShowVersion() );
+        request.setThreads( getThreads() );
+        request.setToolchainsFile( getToolchains() );
+        request.setUpdateSnapshots( isUpdateSnapshots() );
+        request.setUserSettingsFile( getUserSettings() );
 
         return request;
     }
 
-    public List<String> getGoals() {
+    public List<String> getGoals()
+    {
         return goals;
     }
 
-    public boolean isInteractive() {
+    public boolean isInteractive()
+    {
         return interactive;
     }
 
-    public void setInteractive(boolean interactive) {
+    public void setInteractive( boolean interactive )
+    {
         this.interactive = interactive;
     }
 
-    public boolean isAlsoMake() {
+    public boolean isAlsoMake()
+    {
         return alsoMake;
     }
 
-    public void setAlsoMake(boolean alsoMake) {
+    public void setAlsoMake( boolean alsoMake )
+    {
         this.alsoMake = alsoMake;
     }
 
-    public boolean isAlsoMakeDependents() {
+    public boolean isAlsoMakeDependents()
+    {
         return alsoMakeDependents;
     }
 
-    public void setAlsoMakeDependents(boolean alsoMakeDependents) {
+    public void setAlsoMakeDependents( boolean alsoMakeDependents )
+    {
         this.alsoMakeDependents = alsoMakeDependents;
     }
 
-    public File getBaseDirectory() {
+    public File getBaseDirectory()
+    {
         return baseDirectory;
     }
 
-    public void setBaseDirectory(File baseDirectory) {
+    public void setBaseDirectory( File baseDirectory )
+    {
         this.baseDirectory = baseDirectory;
     }
 
-    public boolean isDebug() {
+    public boolean isDebug()
+    {
         return debug;
     }
 
-    public void setDebug(boolean debug) {
+    public void setDebug( boolean debug )
+    {
         this.debug = debug;
     }
 
-    public String getFailureBehaviour() {
+    public String getFailureBehaviour()
+    {
         return failureBehaviour;
     }
 
-    public void setFailureBehaviour(String failureBehaviour) {
+    public void setFailureBehaviour( String failureBehaviour )
+    {
         this.failureBehaviour = failureBehaviour;
     }
 
-    public String getGlobalChecksumPolicy() {
+    public String getGlobalChecksumPolicy()
+    {
         return globalChecksumPolicy;
     }
 
-    public void setGlobalChecksumPolicy(String globalChecksumPolicy) {
+    public void setGlobalChecksumPolicy( String globalChecksumPolicy )
+    {
         this.globalChecksumPolicy = globalChecksumPolicy;
     }
 
-    public File getGlobalSettingsFile() {
+    public File getGlobalSettingsFile()
+    {
         return globalSettingsFile;
     }
 
-    public void setGlobalSettingsFile(File globalSettingsFile) {
+    public void setGlobalSettingsFile( File globalSettingsFile )
+    {
         this.globalSettingsFile = globalSettingsFile;
     }
 
-    public File getLocalRepositoryDirectory() {
+    public File getLocalRepositoryDirectory()
+    {
         return localRepositoryDirectory;
     }
 
-    public void setLocalRepositoryDirectory(File localRepositoryDirectory) {
+    public void setLocalRepositoryDirectory( File localRepositoryDirectory )
+    {
         this.localRepositoryDirectory = localRepositoryDirectory;
     }
 
-    public String getMavenOpts() {
+    public String getMavenOpts()
+    {
         return mavenOpts;
     }
 
-    public void setMavenOpts(String mavenOpts) {
+    public void setMavenOpts( String mavenOpts )
+    {
         this.mavenOpts = mavenOpts;
     }
 
-    public boolean isNonPluginUpdates() {
+    public boolean isNonPluginUpdates()
+    {
         return nonPluginUpdates;
     }
 
-    public void setNonPluginUpdates(boolean nonPluginUpdates) {
+    public void setNonPluginUpdates( boolean nonPluginUpdates )
+    {
         this.nonPluginUpdates = nonPluginUpdates;
     }
 
-    public boolean isOffline() {
+    public boolean isOffline()
+    {
         return offline;
     }
 
-    public void setOffline(boolean offline) {
+    public void setOffline( boolean offline )
+    {
         this.offline = offline;
     }
 
-    public List<String> getProfiles() {
+    public List<String> getProfiles()
+    {
         return profiles;
     }
 
-    public void setProfiles(List<String> profiles) {
+    public void setProfiles( List<String> profiles )
+    {
         this.profiles = profiles;
     }
 
-    public List<String> getProjects() {
+    public List<String> getProjects()
+    {
         return projects;
     }
 
-    public void setProjects(List<String> projects) {
+    public void setProjects( List<String> projects )
+    {
         this.projects = projects;
     }
 
-    public Properties getProperties() {
+    public Properties getProperties()
+    {
         return properties;
     }
 
-    public void setProperties(Properties properties) {
+    public void setProperties( Properties properties )
+    {
         this.properties = properties;
     }
 
-    public boolean isRecursive() {
+    public boolean isRecursive()
+    {
         return recursive;
     }
 
-    public void setRecursive(boolean recursive) {
+    public void setRecursive( boolean recursive )
+    {
         this.recursive = recursive;
     }
 
-    public String getResumeFrom() {
+    public String getResumeFrom()
+    {
         return resumeFrom;
     }
 
-    public void setResumeFrom(String resumeFrom) {
+    public void setResumeFrom( String resumeFrom )
+    {
         this.resumeFrom = resumeFrom;
     }
 
-    public boolean isShellEnvironmentInherited() {
+    public boolean isShellEnvironmentInherited()
+    {
         return shellEnvironmentInherited;
     }
 
-    public void setShellEnvironmentInherited(boolean shellEnvironmentInherited) {
+    public void setShellEnvironmentInherited( boolean shellEnvironmentInherited )
+    {
         this.shellEnvironmentInherited = shellEnvironmentInherited;
     }
 
-    public boolean isShowErrors() {
+    public boolean isShowErrors()
+    {
         return showErrors;
     }
 
-    public void setShowErrors(boolean showErrors) {
+    public void setShowErrors( boolean showErrors )
+    {
         this.showErrors = showErrors;
     }
 
-    public boolean isShowVersion() {
+    public boolean isShowVersion()
+    {
         return showVersion;
     }
 
-    public void setShowVersion(boolean showVersion) {
+    public void setShowVersion( boolean showVersion )
+    {
         this.showVersion = showVersion;
     }
 
-    public String getThreads() {
+    public String getThreads()
+    {
         return threads;
     }
 
-    public File getToolchains() {
+    public File getToolchains()
+    {
         return toolchains;
     }
 
-    public void setToolchains(File toolchains) {
+    public void setToolchains( File toolchains )
+    {
         this.toolchains = toolchains;
     }
 
-    public boolean isUpdateSnapshots() {
+    public boolean isUpdateSnapshots()
+    {
         return updateSnapshots;
     }
 
-    public void setUpdateSnapshots(boolean updateSnapshots) {
+    public void setUpdateSnapshots( boolean updateSnapshots )
+    {
         this.updateSnapshots = updateSnapshots;
     }
 
-    public File getUserSettings() {
+    public File getUserSettings()
+    {
         return userSettings;
     }
 
-    public void setUserSettings(File userSettings) {
+    public void setUserSettings( File userSettings )
+    {
         this.userSettings = userSettings;
     }
 
-    public void setGoals(List<String> goals) {
+    public void setGoals( List<String> goals )
+    {
         this.goals = goals;
     }
 
