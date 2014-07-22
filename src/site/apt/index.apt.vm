@@ -41,8 +41,8 @@ Iterator Maven Plugin
 
 * Goals Overview
 
-  There are currently two goals <{{{./iterator-mojo.html}executor}}> and <{{{./invoker-mojo.html}invoker}}>.
-  The <{{{./iterator-mojo.html}executor}}> goal is intended to call one or more plugins during the iterations
+  There are currently two goals <{{{./iterator-mojo.html}iterator}}> and <{{{./invoker-mojo.html}invoker}}>.
+  The <{{{./iterator-mojo.html}iterator}}> goal is intended to call one or more plugins during the iterations
   over the given list of items.
   
   A pseudo code equivalent would look like the following: 

@@ -10,6 +10,7 @@
 	<menu name="Usage Iterator">
 	  <item name="Overview" href="iterator-overview.html"/>
 	  <item name="Property" href="iterator-property.html"/>
+	  <item name="Folder" href="iterator-folder.html"/>
 	</menu>
 	<menu name="Usage Invoker">
 	  <item name="Overview" href="overview-invoker.html"/>

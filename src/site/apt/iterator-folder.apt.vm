@@ -1,0 +1,42 @@
+~~
+~~ Copyright.
+~~
+
+ ------
+ Introduction
+ ------
+ Karl Heinz Marbaise
+ ------
+ 22. July 2014
+ ------
+
+Iterator Maven Plugin
+
+
+* Using Folder
+
+  The iterator-maven-plugin can be used to iterate over folders which might be helpful
+  in some situations cause it's dynamic and not fixed in the pom file.
+  
++-----
+.
+src/
+├── main
+│   ├── java
+│   │   └── com
+│   │       └── soebes
+│   │           └── maven
+│   │               └── multiple
+│   │                   ├── first
+│   │                   ├── second
+│   │                   └── third
+
++-----
+
+  Let us think you would like to iterate over the folders <first>, <second> and <third>.
+  
+%{include|source=target/it/directoryIteratorTest/pom.xml|snippet=#start}
+
+  During the execution the values for item will be <first>, <second> and <third>.
+
+  []
