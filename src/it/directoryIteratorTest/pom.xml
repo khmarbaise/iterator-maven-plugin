@@ -16,10 +16,6 @@
   <name>Iterator Executor Invoker Maven Plugin directoryIteratorTest</name>
   <url>http://www.soebes.de</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -41,7 +37,7 @@
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>executor</goal>
+              <goal>iterator</goal>
             </goals>
             <configuration>
               <folder>src/main/java/com/soebes/maven/multiple/</folder>
@@ -50,7 +46,6 @@
                   <plugin>
                     <groupId>com.soebes.maven.plugins</groupId>
                     <artifactId>maven-echo-plugin</artifactId>
-                    <version>0.1</version>
                   </plugin>
                   <goal>echo</goal>
                   <configuration>
@@ -63,7 +58,6 @@
                   <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
                   </plugin>
                   <goal>jar</goal>
                   <configuration>

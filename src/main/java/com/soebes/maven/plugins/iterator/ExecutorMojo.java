@@ -32,7 +32,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
  * 
  * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
  */
-@Mojo( name = "executor", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
+@Mojo( name = "iterator", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
 public class ExecutorMojo
     extends AbstractIteratorMojo
 {

@@ -46,7 +46,7 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
-    '[INFO] --- iterator-maven-plugin:' +projectVersion + ':executor (default) @ mavenAssemblyTest ---',
+    '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ mavenAssemblyTest ---',
     '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (prod) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',

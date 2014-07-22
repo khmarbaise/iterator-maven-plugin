@@ -39,7 +39,7 @@ def buildLogFile = new File( basedir, "build.log");
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
-    '[INFO] --- iterator-maven-plugin:' +projectVersion + ':executor (default) @ mavenAssemblyPluginWithPropertiesTest ---',
+    '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ mavenAssemblyPluginWithPropertiesTest ---',
     '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
     '[INFO] ------ (production) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',

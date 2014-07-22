@@ -42,7 +42,7 @@
           <execution>
             <phase>package</phase>
             <goals>
-              <goal>executor</goal>
+              <goal>iterator</goal>
             </goals>
             <configuration>
               <content>eins, zwei, drei</content>

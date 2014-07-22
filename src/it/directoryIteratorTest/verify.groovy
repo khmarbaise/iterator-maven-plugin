@@ -26,7 +26,7 @@ def currentFolder = new File(basedir, ".").getCanonicalPath() + "/";
 def logFileInput = new File(basedir, "build.log")
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
-	'[INFO] --- iterator-maven-plugin:' + projectVersion + ':executor (default) @ directoryIteratorTest ---',
+	'[INFO] --- iterator-maven-plugin:' + projectVersion + ':iterator (default) @ directoryIteratorTest ---',
 	'[INFO] ------ (first) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
 	'[INFO] This is a message: first',
 	'[INFO] ------ (second) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',

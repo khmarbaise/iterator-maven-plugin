@@ -42,7 +42,7 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
-  '[INFO] --- iterator-maven-plugin:' +projectVersion + ':executor (default) @ version-from-plugin-management-test ---',
+  '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ version-from-plugin-management-test ---',
   '[INFO] ------ (eins) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: eins',
   '[INFO] ------ (zwei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',

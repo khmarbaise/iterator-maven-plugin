@@ -12,7 +12,7 @@
 
   <packaging>pom</packaging>
 
-  <name>itexin-maven-plugin</name>
+  <name>iterator-maven-plugin</name>
   <url>http://www.soebes.de</url>
 
   <properties>

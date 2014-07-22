@@ -26,7 +26,7 @@ def buildLogFile = new File( basedir, "build.log");
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
-  '[INFO] --- iterator-maven-plugin:' +projectVersion + ':executor (default) @ items-from-cli-test ---',
+  '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ items-from-cli-test ---',
   '[INFO] ------ (zwei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
   '[INFO] This is a message: zwei',
   '[INFO] ------ (mal) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
