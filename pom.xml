@@ -200,6 +200,15 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>${maven-scm-publish-plugin.version}</version>
+          <configuration>
+            <scmBranch>gh-pages</scmBranch>
+            <content>${project.reporting.outputDirectory}</content>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
