@@ -28,7 +28,7 @@
                     
                 <div class="xleft">
         <span id="publishDate">Last Published: 2014-07-23</span>
-                  &nbsp;| <span id="projectVersion">Version: 0.3-SNAPSHOT</span>
+                  &nbsp;| <span id="projectVersion">Version: 0.3</span>
                       </div>
             <div class="xright">        
                     
@@ -108,10 +108,15 @@
 <th>Goal</th>
 <th>Description</th></tr>
 <tr class="b">
+<td><a href="help-mojo.html">iterator:help</a></td>
+<td>Display help information on iterator-maven-plugin.<br />
+Call <code>mvn iterator:help -Ddetail=true
+-Dgoal=&lt;goal-name&gt;</code> to display parameter details.</td></tr>
+<tr class="a">
 <td><a href="invoker-mojo.html">iterator:invoker</a></td>
 <td>Invoker will execute an Maven instance by iterating through the
 given items.</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="iterator-mojo.html">iterator:iterator</a></td>
 <td>Executor will execute a given plugin by iterating through the given
 items.</td></tr></table>
@@ -144,7 +149,7 @@ items.</td></tr></table>
         &lt;plugin&gt;
           &lt;groupId&gt;com.soebes.maven.plugins&lt;/groupId&gt;
           &lt;artifactId&gt;iterator-maven-plugin&lt;/artifactId&gt;
-          &lt;version&gt;0.3-SNAPSHOT&lt;/version&gt;
+          &lt;version&gt;0.3&lt;/version&gt;
         &lt;/plugin&gt;
         ...
       &lt;/plugins&gt;
@@ -154,7 +159,7 @@ items.</td></tr></table>
       &lt;plugin&gt;
         &lt;groupId&gt;com.soebes.maven.plugins&lt;/groupId&gt;
         &lt;artifactId&gt;iterator-maven-plugin&lt;/artifactId&gt;
-        &lt;version&gt;0.3-SNAPSHOT&lt;/version&gt;
+        &lt;version&gt;0.3&lt;/version&gt;
       &lt;/plugin&gt;
       ...
     &lt;/plugins&gt;
