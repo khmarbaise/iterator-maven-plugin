@@ -17,12 +17,8 @@
   <artifactId>items-from-cli-test</artifactId>
   <version>0.1-SNAPSHOT</version>
 
-  <name>itexin-maven-plugin ItemsFromCLITest</name>
+  <name>iterator-maven-plugin ItemsFromCLITest</name>
   <url>http://www.soebes.de</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
     <dependency>

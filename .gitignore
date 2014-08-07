@@ -6,3 +6,4 @@ target
 test-output
 *.iml
 .idea
+/bin/
