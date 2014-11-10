@@ -44,7 +44,7 @@ public class InvokerMojo
     @Component
     private BuildPluginManager pluginManager;
 
-    @Component
+    @Parameter( defaultValue = "${plugin}", required = true, readonly = true )
     private PluginDescriptor pluginDescriptor;
 
     @Parameter
