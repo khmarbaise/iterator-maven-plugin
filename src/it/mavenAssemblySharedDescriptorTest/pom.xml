@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.soebes.smpp</groupId>
-    <artifactId>smpp</artifactId>
-    <version>0.6.4</version>
+    <groupId>com.soebes.maven.plugins.test.integration</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.1</version>
   </parent>
 
   <groupId>org.test.parent</groupId>

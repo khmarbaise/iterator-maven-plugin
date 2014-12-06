@@ -49,9 +49,9 @@ new File(basedir, "build-filtered.log").withWriter { out ->
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
     '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ mavenAssemblyTest ---',
-    '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
-    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
-    '[INFO] ------ (prod) org.apache.maven.plugins:maven-assembly-plugin:2.4:single',
+    '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
+    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
+    '[INFO] ------ (prod) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
     '[INFO] Reading assembly descriptor: ' + basedir + '/test.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyTest-0.1-SNAPSHOT-test.war'),
     '[INFO] Reading assembly descriptor: ' + basedir + '/dev.xml',
