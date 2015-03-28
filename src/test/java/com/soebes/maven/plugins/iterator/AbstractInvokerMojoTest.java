@@ -44,8 +44,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 1 );
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).isEqualTo( Collections.singletonList( "java:one-environment" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getGoals() )
+            .hasSize( 1 )
+            .isEqualTo( Collections.singletonList( "java:one-environment" ) );
     }
 
     @Test
@@ -55,10 +56,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 3 );
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).isEqualTo( Arrays.asList( "java:one-environment",
-                                                                                                 "one",
-                                                                                                 "selection-one-choice" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getGoals() )
+            .hasSize( 3 )
+            .isEqualTo( Arrays.asList( "java:one-environment", "one","selection-one-choice" ) );
     }
 
     @Test
@@ -68,8 +68,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "two" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 1 );
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).isEqualTo( Collections.singletonList( "profile-two" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
+            .hasSize( 1 )
+            .isEqualTo( Collections.singletonList( "profile-two" ) );
     }
 
     @Test
@@ -79,10 +80,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "two" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 3 );
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).isEqualTo( Arrays.asList( "profile-two",
-                                                                                                    "profile-second-two",
-                                                                                                    "two-profile" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
+            .hasSize( 3 )
+            .isEqualTo( Arrays.asList( "profile-two", "profile-second-two", "two-profile" ) );
     }
 
     @Test
@@ -92,8 +92,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "three" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 1 );
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).isEqualTo( Collections.singletonList( "project-three-a" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getProjects() )
+            .hasSize( 1 )
+            .isEqualTo( Collections.singletonList( "project-three-a" ) );
     }
 
     @Test
@@ -103,10 +104,9 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "three" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 3 );
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).isEqualTo( Arrays.asList( "project-three-a",
-                                                                                                    "threeproject",
-                                                                                                    "three" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getProjects() )
+            .hasSize( 3 )
+            .isEqualTo( Arrays.asList( "project-three-a", "threeproject", "three" ) );
     }
 
 }
