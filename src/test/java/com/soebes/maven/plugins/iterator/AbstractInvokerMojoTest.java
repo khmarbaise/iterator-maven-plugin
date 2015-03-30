@@ -32,7 +32,8 @@ public class AbstractInvokerMojoTest
 
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
 
-        assertThat( createAndConfigureAnInvocationRequest.getBaseDirectory() ).isEqualTo( new File( "first-one" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getBaseDirectory() )
+            .isEqualTo( new File( "first-one" ) );
     }
 
     @Test
@@ -44,7 +45,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getGoals() )
             .hasSize( 1 )
-            .isEqualTo( Collections.singletonList( "java:one-environment" ) );
+            .containsExactly( "java:one-environment" );
     }
 
     @Test
@@ -56,7 +57,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getGoals() )
             .hasSize( 3 )
-            .isEqualTo( Arrays.asList( "java:one-environment", "one","selection-one-choice" ) );
+            .containsExactly( "java:one-environment", "one","selection-one-choice" );
     }
 
     @Test
@@ -68,7 +69,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
             .hasSize( 1 )
-            .isEqualTo( Collections.singletonList( "profile-two" ) );
+            .containsExactly( "profile-two" );
     }
 
     @Test
@@ -80,7 +81,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
             .hasSize( 3 )
-            .isEqualTo( Arrays.asList( "profile-two", "profile-second-two", "two-profile" ) );
+            .containsExactly( "profile-two", "profile-second-two", "two-profile"  );
     }
 
     @Test
@@ -92,7 +93,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getProjects() )
             .hasSize( 1 )
-            .isEqualTo( Collections.singletonList( "project-three-a" ) );
+            .containsExactly( "project-three-a" );
     }
 
     @Test
@@ -104,7 +105,7 @@ public class AbstractInvokerMojoTest
 
         assertThat( createAndConfigureAnInvocationRequest.getProjects() )
             .hasSize( 3 )
-            .isEqualTo( Arrays.asList( "project-three-a", "threeproject", "three" ) );
+            .containsExactly( "project-three-a", "threeproject", "three" );
     }
 
 }
