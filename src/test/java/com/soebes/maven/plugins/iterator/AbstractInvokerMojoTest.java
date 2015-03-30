@@ -1,6 +1,6 @@
 package com.soebes.maven.plugins.iterator;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.Arrays;
@@ -10,8 +10,6 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.soebes.maven.plugins.iterator.AbstractInvokerMojo;
 
 public class AbstractInvokerMojoTest
 {
