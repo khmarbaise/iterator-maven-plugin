@@ -191,6 +191,7 @@
             <excludes>
               <exclude>README.md</exclude>
               <exclude>src/site/resources/attached-includes/css/shCoreDefault.css</exclude>
+              <exclude>.travis.yml</exclude>
             </excludes>
           </configuration>
         </plugin>
