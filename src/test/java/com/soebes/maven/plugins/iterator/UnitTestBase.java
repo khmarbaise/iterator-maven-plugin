@@ -85,6 +85,11 @@ public class UnitTestBase
         return new File( getSrcDirectoryFile(), "test" );
     }
 
+    public File getTestResourcesDirectoryFile()
+    {
+        return new File( getSrcTestDirectoryFile(), "resources" );
+    }
+
     public File getSrcMainDirectoryFile()
     {
         return new File( getSrcDirectoryFile(), "main" );
