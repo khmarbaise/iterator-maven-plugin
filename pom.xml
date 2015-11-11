@@ -182,7 +182,7 @@
           <artifactId>apache-rat-plugin</artifactId>
           <version>0.11</version>
           <configuration>
-            <excludes>
+            <excludes combine.children="append">
               <exclude>README.md</exclude>
               <exclude>src/site/resources/attached-includes/css/shCoreDefault.css</exclude>
               <exclude>.travis.yml</exclude>
