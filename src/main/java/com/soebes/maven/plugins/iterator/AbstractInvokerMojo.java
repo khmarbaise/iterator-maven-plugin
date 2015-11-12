@@ -35,7 +35,7 @@ public abstract class AbstractInvokerMojo
 
     /**
      * The list of goals which will be called during each invocation of Maven. TODO: Change the name, cause we are
-     * calling life cylcle phases instead of goal but we can if we like things like site:site ?
+     * calling life cycle phases instead of goal but we can if we like things like site:site ?
      */
     @Parameter
     private List<String> goals = Collections.singletonList( "clean" );
