@@ -1,7 +1,9 @@
 Iterator Maven Plugin
 =====================
 
-[![Build Status](https://travis-ci.org/khmarbaise/iterator-maven-plugin.svg?branch=master)](https://travis-ci.org/khmarbaise/iterator-maven-plugin) [![Maven Central](https://img.shields.io/maven-central/v/com.soebes.maven.plugins/iterator-maven-plugin.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Ccom.soebes.maven.plugins) [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/khmarbaise/iterator-maven-plugin.svg?label=License)](http://www.apache.org/licenses/)
+[![Build Status](https://travis-ci.org/khmarbaise/iterator-maven-plugin.svg?branch=master)](https://travis-ci.org/khmarbaise/iterator-maven-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/com.soebes.maven.plugins/iterator-maven-plugin.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Ccom.soebes.maven.plugins)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/khmarbaise/iterator-maven-plugin.svg?label=License)](http://www.apache.org/licenses/)
 
 Build Status
 ------------
