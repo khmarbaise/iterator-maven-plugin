@@ -19,10 +19,6 @@ This is in the majority of the cases based on wrong decoupling the configuration
 from the artifacts (like webapp, ear etc.).
 
 
-License
--------
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/khmarbaise/iterator-maven-plugin.svg?label=License)](http://www.apache.org/licenses/)
-
 Homepage
 --------
 [http://khmarbaise.github.com/iterator-maven-plugin/](http://khmarbaise.github.com/iterator-maven-plugin/)
