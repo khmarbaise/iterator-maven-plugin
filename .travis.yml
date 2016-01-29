@@ -3,10 +3,14 @@ language: java
 # see http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
 jdk:
-- openjdk7
-- oraclejdk8
+  - openjdk7
+  - oraclejdk8
 cache:
   directories:
   - $HOME/.m2/repository
+# Just skip installation step
+# cause everything is done
+# in script step.
+install: yes
 script:
-- mvn -Prun-its clean verify
+  - mvn -Prun-its clean verify
