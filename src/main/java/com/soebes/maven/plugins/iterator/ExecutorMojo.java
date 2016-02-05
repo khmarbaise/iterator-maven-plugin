@@ -134,14 +134,14 @@ public class ExecutorMojo
      * This will copy the configuration from <b>src</b> to the result whereas the placeholder will be replaced with the
      * current value.
      */
-    private PlexusConfiguration copyConfiguration( PlexusConfiguration src, String iteratorName, String value )
+    private PlexusConfiguration copyConfiguration( Xpp3Dom src, String iteratorName, String value )
     {
 
         XmlPlexusConfiguration dom = new XmlPlexusConfiguration( src.getName() );
 
         if ( src.getValue() == null )
         {
-            dom.setValue( src.getValue( null ) );
+            dom.setValue( src.getValue() );
         }
         else
         {
@@ -157,10 +157,10 @@ public class ExecutorMojo
 
         for ( String attributeName : src.getAttributeNames() )
         {
-            dom.setAttribute( attributeName, src.getAttribute( attributeName, null ) );
+            dom.setAttribute( attributeName, src.getAttribute( attributeName ) );
         }
 
-        for ( PlexusConfiguration child : src.getChildren() )
+        for ( Xpp3Dom child : src.getChildren() )
         {
             dom.addChild( copyConfiguration( child, iteratorName, value ) );
         }
@@ -223,26 +223,24 @@ public class ExecutorMojo
 
         if ( isItemsSet() && isContentSet() )
         {
-            throw new MojoExecutionException(
-                                              "You can use only one element. Either items element or content element but not both!" );
+            throw new MojoExecutionException( "You can use only one element. Either items element or content element but not both!" );
         }
 
         for ( String item : getItems() )
         {
             for ( PluginExecutor pluginExecutor : pluginExecutors )
             {
-
                 Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
                 if ( executePlugin.getVersion() == null )
                 {
-                    throw new MojoExecutionException(
-                                                      "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
+                    throw new MojoExecutionException( "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
                 }
 
-                getLog().debug( "Configuration(before): " + pluginExecutor.getConfiguration().toString() );
+                Xpp3Dom resultConfiguration =
+                    handlePluginConfigurationFromPluginManagement( pluginExecutor, executePlugin );
+
                 PlexusConfiguration plexusConfiguration =
-                    copyConfiguration( pluginExecutor.getConfiguration(), getPlaceHolder(), item );
-                getLog().debug( "plexusConfiguration(after): " + plexusConfiguration.toString() );
+                    copyConfiguration( resultConfiguration, getPlaceHolder(), item );
 
                 createLogOutput( pluginExecutor, executePlugin, item );
 
@@ -281,6 +279,21 @@ public class ExecutorMojo
             }
 
         }
+    }
+
+    private Xpp3Dom handlePluginConfigurationFromPluginManagement( PluginExecutor pluginExecutor, Plugin executePlugin )
+    {
+        Xpp3Dom resultConfiguration = toXpp3Dom( pluginExecutor.getConfiguration() );
+        getLog().debug( "Configuration: " + resultConfiguration.toString() );
+        if ( executePlugin.getConfiguration() != null )
+        {
+            Xpp3Dom x = (Xpp3Dom) executePlugin.getConfiguration();
+            resultConfiguration = Xpp3DomUtils.mergeXpp3Dom( x, toXpp3Dom( pluginExecutor.getConfiguration() ) );
+
+            getLog().debug( "ConfigurationExecutePlugin: " + executePlugin.getConfiguration().toString() );
+
+        }
+        return resultConfiguration;
     }
 
     /**
@@ -330,8 +343,9 @@ public class ExecutorMojo
 
     private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )
     {
-        configuration = Xpp3DomUtils.mergeXpp3Dom( configuration, toXpp3Dom( mojoDescriptor.getMojoConfiguration() ) );
-        return new MojoExecution( mojoDescriptor, configuration );
+        Xpp3Dom resultConfiguration =
+            Xpp3DomUtils.mergeXpp3Dom( configuration, toXpp3Dom( mojoDescriptor.getMojoConfiguration() ) );
+        return new MojoExecution( mojoDescriptor, resultConfiguration );
     }
 
     /**
