@@ -29,6 +29,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 
+/**
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
+ */
 public abstract class AbstractInvokerMojo
     extends AbstractIteratorMojo
 {

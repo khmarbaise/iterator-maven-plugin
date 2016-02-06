@@ -35,6 +35,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
+/**
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
+ */
 public abstract class AbstractIteratorMojo
     extends AbstractMojo
 {

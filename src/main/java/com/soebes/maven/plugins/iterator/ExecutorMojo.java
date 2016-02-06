@@ -48,8 +48,8 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
 
 /**
  * Executor will execute a given plugin by iterating through the given items.
- * 
- * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
+ *
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Mojo( name = "iterator", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
 public class ExecutorMojo

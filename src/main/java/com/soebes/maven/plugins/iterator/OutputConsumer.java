@@ -22,6 +22,9 @@ package com.soebes.maven.plugins.iterator;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 
+/**
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
+ */
 public class OutputConsumer
     implements InvocationOutputHandler
 {

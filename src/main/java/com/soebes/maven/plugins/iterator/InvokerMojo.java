@@ -38,7 +38,7 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 /**
  * Invoker will execute an Maven instance by iterating through the given items.
  * 
- * @author Karl-Heinz Marbaise <a href="mailto:kama@soebes.de">kama@soebes.de</a>
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Mojo( name = "invoker", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
 public class InvokerMojo

@@ -22,6 +22,9 @@ package com.soebes.maven.plugins.iterator;
 import java.io.File;
 import java.io.FileFilter;
 
+/**
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
+ */
 public class FolderFilter
     implements FileFilter
 {

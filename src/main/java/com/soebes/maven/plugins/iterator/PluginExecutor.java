@@ -22,6 +22,9 @@ package com.soebes.maven.plugins.iterator;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
+/**
+ * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
+ */
 public class PluginExecutor
 {
     /**
