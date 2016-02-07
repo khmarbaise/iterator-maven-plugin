@@ -175,6 +175,23 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <version>0.11</version>
+          <!--
+             ! Currently workaround to prevent warnings
+             ! See https://issues.apache.org/jira/browse/RAT-158
+          -->
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-core</artifactId>
+              <version>1.6</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>xerces</groupId>
+                  <artifactId>xercesImpl</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
           <configuration>
             <excludes combine.children="append">
               <exclude>README.md</exclude>
@@ -182,6 +199,7 @@
               <exclude>.travis.yml</exclude>
               <!--
                 ! This can be found on CI servers where the local cache is stored.
+                ! Can be removed if 0.12 of apache-rat-plugin is released.
               -->
               <exclude>.repository/**</exclude>
             </excludes>
