@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,6 +48,7 @@ public class AbstractIteratorMojoTest
 
     @Test
     public void shouldReturnTheSubfoldersInOrder()
+        throws MojoExecutionException
     {
         when( mock.getSortOrder() ).thenReturn( "NAME_COMPARATOR" );
         List<String> folders = mock.getFolders();
@@ -55,9 +57,19 @@ public class AbstractIteratorMojoTest
 
     @Test
     public void shouldReturnTheSubfoldersInReversOrder()
+        throws MojoExecutionException
     {
         when( mock.getSortOrder() ).thenReturn( "NAME_REVERSE" );
         List<String> folders = mock.getFolders();
         assertThat( folders ).containsSequence( "test", "site", "main", "it" );
     }
+
+    @Test(expectedExceptions = MojoExecutionException.class)
+    public void shouldThrowExceptionOnNonExistentFolder()
+        throws MojoExecutionException
+    {
+        mock.setFolder( new File( "nonexistent" ) );
+        mock.getFolders();
+    }
+
 }
