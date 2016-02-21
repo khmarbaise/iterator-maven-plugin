@@ -137,12 +137,17 @@ public abstract class AbstractIteratorMojo
     }
 
     protected List<String> getFolders()
+        throws MojoExecutionException
     {
         IOFileFilter folders = FileFilterUtils.and( HiddenFileFilter.VISIBLE, DirectoryFileFilter.DIRECTORY );
         IOFileFilter makeSVNAware = FileFilterUtils.makeSVNAware( folders );
         IOFileFilter makeCVSAware = FileFilterUtils.makeCVSAware( makeSVNAware );
 
         String[] list = folder.list( makeCVSAware );
+        if (list == null) {
+            throw new MojoExecutionException( "The specified folder doesn't exist: " + folder );
+        }
+
         List<File> listOfDirectories = new ArrayList<File>();
         for ( String item : list )
         {
