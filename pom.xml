@@ -93,6 +93,14 @@
         <role>Contributor</role>
       </roles>
     </contributor>
+    <contributor>
+      <name>Tunaki</name>
+      <mail>guillaume_boue@orange.fr</mail>
+      <url>https://github.com/Tunaki</uril>
+      <roles>
+        <role>Contributor</role>
+      </roles>
+    </contributor>
   </contributors>
 
   <dependencyManagement>
