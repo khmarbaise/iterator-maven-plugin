@@ -22,8 +22,7 @@
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
->
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -63,7 +62,6 @@
     <!-- Different plugins versions -->
     <gmaven-plugin.version>1.5</gmaven-plugin.version>
 
-    <maven-plugin-plugin.version>3.3</maven-plugin-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
 
     <!-- dependency versions -->
@@ -108,12 +106,6 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-core</artifactId>
-        <version>${maven.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy</artifactId>
         <version>${org.codehaus.groovy-groovy.version}</version>
@@ -124,53 +116,6 @@
         <version>${org.codehaus.gmaven.runtime-gmaven-runtime-1.8}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>6.8.21</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>1.9.5</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-api</artifactId>
-        <version>${maven.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>${maven-plugin-plugin.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-annotations</artifactId>
-        <version>${maven-plugin-plugin.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-invoker</artifactId>
-        <version>2.2</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.plugin-testing</groupId>
-        <artifactId>maven-plugin-testing-harness</artifactId>
-        <version>2.1</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-filtering</artifactId>
-        <version>3.0.0</version>
-      </dependency>
 
     </dependencies>
   </dependencyManagement>
@@ -184,8 +129,8 @@
           <artifactId>apache-rat-plugin</artifactId>
           <version>0.11</version>
           <!--
-             ! Currently workaround to prevent warnings
-             ! See https://issues.apache.org/jira/browse/RAT-158
+            ! Currently workaround to prevent warnings
+            ! See https://issues.apache.org/jira/browse/RAT-158
           -->
           <dependencies>
             <dependency>
@@ -232,7 +177,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>${maven-plugin-plugin.version}</version>
+          <version>3.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -274,11 +219,7 @@
               <goal>check</goal>
             </goals>
           </execution>
-        </executions><!-- <configuration> -->
-        <!-- <excludes> -->
-        <!-- <exclude>src/it/MWAR-167/src/main/resources/MANIFEST.MF</exclude> -->
-        <!-- </excludes> -->
-        <!-- </configuration> -->
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -378,17 +319,19 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
+      <version>${maven.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <scope>provided</scope>
+      <version>${maven.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-plugin-plugin</artifactId>
+      <version>3.4</version>
     </dependency>
 
     <dependency>
@@ -400,11 +343,13 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-invoker</artifactId>
+      <version>2.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
 
