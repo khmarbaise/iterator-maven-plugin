@@ -39,6 +39,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.exec.MavenPluginManagerHelper;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -51,7 +52,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
  *
  * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
-@Mojo( name = "iterator", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
+@Mojo( name = "iterator", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.TEST, requiresProject = true, threadSafe = true )
 public class ExecutorMojo
     extends AbstractIteratorMojo
 {
@@ -246,7 +247,7 @@ public class ExecutorMojo
 
                 // Put the value of the current iteration into the properties
                 mavenProject.getProperties().put( getIteratorName(), item );
-
+                
                 try
                 {
                     executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
