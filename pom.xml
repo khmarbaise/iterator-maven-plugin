@@ -19,10 +19,7 @@
   under the License.
 -->
 
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -33,7 +30,7 @@
 
   <groupId>com.soebes.maven.plugins</groupId>
   <artifactId>iterator-maven-plugin</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <packaging>maven-plugin</packaging>
 
   <name>The Iterator Maven Plugin.</name>
@@ -85,7 +82,7 @@
     <developerConnection>scm:git:ssh://git@github.com/khmarbaise/iterator-maven-plugin.git</developerConnection>
     <connection>scm:git:https://github.com/khmarbaise/iterator-maven-plugin.git</connection>
     <url>https://github.com/khmarbaise/iterator-maven-plugin</url>
-    <tag>HEAD</tag>
+    <tag>iterator-maven-plugin-0.4</tag>
   </scm>
 
   <contributors>
