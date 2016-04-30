@@ -21,7 +21,6 @@ package com.soebes.maven.plugins.iterator;
 
 import java.io.File;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -29,7 +28,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
@@ -44,18 +42,6 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 public class InvokerMojo
     extends AbstractInvokerMojo
 {
-
-    /**
-     * The project currently being build.
-     */
-    @Parameter( required = true, readonly = true, defaultValue = "${project}" )
-    private MavenProject mavenProject;
-
-    /**
-     * The current Maven session.
-     */
-    @Parameter( required = true, readonly = true, defaultValue = "${session}" )
-    private MavenSession mavenSession;
 
     /**
      * The Maven BuildPluginManager component.
@@ -80,18 +66,19 @@ public class InvokerMojo
     public void execute()
         throws MojoExecutionException
     {
-        if ( isItemsNull() && isContentNull() )
+        if ( isNoneSet() )
         {
-            throw new MojoExecutionException( "You have to use at least one. Either items element or content element!" );
+            throw new MojoExecutionException( "You have to use at least one. " + "Either items, "
+                + "itemsWithProperties, content or folder element!" );
         }
 
-        if ( isItemsSet() && isContentSet() )
+        if ( isMoreThanOneSet() )
         {
-            throw new MojoExecutionException(
-                                              "You can use only one element. Either items element or content element but not both!" );
+            throw new MojoExecutionException( "You can use only one element. "
+                + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
         }
 
-        File localRepository = new File( mavenSession.getSettings().getLocalRepository() );
+        File localRepository = new File( getMavenSession().getSettings().getLocalRepository() );
 
         invoker.setLocalRepositoryDirectory( localRepository );
         // invoker.setOutputHandler(outputHandler);
@@ -101,11 +88,11 @@ public class InvokerMojo
         // getLog().info("local repository: " + localRepository);
         // // getLog().isDebugEnabled()
         // getLog().info("Invoker:" + invoker);
-        for ( String item : getItems() )
+        for ( ItemWithProperties item : getItemsConverted() )
         {
             try
             {
-                getLog().info( "mvn " + item );
+                getLog().info( "mvn " + item.getName() );
                 mavenCall( item );
             }
             catch ( MavenInvocationException e )
@@ -115,17 +102,17 @@ public class InvokerMojo
         }
     }
 
-    private File getWorkingDirectoryAfterPlaceHolderIsReplaced( String currentValue )
+    private File getWorkingDirectoryAfterPlaceHolderIsReplaced( ItemWithProperties currentValue )
     {
         File baseDir = getWorkingDirectory();
         if ( baseDir != null && baseDir.toString().contains( getPlaceHolder() ) )
         {
-            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue ) );
+            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue.getName() ) );
         }
         return baseDir;
     }
 
-    private void mavenCall( String item )
+    private void mavenCall( ItemWithProperties item )
         throws MavenInvocationException
     {
         InvocationRequest request = createAndConfigureAnInvocationRequest( item );
@@ -146,23 +133,14 @@ public class InvokerMojo
             getLog().error( "Maven call was NOT Ok. (" + result.getExitCode() + ")" );
             if ( result.getExecutionException() != null )
             {
-                getLog().error( result.getExecutionException().getMessage(), result.getExecutionException().getCause() );
+                getLog().error( result.getExecutionException().getMessage(),
+                                result.getExecutionException().getCause() );
             }
             else
             {
                 getLog().error( "No exception" );
             }
         }
-    }
-
-    public MavenProject getMavenProject()
-    {
-        return mavenProject;
-    }
-
-    public void setMavenProject( MavenProject mavenProject )
-    {
-        this.mavenProject = mavenProject;
     }
 
     public void setThreads( String threads )

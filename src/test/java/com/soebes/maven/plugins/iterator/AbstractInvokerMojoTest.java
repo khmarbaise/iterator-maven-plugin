@@ -52,10 +52,10 @@ public class AbstractInvokerMojoTest
     {
         mock.setBaseDirectory( new File( "first-@item@" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
+        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getBaseDirectory() )
-            .isEqualTo( new File( "first-one" ) );
+        assertThat( createAndConfigureAnInvocationRequest.getBaseDirectory() ).isEqualTo( new File( "first-one" ) );
     }
 
     @Test
@@ -63,11 +63,10 @@ public class AbstractInvokerMojoTest
     {
         mock.setGoals( Collections.singletonList( "java:@item@-environment" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
+        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() )
-            .hasSize( 1 )
-            .containsExactly( "java:one-environment" );
+        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 1 ).containsExactly( "java:one-environment" );
     }
 
     @Test
@@ -75,11 +74,12 @@ public class AbstractInvokerMojoTest
     {
         mock.setGoals( Arrays.asList( "java:@item@-environment", "@item@", "selection-@item@-choice" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "one" );
+        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getGoals() )
-            .hasSize( 3 )
-            .containsExactly( "java:one-environment", "one","selection-one-choice" );
+        assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 3 ).containsExactly( "java:one-environment",
+                                                                                                     "one",
+                                                                                                     "selection-one-choice" );
     }
 
     @Test
@@ -87,11 +87,10 @@ public class AbstractInvokerMojoTest
     {
         mock.setProfiles( Collections.singletonList( "profile-@item@" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "two" );
+        ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
-            .hasSize( 1 )
-            .containsExactly( "profile-two" );
+        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 1 ).containsExactly( "profile-two" );
     }
 
     @Test
@@ -99,11 +98,12 @@ public class AbstractInvokerMojoTest
     {
         mock.setProfiles( Arrays.asList( "profile-@item@", "profile-second-@item@", "@item@-profile" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "two" );
+        ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProfiles() )
-            .hasSize( 3 )
-            .containsExactly( "profile-two", "profile-second-two", "two-profile"  );
+        assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 3 ).containsExactly( "profile-two",
+                                                                                                        "profile-second-two",
+                                                                                                        "two-profile" );
     }
 
     @Test
@@ -111,11 +111,10 @@ public class AbstractInvokerMojoTest
     {
         mock.setProjects( Collections.singletonList( "project-@item@-a" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "three" );
+        ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() )
-            .hasSize( 1 )
-            .containsExactly( "project-three-a" );
+        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 1 ).containsExactly( "project-three-a" );
     }
 
     @Test
@@ -123,11 +122,12 @@ public class AbstractInvokerMojoTest
     {
         mock.setProjects( Arrays.asList( "project-@item@-a", "@item@project", "@item@" ) );
 
-        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( "three" );
+        ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
-        assertThat( createAndConfigureAnInvocationRequest.getProjects() )
-            .hasSize( 3 )
-            .containsExactly( "project-three-a", "threeproject", "three" );
+        assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 3 ).containsExactly( "project-three-a",
+                                                                                                        "threeproject",
+                                                                                                        "three" );
     }
 
 }

@@ -21,8 +21,8 @@ package com.soebes.maven.plugins.iterator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
@@ -40,7 +40,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.exec.MavenPluginManagerHelper;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -105,18 +104,6 @@ public class ExecutorMojo
     private List<PluginExecutor> pluginExecutors;
 
     /**
-     * The project currently being build.
-     */
-    @Parameter( defaultValue = "${project}" )
-    private MavenProject mavenProject;
-
-    /**
-     * The current Maven session.
-     */
-    @Parameter( defaultValue = "${session}" )
-    private MavenSession mavenSession;
-
-    /**
      * This is the helper class to support Maven 3.1 and before.
      */
     @Component
@@ -128,7 +115,7 @@ public class ExecutorMojo
     @Component
     private BuildPluginManager pluginManager;
 
-    @Parameter( defaultValue = "${plugin}" )
+    @Parameter( defaultValue = "${plugin}", required = true, readonly = true )
     private PluginDescriptor pluginDescriptor;
 
     /**
@@ -191,7 +178,7 @@ public class ExecutorMojo
             return plugin;
         }
 
-        Map<String, Plugin> plugins = mavenProject.getPluginManagement().getPluginsAsMap();
+        Map<String, Plugin> plugins = getMavenProject().getPluginManagement().getPluginsAsMap();
 
         Plugin result = plugins.get( plugin.getKey() );
         if ( result == null )
@@ -211,72 +198,114 @@ public class ExecutorMojo
 
     private boolean isPluginManagementDefined()
     {
-        return mavenProject.getPluginManagement() != null;
+        return getMavenProject().getPluginManagement() != null;
     }
 
     public void execute()
         throws MojoExecutionException
     {
-        if ( isItemsNull() && isContentNull() )
+        if ( isNoneSet() )
         {
-            throw new MojoExecutionException( "You have to use at least one. Either items element or content element!" );
+            throw new MojoExecutionException( "You have to use at least one. " + "Either items element, "
+                + "itemsWithProperties, content or folder element!" );
         }
 
-        if ( isItemsSet() && isContentSet() )
+        if ( isMoreThanOneSet() )
         {
-            throw new MojoExecutionException( "You can use only one element. Either items element or content element but not both!" );
+            throw new MojoExecutionException( "You can use only one element. "
+                + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
         }
 
-        for ( String item : getItems() )
+        for ( ItemWithProperties item : getItemsConverted() )
         {
             for ( PluginExecutor pluginExecutor : pluginExecutors )
             {
-                Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
-                if ( executePlugin.getVersion() == null )
-                {
-                    throw new MojoExecutionException( "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
-                }
+                handlePluginExecution( item, pluginExecutor );
+            }
+        }
+    }
 
-                Xpp3Dom resultConfiguration =
-                    handlePluginConfigurationFromPluginManagement( pluginExecutor, executePlugin );
+    /**
+     * This will inject the iteration into the current properties and furthermore the properties if they have given and
+     * execute the plugin with the appropriate context.
+     * 
+     * @param item The items which are using for the current iteration.
+     * @param pluginExecutor The {@link PluginExecutor}
+     * @throws MojoExecutionException in case of an error.
+     */
+    private void handlePluginExecution( ItemWithProperties item, PluginExecutor pluginExecutor )
+        throws MojoExecutionException
+    {
+        Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
+        if ( executePlugin.getVersion() == null )
+        {
+            throw new MojoExecutionException( "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
+        }
 
-                PlexusConfiguration plexusConfiguration =
-                    copyConfiguration( resultConfiguration, getPlaceHolder(), item );
+        Xpp3Dom resultConfiguration = handlePluginConfigurationFromPluginManagement( pluginExecutor, executePlugin );
 
-                createLogOutput( pluginExecutor, executePlugin, item );
+        PlexusConfiguration plexusConfiguration =
+            copyConfiguration( resultConfiguration, getPlaceHolder(), item.getName() );
 
-                // Put the value of the current iteration into the properties
-                mavenProject.getProperties().put( getIteratorName(), item );
-                
-                try
-                {
-                    executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
-                }
-                catch ( PluginResolutionException e )
-                {
-                    getLog().error( "PluginresourceException:", e );
-                }
-                catch ( PluginDescriptorParsingException e )
-                {
-                    getLog().error( "PluginDescriptorParsingException:", e );
-                }
-                catch ( InvalidPluginDescriptorException e )
-                {
-                    getLog().error( "InvalidPluginDescriptorException:", e );
-                }
-                catch ( MojoFailureException e )
-                {
-                    getLog().error( "MojoFailureException:", e );
-                }
-                catch ( PluginConfigurationException e )
-                {
-                    getLog().error( "PluginConfigurationException:", e );
-                }
-                catch ( PluginManagerException e )
-                {
-                    getLog().error( "PluginManagerException:", e );
-                }
+        createLogOutput( pluginExecutor, executePlugin, item.getName() );
 
+        // Put the value of the current iteration into the properties
+        getMavenProject().getProperties().put( getIteratorName(), item.getName() );
+
+        if ( item.hasProperties() )
+        {
+            // Added all properties into the context.
+            for ( Entry<Object, Object> entry : item.getProperties().entrySet() )
+            {
+                getMavenProject().getProperties().put( entry.getKey(), entry.getValue() );
+            }
+        }
+
+        try
+        {
+            executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
+        }
+        catch ( PluginResolutionException e )
+        {
+            getLog().error( "PluginresourceException:", e );
+            throw new MojoExecutionException( "PluginRescourceException", e );
+        }
+        catch ( PluginDescriptorParsingException e )
+        {
+            getLog().error( "PluginDescriptorParsingException:", e );
+            throw new MojoExecutionException( "PluginDescriptorParsingException", e );
+        }
+        catch ( InvalidPluginDescriptorException e )
+        {
+            getLog().error( "InvalidPluginDescriptorException:", e );
+            throw new MojoExecutionException( "InvalidPluginDescriptorException", e );
+        }
+        catch ( MojoFailureException e )
+        {
+            getLog().error( "MojoFailureException:", e );
+            throw new MojoExecutionException( "MojoFailureException", e );
+        }
+        catch ( PluginConfigurationException e )
+        {
+            getLog().error( "PluginConfigurationException:", e );
+            throw new MojoExecutionException( "PluginConfigurationException", e );
+        }
+        catch ( PluginManagerException e )
+        {
+            getLog().error( "PluginManagerException:", e );
+            throw new MojoExecutionException( "PluginManagerException", e );
+        }
+        finally
+        {
+            // Removed the old key from context.
+            getMavenProject().getProperties().remove( getIteratorName() );
+            if ( item.hasProperties() )
+            {
+                // Remove all old properties to prevent missing something in the context
+                for ( Object entry : item.getProperties().keySet() )
+                {
+                    getMavenProject().getProperties().remove( entry );
+                }
             }
 
         }
@@ -332,14 +361,14 @@ public class ExecutorMojo
         }
 
         MojoExecution exec = mojoExecution( mojoDescriptor, configuration );
-        pluginManager.executeMojo( mavenSession, exec );
+        pluginManager.executeMojo( getMavenSession(), exec );
     }
 
     private PluginDescriptor getPluginDescriptor( Plugin plugin )
         throws PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException
     {
-        return mavenPluginManagerHelper.getPluginDescriptor( plugin, mavenProject.getRemotePluginRepositories(),
-                                                             mavenSession );
+        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenProject().getRemotePluginRepositories(),
+                                                             getMavenSession() );
     }
 
     private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )
@@ -388,26 +417,6 @@ public class ExecutorMojo
         sb.append( ":" );
         sb.append( pluginExecutor.getGoal() );
         getLog().info( sb.toString() );
-    }
-
-    public MavenProject getMavenProject()
-    {
-        return mavenProject;
-    }
-
-    public void setMavenProject( MavenProject mavenProject )
-    {
-        this.mavenProject = mavenProject;
-    }
-
-    public MavenSession getMavenSession()
-    {
-        return mavenSession;
-    }
-
-    public void setMavenSession( MavenSession mavenSession )
-    {
-        this.mavenSession = mavenSession;
     }
 
 }

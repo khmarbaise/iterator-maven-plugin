@@ -19,7 +19,6 @@ package com.soebes.maven.plugins.iterator;
  * under the License.
  */
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -37,12 +36,12 @@ import org.testng.annotations.Test;
 public class AbstractIteratorMojoTest
 {
 
-    private AbstractIteratorMojo mock;
+    private InvokerMojo mock;
 
     @BeforeMethod
     public void beforeMethod()
     {
-        mock = Mockito.mock( AbstractIteratorMojo.class, Mockito.CALLS_REAL_METHODS );
+        mock = Mockito.mock( InvokerMojo.class, Mockito.CALLS_REAL_METHODS );
         mock.setFolder( new File( ".", "src" ) );
     }
 

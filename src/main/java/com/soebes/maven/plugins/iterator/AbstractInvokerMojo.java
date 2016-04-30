@@ -266,7 +266,7 @@ public abstract class AbstractInvokerMojo
         return result;
     }
 
-    protected InvocationRequest createAndConfigureAnInvocationRequest( String currentValue )
+    protected InvocationRequest createAndConfigureAnInvocationRequest( ItemWithProperties currentValue )
     {
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -283,6 +283,8 @@ public abstract class AbstractInvokerMojo
         request.setNonPluginUpdates( isNonPluginUpdates() );
         request.setOffline( isOffline() );
 
+//        request.setProperties( properties )
+//        ;
         // @TODO: Think about it.
         // request.setPomFile(pomFile);
         // @TODO: Think about it.
@@ -292,22 +294,20 @@ public abstract class AbstractInvokerMojo
         // base directory
         // cd @item@
         // mvn clean package
-        request.setBaseDirectory( getBaseDirectoryAfterPlaceHolderIsReplaced( currentValue ) );
+        request.setBaseDirectory( getBaseDirectoryAfterPlaceHolderIsReplaced( currentValue.getName() ) );
         // goals:
         // mvn plugin-name:@item@
         //
-        request.setGoals( getGoalsAfterPlaceHolderIsReplaced( currentValue ) );
+        request.setGoals( getGoalsAfterPlaceHolderIsReplaced( currentValue.getName() ) );
         // Profiles:
         // mvn -Pxyz-@item@ clean package
         // mvn -P@item@
-        request.setProfiles( getProfilesAfterPlaceHolderIsReplaced( currentValue ) );
+        request.setProfiles( getProfilesAfterPlaceHolderIsReplaced( currentValue.getName() ) );
         // Projects:
         // mvn -pl xyz-@item@ clean package
-        request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue ) );
+        request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue.getName() ) );
 
-        // Properties
-        // mvn -Dthis.is.property=@item@
-        request.setProperties( getProperties() );
+        request.setProperties( currentValue.getProperties() );
 
         request.setRecursive( isRecursive() );
         request.setResumeFrom( getResumeFrom() );
