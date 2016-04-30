@@ -18,6 +18,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+<!-- START SNIPPET: start -->
 <assembly 
   xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -51,3 +52,4 @@ under the License.
 	</fileSet>
   </fileSets>
 </assembly>
+<!-- END SNIPPET: start -->

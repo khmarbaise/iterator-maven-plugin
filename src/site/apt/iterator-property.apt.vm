@@ -68,6 +68,6 @@ Iterator Maven Plugin
   which means they can be accessed by the usual property usage like <<<$\{item}>>>. This
   is done in the assembly descriptor to fulfill the needs in this case.
 
-%{include|source=src/it/mavenAssemblyPluginWithPropertiesTest/src/main/assembly/archive.xml}
+%{include|source=src/it/mavenAssemblyPluginWithPropertiesTest/src/assembly/archive.xml|snippet=#start}
 
   []

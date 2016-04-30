@@ -29,7 +29,7 @@ under the License.
   <skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-fluido-skin</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
   </skin>
   <custom>
     <fluidoSkin>
@@ -57,7 +57,7 @@ under the License.
 	  <item name="Folder" href="iterator-folder.html"/>
 	</menu>
 	<menu name="Usage Invoker">
-	  <item name="Overview" href="overview-invoker.html"/>
+	  <item name="Overview" href="invoker-overview.html"/>
 	  <item name="Invoker" href="invoker.html"/>
 	</menu>
 

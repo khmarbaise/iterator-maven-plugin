@@ -69,6 +69,10 @@
     <!-- dependency versions -->
     <org.codehaus.groovy-groovy.version>1.8.4</org.codehaus.groovy-groovy.version>
     <org.codehaus.gmaven.runtime-gmaven-runtime-1.8>1.4</org.codehaus.gmaven.runtime-gmaven-runtime-1.8>
+    <!--
+      ! Make mvn site:stage working correctly in combination with scm-publish.
+    -->
+    <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
   </properties>
 
   <!-- Must be overwritten in every project. -->
