@@ -80,7 +80,7 @@
                   <goal>single</goal>
                   <configuration>
                     <descriptors>
-                      <descriptor>${project.basedir}/src/main/assembly/archive.xml</descriptor>
+                      <descriptor>${project.basedir}/src/assembly/archive.xml</descriptor>
                     </descriptors>
                   </configuration>
                 </pluginExecutor>

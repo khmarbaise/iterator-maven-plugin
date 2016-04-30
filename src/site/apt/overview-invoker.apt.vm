@@ -110,7 +110,9 @@ Iterator Maven Plugin
         <item>two</item>
         <item>three</item>
       </items>
-      <goals>plugin-name:@item@<goals>
+      <goals>
+      	<goal>plugin-name:@item@</goal>
+      <goals>
     </configuration>
   </execution>
 </executions>

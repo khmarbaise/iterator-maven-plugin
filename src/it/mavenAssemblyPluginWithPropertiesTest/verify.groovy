@@ -64,17 +64,17 @@ t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] ------ (production) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
     '[INFO] ------ (qa) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
 
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-dev.war'),
 
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-test.war'),
 
 
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-production.war'),
 
-    '[INFO] Reading assembly descriptor: ' + basedir + '/src/main/assembly/archive.xml',
+    '[INFO] Reading assembly descriptor: ' + basedir + '/src/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-qa.war'),
     '[INFO] BUILD SUCCESS',
 ])

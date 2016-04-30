@@ -108,18 +108,18 @@ public abstract class AbstractIteratorMojo
      * <pre>
      * {@code 
      *   <itemsWithProperties>
-     *     <item>
+     *     <itemWithProperty>
      *       <name>one</name>
      *       <properties>
      *         <xyz>google</xyz>
      *       </properties>
-     *     </item>
-     *     <item>
+     *     </itemWithProperty>
+     *     <itemWithProperty>
      *       <name>two</name>
      *       <properties>
      *         <xyz>theseverside</xyz>
      *       </properties>
-     *     </item>
+     *     </itemWithProperty>
      *     ..
      *   </items>}
      * </pre>

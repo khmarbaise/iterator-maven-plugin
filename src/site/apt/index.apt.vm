@@ -53,14 +53,48 @@ Iterator Maven Plugin
   <content>production,test,qa,development</content>
 +-------
 
- Use whatever fits your needs better.
 
+  A special configuration can be used to define the items and properties in 
+  combination.
+
++-------
+<itemsWithProperties>
+  <itemWithProptery>
+  	<name>production</name>
+  	<properties>
+  		<key>value1</key>
+  	</properties>
+  </itemWithProptery>
+  <itemWithProptery>
+  	<name>test</name>
+  	<properties>
+  		<key>value2</key>
+  	</properties>
+  </itemWithProptery>
+  <itemWithProptery>
+  	<name>qa</name>
+  	<properties>
+  		<key>value3</key>
+  	</properties>
+  </itemWithProptery>
+  <itemWithProptery>
+  	<name>development</name>
+  	<properties>
+  		<key>value4</key>
+  	</properties>
+  </itemWithProptery>
+</itemsWithProperties>
++-------
+
+
+ Use whatever fits your needs better.
 
 * Goals Overview
 
   There are currently two goals <{{{./iterator-mojo.html}iterator}}> and <{{{./invoker-mojo.html}invoker}}>.
   The <{{{./iterator-mojo.html}iterator}}> goal is intended to call one or more plugins during the iterations
-  over the given list of items.
+  over the given list of items where as the <{{{./invoker-mojo.html}invoker}}> is intended to call
+  Maven during the iterations.
   
   A pseudo code equivalent would look like the following: 
   
