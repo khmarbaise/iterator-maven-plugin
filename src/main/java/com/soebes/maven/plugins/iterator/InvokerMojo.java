@@ -66,6 +66,12 @@ public class InvokerMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( isSkip() )
+        {
+            getLog().info( "Skip by user request." );
+            return;
+        }
+
         if ( isNoneSet() )
         {
             throw new MojoExecutionException( "You have to use at least one. " + "Either items, "

@@ -56,6 +56,12 @@ public abstract class AbstractIteratorMojo
     private MavenSession mavenSession;
 
     /**
+     * If you like to skip the execution.
+     */
+    @Parameter( property = "iterator.skip", defaultValue = "false" )
+    private boolean skip;
+
+    /**
      * The token the iterator placeholder begins with.
      */
     @Parameter( required = true, defaultValue = "@" )
@@ -405,6 +411,11 @@ public abstract class AbstractIteratorMojo
     public List<String> getItems()
     {
         return items;
+    }
+
+    public boolean isSkip()
+    {
+        return skip;
     }
 
     public List<ItemWithProperties> getItemsWithProperties()
