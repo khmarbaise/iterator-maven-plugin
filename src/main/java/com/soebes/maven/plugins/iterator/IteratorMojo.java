@@ -52,7 +52,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomUtils;
  * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Mojo( name = "iterator", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.TEST, requiresProject = true, threadSafe = true )
-public class ExecutorMojo
+public class IteratorMojo
     extends AbstractIteratorMojo
 {
 

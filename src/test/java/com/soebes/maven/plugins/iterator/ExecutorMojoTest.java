@@ -34,12 +34,12 @@ import static org.mockito.Mockito.when;
 public class ExecutorMojoTest
 {
 
-    private ExecutorMojo mock;
+    private IteratorMojo mock;
 
     @BeforeMethod
     public void beforeMethod()
     {
-        mock = Mockito.mock( ExecutorMojo.class, Mockito.CALLS_REAL_METHODS );
+        mock = Mockito.mock( IteratorMojo.class, Mockito.CALLS_REAL_METHODS );
     }
 
     @Test( expectedExceptions = {
