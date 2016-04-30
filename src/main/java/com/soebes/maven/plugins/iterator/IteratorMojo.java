@@ -1,5 +1,7 @@
 package com.soebes.maven.plugins.iterator;
 
+import java.util.ArrayList;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -202,7 +204,7 @@ public class IteratorMojo
     }
 
     public void execute()
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
 
         if ( isSkip() )
@@ -223,12 +225,41 @@ public class IteratorMojo
                 + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
         }
 
+        List<Exception> exceptions = new ArrayList<>();
         for ( ItemWithProperties item : getItemsConverted() )
         {
             for ( PluginExecutor pluginExecutor : pluginExecutors )
             {
-                handlePluginExecution( item, pluginExecutor );
+                try
+                {
+                    handlePluginExecution( item, pluginExecutor );
+                }
+                catch ( MojoExecutionException e )
+                {
+                    if ( isFailAtEnd() )
+                    {
+                        exceptions.add( e );
+                    }
+                    else
+                    {
+                        throw e;
+                    }
+                }
+                catch ( MojoFailureException e )
+                {
+                    // An Failure will stop the iteration under any circumstances.
+                    throw e;
+                }
             }
+        }
+
+        if ( !exceptions.isEmpty() )
+        {
+            for ( Exception exception : exceptions )
+            {
+                getLog().error( exception );
+            }
+            throw new MojoExecutionException( "Failures during iteration" );
         }
     }
 
@@ -239,9 +270,10 @@ public class IteratorMojo
      * @param item The items which are using for the current iteration.
      * @param pluginExecutor The {@link PluginExecutor}
      * @throws MojoExecutionException in case of an error.
+     * @throws MojoFailureException failure during the run of a plugin.
      */
     private void handlePluginExecution( ItemWithProperties item, PluginExecutor pluginExecutor )
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
         Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
         if ( executePlugin.getVersion() == null )
@@ -272,6 +304,14 @@ public class IteratorMojo
         {
             executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
         }
+        catch ( MojoExecutionException e )
+        {
+            throw e;
+        }
+        catch ( MojoFailureException e )
+        {
+            throw e;
+        }
         catch ( PluginResolutionException e )
         {
             getLog().error( "PluginresourceException:", e );
@@ -287,11 +327,6 @@ public class IteratorMojo
             getLog().error( "InvalidPluginDescriptorException:", e );
             throw new MojoExecutionException( "InvalidPluginDescriptorException", e );
         }
-        catch ( MojoFailureException e )
-        {
-            getLog().error( "MojoFailureException:", e );
-            throw new MojoExecutionException( "MojoFailureException", e );
-        }
         catch ( PluginConfigurationException e )
         {
             getLog().error( "PluginConfigurationException:", e );
@@ -304,11 +339,11 @@ public class IteratorMojo
         }
         finally
         {
-            // Removed the old key from context.
+            // Remove the old key from context.
             getMavenProject().getProperties().remove( getIteratorName() );
             if ( item.hasProperties() )
             {
-                // Remove all old properties to prevent missing something in the context
+                // Remove all old properties from context to prevent missing something in the context
                 for ( Object entry : item.getProperties().keySet() )
                 {
                     getMavenProject().getProperties().remove( entry );

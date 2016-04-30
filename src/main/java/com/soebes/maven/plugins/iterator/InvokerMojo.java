@@ -20,9 +20,12 @@ package com.soebes.maven.plugins.iterator;
  */
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -60,11 +63,13 @@ public class InvokerMojo
 
     /**
      * Possibly to multithreading..
+     * 
+     * @throws MojoFailureException
      */
     // private int numberOfThreads;
 
     public void execute()
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
         if ( isSkip() )
         {
@@ -94,17 +99,57 @@ public class InvokerMojo
         // getLog().info("local repository: " + localRepository);
         // // getLog().isDebugEnabled()
         // getLog().info("Invoker:" + invoker);
+
+        List<Exception> exceptions = new ArrayList<>();
+
         for ( ItemWithProperties item : getItemsConverted() )
         {
             try
             {
-                getLog().info( "mvn " + item.getName() );
-                mavenCall( item );
+                createLogOutput( item );
+                InvocationResult result = mavenCall( item );
+
+                if ( result.getExitCode() == 0 )
+                {
+                    getLog().info( "------ Maven call was Ok." );
+                    continue;
+                }
+
+                getLog().error( "------ Maven call was NOT Ok. for iteration " + item.getName() + " ( return code: " + result.getExitCode() + " )" );
+                if ( result.getExecutionException() != null )
+                {
+                    getLog().error( result.getExecutionException().getMessage(),
+                                    result.getExecutionException().getCause() );
+                }
+
+                String failureMessage =
+                    "Maven call failed with return code " + result.getExitCode() + " for iteration: " + item.getName();
+
+                if ( isFailAtEnd() )
+                {
+                    exceptions.add( new RuntimeException( failureMessage ) );
+                }
+                else
+                {
+                    throw new MojoFailureException( failureMessage );
+                }
+
             }
             catch ( MavenInvocationException e )
             {
-                getLog().error( "Failure during maven call:", e );
+                // This will stop any iteration.
+                getLog().error( "------ ***** Command line options are wrong:", e );
+                throw new MojoExecutionException( "Command line options are wrong:", e );
             }
+        }
+
+        if ( !exceptions.isEmpty() )
+        {
+            for ( Exception exception : exceptions )
+            {
+                getLog().error( exception );
+            }
+            throw new MojoExecutionException( "Failures during iterations." );
         }
     }
 
@@ -118,7 +163,7 @@ public class InvokerMojo
         return baseDir;
     }
 
-    private void mavenCall( ItemWithProperties item )
+    private InvocationResult mavenCall( ItemWithProperties item )
         throws MavenInvocationException
     {
         InvocationRequest request = createAndConfigureAnInvocationRequest( item );
@@ -128,25 +173,17 @@ public class InvokerMojo
 
         invoker.setWorkingDirectory( getWorkingDirectoryAfterPlaceHolderIsReplaced( item ) );
 
-        InvocationResult result = invoker.execute( request );
+        return invoker.execute( request );
+    }
 
-        if ( result.getExitCode() == 0 )
-        {
-            getLog().info( "Maven call Ok." );
-        }
-        else
-        {
-            getLog().error( "Maven call was NOT Ok. (" + result.getExitCode() + ")" );
-            if ( result.getExecutionException() != null )
-            {
-                getLog().error( result.getExecutionException().getMessage(),
-                                result.getExecutionException().getCause() );
-            }
-            else
-            {
-                getLog().error( "No exception" );
-            }
-        }
+    private void createLogOutput( ItemWithProperties item )
+    {
+        StringBuilder sb = new StringBuilder( "------ " );
+        sb.append( " iterator-maven-plugin " );
+        sb.append( "( iteration: " );
+        sb.append( item.getName() );
+        sb.append( " )" );
+        getLog().info( sb.toString() );
     }
 
     public void setThreads( String threads )

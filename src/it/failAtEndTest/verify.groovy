@@ -30,7 +30,7 @@ def getProjectVersion() {
     def allPlugins = pom.build.plugins.plugin;
 
     def configurationMavenPlugin = allPlugins.find { item ->
-        item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("itexin-maven-plugin");
+        item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
     }
 
     return configurationMavenPlugin.version;
@@ -45,12 +45,16 @@ def buildLogFile = new File( basedir, "build.log");
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
-    '[INFO] ------  iterator-maven-plugin ( iteration: one )',
-    '[INFO] [INFO] Building itexin-maven-plugin InvokerBasicTest-1 0.1-SNAPSHOT',
-    '[INFO] ------  iterator-maven-plugin ( iteration: two )',
-    '[INFO] [INFO] Building itexin-maven-plugin InvokerBasicTest-2 0.1-SNAPSHOT',
-    '[INFO] ------  iterator-maven-plugin ( iteration: three )',
-    '[INFO] [INFO] Building itexin-maven-plugin InvokerBasicTest-3 0.1-SNAPSHOT',
+    '[INFO] ------  iterator-maven-plugin ( iteration: 1 )',
+    '[ERROR] ------ Maven call was NOT Ok. for iteration 1 ( return code: 1 )',
+    '[INFO] ------  iterator-maven-plugin ( iteration: 2 )',
+    '[ERROR] ------ Maven call was NOT Ok. for iteration 2 ( return code: 1 )',
+    '[INFO] ------  iterator-maven-plugin ( iteration: 3 )',
+    '[ERROR] ------ Maven call was NOT Ok. for iteration 3 ( return code: 1 )',
+    'java.lang.RuntimeException: Maven call failed with return code 1 for iteration: 1',
+    'java.lang.RuntimeException: Maven call failed with return code 1 for iteration: 2',
+    'java.lang.RuntimeException: Maven call failed with return code 1 for iteration: 3',
+    '[INFO] BUILD FAILURE',
 ])
 
 

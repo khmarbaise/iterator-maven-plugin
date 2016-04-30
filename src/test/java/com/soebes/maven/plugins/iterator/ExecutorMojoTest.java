@@ -22,6 +22,7 @@ package com.soebes.maven.plugins.iterator;
 import java.util.Collections;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,7 +47,7 @@ public class ExecutorMojoTest
         MojoExecutionException.class }, expectedExceptionsMessageRegExp = "You have to use at least one. "
             + "Either items element, " + "itemsWithProperties, content or folder element!" )
     public void shouldFailWithMEEAndMessageIfNoParameterIsSet()
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
         // Given
         when( mock.isItemsNull() ).thenReturn( true );
@@ -61,7 +62,7 @@ public class ExecutorMojoTest
         MojoExecutionException.class }, expectedExceptionsMessageRegExp = "You can use only one element. "
             + "Either items, itemsWithProperties, content or folder element but not more than one of them." )
     public void shouldFailWithMEEAndMessageIfAllAreSet()
-        throws MojoExecutionException
+        throws MojoExecutionException, MojoFailureException
     {
         mock.setItems( Collections.<String>emptyList() );
         mock.setContent( "X" );

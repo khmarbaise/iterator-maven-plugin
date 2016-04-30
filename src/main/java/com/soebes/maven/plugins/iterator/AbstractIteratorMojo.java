@@ -62,6 +62,12 @@ public abstract class AbstractIteratorMojo
     private boolean skip;
 
     /**
+     * Fail the execution at the end of all iterations or fail the whole if one iteration step fails.
+     */
+    @Parameter( property = "iterator.failAtEnd", defaultValue = "false" )
+    private boolean failAtEnd;
+
+    /**
      * The token the iterator placeholder begins with.
      */
     @Parameter( required = true, defaultValue = "@" )
@@ -416,6 +422,11 @@ public abstract class AbstractIteratorMojo
     public boolean isSkip()
     {
         return skip;
+    }
+
+    public boolean isFailAtEnd()
+    {
+        return failAtEnd;
     }
 
     public List<ItemWithProperties> getItemsWithProperties()
