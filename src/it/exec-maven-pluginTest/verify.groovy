@@ -25,29 +25,29 @@ t = new IntegrationBase()
 
 
 def getProjectVersion() {
-	def pom = new XmlSlurper().parse(new File(basedir, 'pom.xml'))
-   
-	  def allPlugins = pom.build.plugins.plugin;
-   
-	  def configurationMavenPlugin = allPlugins.find {
-		  item -> item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
-	  }
-	  
-	  return configurationMavenPlugin.version;
+    def pom = new XmlSlurper().parse(new File(basedir, 'pom.xml'))
+
+    def allPlugins = pom.build.plugins.plugin;
+
+    def configurationMavenPlugin = allPlugins.find { item ->
+        item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
+    }
+
+    return configurationMavenPlugin.version;
 }
-   
+
 def projectVersion = getProjectVersion();
-   
+
 println "Project version: ${projectVersion}"
-   
+
 
 def buildLogFile = new File( basedir, "build.log");
 
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
-  'Argument is : 001',
-  'Argument is : 002',
-  'Argument is : 003',
+    'Argument is : 001',
+    'Argument is : 002',
+    'Argument is : 003',
 ])
 
 

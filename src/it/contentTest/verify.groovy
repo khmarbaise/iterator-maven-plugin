@@ -30,7 +30,7 @@ def getProjectVersion() {
     def allPlugins = pom.build.plugins.plugin;
 
     def configurationMavenPlugin = allPlugins.find { item ->
-	item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
+        item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
     }
 
     return configurationMavenPlugin.version;

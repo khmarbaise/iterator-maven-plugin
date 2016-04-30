@@ -30,7 +30,7 @@ def getProjectVersion() {
     def allPlugins = pom.build.plugins.plugin;
 
     def configurationMavenPlugin = allPlugins.find { item ->
-	item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
+        item.groupId.equals("com.soebes.maven.plugins") && item.artifactId.equals("iterator-maven-plugin");
     }
 
     return configurationMavenPlugin.version;
@@ -50,16 +50,16 @@ new File(basedir, "build-filtered.log").withWriter { out ->
         if (line.contains(currentFolder)) {
             line = line.replace(currentFolder, "/home/iterator/");
         }
-       
-        if (    !line.startsWith("Download: ") 
-            &&  !line.startsWith("Downloaded: ")
-            &&  !line.startsWith("Downloading: ")
-            &&  !line.startsWith("[INFO] Downloaded: ")
-            &&  !line.startsWith("[INFO] Downloading: ")
-            &&  !line.startsWith(" wagon http use")
-            &&  !line.startsWith("Running post-build")
-            &&  !line.startsWith("Finished post-build ")
-            &&  !line.startsWith("Project version:")) {
+
+        if (    !line.startsWith("Download: ")
+        &&  !line.startsWith("Downloaded: ")
+        &&  !line.startsWith("Downloading: ")
+        &&  !line.startsWith("[INFO] Downloaded: ")
+        &&  !line.startsWith("[INFO] Downloading: ")
+        &&  !line.startsWith(" wagon http use")
+        &&  !line.startsWith("Running post-build")
+        &&  !line.startsWith("Finished post-build ")
+        &&  !line.startsWith("Project version:")) {
             out.println line;
         }
     }
