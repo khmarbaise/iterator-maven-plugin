@@ -7,9 +7,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Karl Heinz Marbaise" />
     <meta name="Date-Revision-yyyymmdd" content="20160430" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>Configurator Maven Plugin &#x2013; Project Distribution Management</title>
+    <title>Configurator Maven Plugin &#x2013; Introduction</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -212,12 +213,10 @@
             </li>
                               <li class="nav-header">Usage Invoker</li>
                               
-      <li>
+      <li class="active">
   
-                          <a href="invoker-overview.html" title="Overview">
-          <span class="none"></span>
-        Overview</a>
-            </li>
+            <a href="#"><span class="none"></span>Overview</a>
+          </li>
                 
       <li>
   
@@ -226,97 +225,13 @@
         Invoker</a>
             </li>
                               <li class="nav-header">Project Documentation</li>
-                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                      
       <li>
   
                           <a href="project-info.html" title="Project Information">
-          <span class="icon-chevron-down"></span>
+          <span class="icon-chevron-right"></span>
         Project Information</a>
-                    <ul class="nav nav-list">
-                    
-      <li>
-  
-                          <a href="dependencies.html" title="Dependencies">
-          <span class="none"></span>
-        Dependencies</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="dependency-info.html" title="Dependency Information">
-          <span class="none"></span>
-        Dependency Information</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="dependency-management.html" title="Dependency Management">
-          <span class="none"></span>
-        Dependency Management</a>
-            </li>
-                    
-      <li class="active">
-  
-            <a href="#"><span class="none"></span>Distribution Management</a>
-          </li>
-                    
-      <li>
-  
-                          <a href="index.html" title="About">
-          <span class="none"></span>
-        About</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="issue-tracking.html" title="Issue Tracking">
-          <span class="none"></span>
-        Issue Tracking</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="license.html" title="Project License">
-          <span class="none"></span>
-        Project License</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="plugin-management.html" title="Plugin Management">
-          <span class="none"></span>
-        Plugin Management</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="plugins.html" title="Project Plugins">
-          <span class="none"></span>
-        Project Plugins</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="team-list.html" title="Project Team">
-          <span class="none"></span>
-        Project Team</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="source-repository.html" title="Source Repository">
-          <span class="none"></span>
-        Source Repository</a>
-            </li>
-                    
-      <li>
-  
-                          <a href="project-summary.html" title="Project Summary">
-          <span class="none"></span>
-        Project Summary</a>
-            </li>
-              </ul>
-        </li>
+                  </li>
                                                                                                       
       <li>
   
@@ -350,16 +265,97 @@
                 
         <div id="bodyColumn"  class="span10" >
                                   
-            <div class="section">
-<h2><a name="Overview"></a>Overview</h2><a name="Overview"></a>
-<p>The following is the distribution management information used by this project.</p>
+            <!--  --><!-- Licensed to the Apache Software Foundation (ASF) under one --><!-- or more contributor license agreements.  See the NOTICE file --><!-- distributed with this work for additional information --><!-- regarding copyright ownership.  The ASF licenses this file --><!-- to you under the Apache License, Version 2.0 (the --><!-- "License"); you may not use this file except in compliance --><!-- with the License.  You may obtain a copy of the License at --><!--  --><!-- http://www.apache.org/licenses/LICENSE-2.0 --><!--  --><!-- Unless required by applicable law or agreed to in writing, --><!-- software distributed under the License is distributed on an --><!-- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY --><!-- KIND, either express or implied.  See the License for the --><!-- specific language governing permissions and limitations --><!-- under the License. --><!-- NOTE: For help with the syntax of this file, see: --><!-- http://maven.apache.org/doxia/references/apt-format.html --><div class="section">
+<h2><a name="Iterator_Maven_Plugin"></a>Iterator Maven Plugin</h2>
 <div class="section">
-<h3><a name="Repository_-_ossrh-staging"></a>Repository - ossrh-staging</h3><a name="Repository_-_ossrh-staging"></a><a class="externalLink" href="http://oss.sonatype.org/service/local/staging/deploy/maven2">http://oss.sonatype.org/service/local/staging/deploy/maven2</a></div>
+<h3><a name="Overview"></a>Overview</h3>
+<p>The <i><a href="./invoker-mojo.html">invoker</a></i> goal is intended to call a separate instance of Maven during your current Maven build. This is more or less equivalent to call maven from command line separately but with the help of Maven itself.</p></div>
 <div class="section">
-<h3><a name="Snapshot_Repository_-_ossrh-snapshots"></a>Snapshot Repository - ossrh-snapshots</h3><a name="Snapshot_Repository_-_ossrh-snapshots"></a><a class="externalLink" href="http://oss.sonatype.org/content/repositories/snapshots">http://oss.sonatype.org/content/repositories/snapshots</a></div>
+<h3><a name="Different_Working_Directory"></a>Different Working Directory</h3>
+<p>You can change the working directory for the Maven call by using:</p>
+<div class="source"><pre class="prettyprint">&lt;executions&gt;
+  &lt;execution&gt;
+    &lt;phase&gt;package&lt;/phase&gt;
+    &lt;goals&gt;
+      &lt;goal&gt;invoker&lt;/goal&gt;
+    &lt;/goals&gt;
+    &lt;configuration&gt;
+      &lt;items&gt;
+        &lt;item&gt;one&lt;/item&gt;
+        &lt;item&gt;two&lt;/item&gt;
+        &lt;item&gt;three&lt;/item&gt;
+      &lt;/items&gt;
+      &lt;workingDirectory&gt;configurations/@item@&lt;/workingDirectory&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;clean&lt;/goal&gt;
+        &lt;goal&gt;package&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/configuration&gt;
+  &lt;/execution&gt;
+&lt;/executions&gt;</pre></div></div>
 <div class="section">
-<h3><a name="Site_-_github"></a>Site - github</h3><a name="Site_-_github"></a>
-<p>scm:git:ssh://git@github.com/khmarbaise/iterator-maven-plugin.git</p></div></div>
+<h3><a name="Different_Base_Directory"></a>Different Base Directory</h3>
+<p>You can change the base directory directory for the Maven call by using:</p>
+<div class="source"><pre class="prettyprint">&lt;executions&gt;
+  &lt;execution&gt;
+    &lt;phase&gt;package&lt;/phase&gt;
+    &lt;goals&gt;
+      &lt;goal&gt;invoker&lt;/goal&gt;
+    &lt;/goals&gt;
+    &lt;configuration&gt;
+      &lt;items&gt;
+        &lt;item&gt;one&lt;/item&gt;
+        &lt;item&gt;two&lt;/item&gt;
+        &lt;item&gt;three&lt;/item&gt;
+      &lt;/items&gt;
+      &lt;baseDirectory&gt;folder/@item@&lt;/baseDirectory&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;clean&lt;/goal&gt;
+        &lt;goal&gt;package&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/configuration&gt;
+  &lt;/execution&gt;
+&lt;/executions&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Different_goal"></a>Different goal</h3>
+<p>You can change the goal for the Maven call by using:</p>
+<div class="source"><pre class="prettyprint">&lt;executions&gt;
+  &lt;execution&gt;
+    &lt;phase&gt;package&lt;/phase&gt;
+    &lt;goals&gt;
+      &lt;goal&gt;invoker&lt;/goal&gt;
+    &lt;/goals&gt;
+    &lt;configuration&gt;
+      &lt;items&gt;
+        &lt;item&gt;one&lt;/item&gt;
+        &lt;item&gt;two&lt;/item&gt;
+        &lt;item&gt;three&lt;/item&gt;
+      &lt;/items&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;plugin-name:@item@&lt;/goal&gt;
+      &lt;goals&gt;
+    &lt;/configuration&gt;
+  &lt;/execution&gt;
+&lt;/executions&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Different_Profiles"></a>Different Profiles</h3>
+<p>You can change the profile for the Maven call by using:</p>
+<div class="source"><pre class="prettyprint">&lt;executions&gt;
+  &lt;execution&gt;
+    &lt;phase&gt;package&lt;/phase&gt;
+    &lt;goals&gt;
+      &lt;goal&gt;invoker&lt;/goal&gt;
+    &lt;/goals&gt;
+    &lt;configuration&gt;
+      &lt;items&gt;
+        &lt;item&gt;one&lt;/item&gt;
+        &lt;item&gt;two&lt;/item&gt;
+        &lt;item&gt;three&lt;/item&gt;
+      &lt;/items&gt;
+      &lt;profiles&gt;@item@&lt;profiles&gt;
+    &lt;/configuration&gt;
+  &lt;/execution&gt;
+&lt;/executions&gt;</pre></div><!-- // Profiles: --><!-- // mvn -Pxyz-@item@ clean package --><!-- // mvn -P@item@ --><!-- request.setProfiles(getProfilesAfterPlaceHolderIsReplaced(currentValue)); --><!--  --><!-- // Projects: --><!-- // mvn -pl xyz-@item@ clean package --><!-- request.setProjects(getProjectsAfterPlaceHolderIsReplaced(currentValue)); --></div></div>
                   </div>
             </div>
           </div>
