@@ -62,7 +62,7 @@ public class ItemWithPropertiesTest
 
     }
 
-    public class ItemXXTEst
+    public class ItemContentTest
     {
         @Test
         public void hasNameShouldBeFalseForNO_NAMEValue()
@@ -84,7 +84,7 @@ public class ItemWithPropertiesTest
         }
 
         @Test
-        public void hasPropertiesShouldBeTrueAnyOtherProperties()
+        public void hasPropertiesShouldBeTrueForAnyOtherProperties()
         {
             assertThat( new ItemWithProperties( "name", new Properties() ).hasProperties() ).isTrue();
         }

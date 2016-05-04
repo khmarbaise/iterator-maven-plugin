@@ -288,12 +288,12 @@ public class IteratorMojo
 
         createLogOutput( pluginExecutor, executePlugin, item.getName() );
 
-        // Put the value of the current iteration into the properties
+        // Put the value of the current iteration into the current context.
         getMavenProject().getProperties().put( getIteratorName(), item.getName() );
 
         if ( item.hasProperties() )
         {
-            // Added all properties into the context.
+            // Add all properties to the context.
             for ( Entry<Object, Object> entry : item.getProperties().entrySet() )
             {
                 getMavenProject().getProperties().put( entry.getKey(), entry.getValue() );
@@ -343,7 +343,7 @@ public class IteratorMojo
             getMavenProject().getProperties().remove( getIteratorName() );
             if ( item.hasProperties() )
             {
-                // Remove all old properties from context to prevent missing something in the context
+                // Remove all old properties from context.
                 for ( Object entry : item.getProperties().keySet() )
                 {
                     getMavenProject().getProperties().remove( entry );

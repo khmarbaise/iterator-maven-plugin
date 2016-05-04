@@ -19,7 +19,9 @@ package com.soebes.maven.plugins.iterator;
  * under the License.
  */
 
+import java.io.File;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,6 +29,7 @@ import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -40,7 +43,7 @@ public class ExecutorMojoTest
     @BeforeMethod
     public void beforeMethod()
     {
-        mock = Mockito.mock( IteratorMojo.class, Mockito.CALLS_REAL_METHODS );
+        mock = mock( IteratorMojo.class, Mockito.CALLS_REAL_METHODS );
     }
 
     @Test( expectedExceptions = {
@@ -64,14 +67,18 @@ public class ExecutorMojoTest
     public void shouldFailWithMEEAndMessageIfAllAreSet()
         throws MojoExecutionException, MojoFailureException
     {
-        mock.setItems( Collections.<String>emptyList() );
-        mock.setContent( "X" );
-        mock.setItemsWithProperties( Collections.singletonList( new ItemWithProperties( "x",
-                                                                                        ItemWithProperties.NO_PROPERTIES ) ) );
-        // Given
-//        when( mock.isItemsNull() ).thenReturn( false );
-//        when( mock.isContentNull() ).thenReturn( false );
-//        when( mock.isItemsWithPropertiesNull() ).thenReturn( false );
+        List<ItemWithProperties> itemWithProperties =
+            Collections.singletonList( new ItemWithProperties( "x", ItemWithProperties.NO_PROPERTIES ) );
+
+        List<String> nonEmptyItemsList = Collections.singletonList( "A" );
+        String nonEmptyConent = "X";
+        File nonEmptyFile = new File( "." );
+
+        // When
+        mock.setItems( nonEmptyItemsList );
+        mock.setContent( nonEmptyConent );
+        mock.setItemsWithProperties( itemWithProperties );
+        mock.setFolder( nonEmptyFile );
 
         // Then
         mock.execute();
