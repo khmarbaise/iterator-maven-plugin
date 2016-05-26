@@ -100,7 +100,7 @@ here:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -144,7 +144,7 @@ configure iterator-maven-plugin like the following:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -209,7 +209,7 @@ Having a property which contains a list of servers like this:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <executions>
           <execution>
             <phase>package</phase>
