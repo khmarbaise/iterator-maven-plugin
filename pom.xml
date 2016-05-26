@@ -74,7 +74,7 @@
 
   <!-- Must be overwritten in every project. -->
   <issueManagement>
-    <system>default</system>
+    <system>GitHub</system>
     <url>https://github.com/khmarbaise/iterator-maven-plugin/issues</url>
   </issueManagement>
 
