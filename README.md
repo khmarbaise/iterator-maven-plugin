@@ -38,7 +38,7 @@ The following possible solutions exist:
         <plugin>
           <groupId>com.soebes.maven.plugins</groupId>
           <artifactId>iterator-maven-plugin</artifactId>
-          <version>0.4</version>
+          <version>0.5</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -77,7 +77,7 @@ The result of the above configuration is that the [maven-echo-plugin](https://gi
 will be called three times like the following:
 
     [INFO] 
-    [INFO] --- iterator-maven-plugin:0.4:iterator (default) @ basic-test ---
+    [INFO] --- iterator-maven-plugin:0.5:iterator (default) @ basic-test ---
     [INFO]  ------ (one) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
     [INFO] This is a message: one
     [INFO]  ------ (two) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo
@@ -100,7 +100,7 @@ here:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.4</version>
+        <version>0.5</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -144,7 +144,7 @@ configure iterator-maven-plugin like the following:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.4</version>
+        <version>0.5</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -209,7 +209,7 @@ Having a property which contains a list of servers like this:
       <plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>iterator-maven-plugin</artifactId>
-        <version>0.4</version>
+        <version>0.5</version>
         <executions>
           <execution>
             <phase>package</phase>
