@@ -335,11 +335,15 @@ public abstract class AbstractIteratorMojo
         this.folder = folder;
     }
 
+    protected boolean atLeastOneItemFound()throws MojoExecutionException
+    {
+        return (getItemsConverted().size()>0);
+    }
     protected boolean isMoreThanOneSet()
     {
         // a ^ b ^ c && ! (a && b && c)
         boolean result = isItemsSet() ^ isContentSet() ^ isItemsWithPropertiesSet() ^ isFolderSet()
-            && !( isItemsSet() && isContentSet() && isItemsWithPropertiesSet() && isFolderSet() );
+                && !( isItemsSet() && isContentSet() && isItemsWithPropertiesSet() && isFolderSet() );
         return !result;
     }
 
