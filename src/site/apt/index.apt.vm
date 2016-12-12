@@ -59,30 +59,30 @@ Iterator Maven Plugin
 
 +-------
 <itemsWithProperties>
-  <itemWithProptery>
+  <itemWithProperty>
     <name>production</name>
     <properties>
       <key>value1</key>
   </properties>
-  </itemWithProptery>
-  <itemWithProptery>
+  </itemWithProperty>
+  <itemWithProperty>
     <name>test</name>
     <properties>
       <key>value2</key>
     </properties>
-  </itemWithProptery>
-  <itemWithProptery>
+  </itemWithProperty>
+  <itemWithProperty>
     <name>qa</name>
     <properties>
       <key>value3</key>
     </properties>
-  </itemWithProptery>
-  <itemWithProptery>
+  </itemWithProperty>
+  <itemWithProperty>
     <name>development</name>
     <properties>
       <key>value4</key>
     </properties>
-  </itemWithProptery>
+  </itemWithProperty>
 </itemsWithProperties>
 +-------
 
