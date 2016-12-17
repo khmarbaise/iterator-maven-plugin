@@ -25,11 +25,13 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -46,19 +48,21 @@ public class ExecutorMojoTest
         mock = mock( IteratorMojo.class, Mockito.CALLS_REAL_METHODS );
     }
 
-    @Test( expectedExceptions = {
-        MojoExecutionException.class }, expectedExceptionsMessageRegExp = "You have to use at least one. "
-            + "Either items element, " + "itemsWithProperties, content or folder element!" )
+    @Test
     public void shouldFailWithMEEAndMessageIfNoParameterIsSet()
         throws MojoExecutionException, MojoFailureException
     {
         // Given
+        Log log = mock(Log.class);
+        mock.setLog(log);
+        when( mock.isFolderNull() ).thenReturn( true );
         when( mock.isItemsNull() ).thenReturn( true );
         when( mock.isContentNull() ).thenReturn( true );
         when( mock.isItemsWithPropertiesNull() ).thenReturn( true );
 
         // Then
         mock.execute();
+        verify(log).warn("Neither items, itemsWithProperties, content nor folder have been set.");
     }
 
     @Test( expectedExceptions = {

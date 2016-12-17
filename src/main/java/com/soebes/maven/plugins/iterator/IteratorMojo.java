@@ -215,8 +215,8 @@ public class IteratorMojo
 
         if ( isNoneSet() )
         {
-            throw new MojoExecutionException( "You have to use at least one. " + "Either items element, "
-                + "itemsWithProperties, content or folder element!" );
+            getLog().warn("Neither items, itemsWithProperties, content nor folder have been set.");
+            return;
         }
 
         if ( isMoreThanOneSet() )
