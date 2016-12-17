@@ -360,7 +360,7 @@ public class IteratorMojo
         if ( executePlugin.getConfiguration() != null )
         {
             Xpp3Dom x = (Xpp3Dom) executePlugin.getConfiguration();
-            resultConfiguration = Xpp3DomUtils.mergeXpp3Dom( x, toXpp3Dom( pluginExecutor.getConfiguration() ) );
+            resultConfiguration = Xpp3DomUtils.mergeXpp3Dom( toXpp3Dom( pluginExecutor.getConfiguration() ), x );
 
             getLog().debug( "ConfigurationExecutePlugin: " + executePlugin.getConfiguration().toString() );
 
