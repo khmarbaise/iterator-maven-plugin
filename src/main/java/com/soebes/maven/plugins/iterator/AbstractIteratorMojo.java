@@ -236,7 +236,7 @@ public abstract class AbstractIteratorMojo
     /**
      * Convert all types {@code content}, {@code items} or {@code ItemsWithProperties} into the same type.
      * 
-     * @return List with {{@link ItemsWithProperties}
+     * @return list {{@link ItemsWithProperties}
      * @throws MojoExecutionException In case of an error.
      */
     protected List<ItemWithProperties> getItemsConverted()

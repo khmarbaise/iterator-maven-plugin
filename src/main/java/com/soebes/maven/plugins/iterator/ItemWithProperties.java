@@ -43,7 +43,7 @@ public class ItemWithProperties
     }
 
     /**
-     * @param name
+     * @param name name of the item.
      * @param properties The object which contains the properties. If you don't have properties simply give
      *            {@link #NO_PROPERTIES} as parameter.
      */

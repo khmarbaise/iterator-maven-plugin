@@ -64,7 +64,7 @@ public class InvokerMojo
     /**
      * Possibly to multithreading..
      * 
-     * @throws MojoFailureException
+     * @throws MojoFailureException in case of failure.
      */
     // private int numberOfThreads;
 
