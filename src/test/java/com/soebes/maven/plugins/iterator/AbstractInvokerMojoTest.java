@@ -24,8 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+import org.apache.maven.project.MavenProject;
 
 import org.apache.maven.shared.invoker.InvocationRequest;
+import org.assertj.core.groups.Tuple;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -45,6 +49,8 @@ public class AbstractInvokerMojoTest
         mock.setIteratorName( "item" );
         mock.setBeginToken( "@" );
         mock.setEndToken( "@" );
+        mock.setMavenProject(new MavenProject());
+        mock.setProperties(new Properties());
     }
 
     @Test
@@ -129,5 +135,68 @@ public class AbstractInvokerMojoTest
                                                                                                         "threeproject",
                                                                                                         "three" );
     }
+    
+    @Test
+    public void shouldAddProjectProperties()
+    {
+        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
+                .hasSize( 1 )
+                .extracting( "key", "value" )
+                .containsExactly(Tuple.tuple( "prop1", "value1" ));
+    }
+    
+    @Test
+    public void shouldAddPluginProperties()
+    {
+        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+        mock.getProperties().put( "prop1", "value2" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
+                .hasSize( 1 )
+                .extracting( "key", "value" )
+                .containsExactly(Tuple.tuple( "prop1", "value2" ));
+    }
 
+    @Test
+    public void shouldAddItemProperties()
+    {
+        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+        mock.getProperties().put( "prop1", "value2" );
+        Properties itemProperties = new Properties();
+        itemProperties.put( "prop1", "value3" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
+                .hasSize( 1 )
+                .extracting( "key", "value" )
+                .containsExactly(Tuple.tuple( "prop1", "value3" ));
+    }
+    
+    @Test
+    public void shouldAddSystemProperties()
+    {
+        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+        mock.getProperties().put( "prop1", "value2" );
+        Properties itemProperties = new Properties();
+        itemProperties.put( "prop1", "value3" );
+        System.getProperties().put( "prop1", "value4" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
+                .hasSize( 1 )
+                .extracting( "key", "value" )
+                .containsExactly(Tuple.tuple( "prop1", "value4" ));
+    }
 }

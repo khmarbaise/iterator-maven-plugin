@@ -23,9 +23,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 
@@ -202,7 +204,7 @@ public abstract class AbstractInvokerMojo
      */
     @Parameter
     private File userSettings;
-
+        
     private File getBaseDirectoryAfterPlaceHolderIsReplaced( String currentValue )
     {
         File baseDir = getBaseDirectory();
@@ -307,7 +309,8 @@ public abstract class AbstractInvokerMojo
         // mvn -pl xyz-@item@ clean package
         request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue.getName() ) );
 
-        request.setProperties( currentValue.getProperties() );
+        Properties props = getMergedProperties(currentValue );
+        request.setProperties( props );
 
         request.setRecursive( isRecursive() );
         request.setResumeFrom( getResumeFrom() );
@@ -318,8 +321,40 @@ public abstract class AbstractInvokerMojo
         request.setToolchainsFile( getToolchains() );
         request.setUpdateSnapshots( isUpdateSnapshots() );
         request.setUserSettingsFile( getUserSettings() );
-
+        
         return request;
+    }
+
+    private Properties getMergedProperties( ItemWithProperties item ) 
+    {
+        Properties props = new Properties();
+        if ( getMavenProject().getProperties() != null ) 
+        {
+            props.putAll( getMavenProject().getProperties() );
+        }
+        
+        if ( getProperties() != null ) 
+        {
+            props.putAll( getProperties() );
+        }
+        
+        if ( item.getProperties() != null ) 
+        {
+            props.putAll( item.getProperties() );
+        }
+        
+        for ( Map.Entry<Object, Object> property : props.entrySet() ) 
+        {
+            String key = (String) property.getKey();
+            String systemPropertyValue = System.getProperty( key );
+
+            if ( systemPropertyValue != null ) 
+            {
+                props.put( key, systemPropertyValue );
+            }
+        }
+        
+        return props;
     }
 
     public List<String> getGoals()
