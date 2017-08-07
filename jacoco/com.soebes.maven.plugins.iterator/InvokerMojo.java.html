@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvokerMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">The Iterator Maven Plugin.</a> &gt; <a href="index.source.html" class="el_package">com.soebes.maven.plugins.iterator</a> &gt; <span class="el_source">InvokerMojo.java</span></div><h1>InvokerMojo.java</h1><pre class="source lang-java linenums">package com.soebes.maven.plugins.iterator;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
+
+/**
+ * Invoker will execute an Maven instance by iterating through the given items.
+ * 
+ * @author Karl-Heinz Marbaise &lt;a href=&quot;mailto:khmarbaise@apache.org&quot;&gt;khmarbaise@apache.org&lt;/a&gt;
+ */
+@Mojo( name = &quot;invoker&quot;, defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true )
+<span class="nc" id="L45">public class InvokerMojo</span>
+    extends AbstractInvokerMojo
+{
+
+    /**
+     * The Maven BuildPluginManager component.
+     */
+    @Component
+    private BuildPluginManager pluginManager;
+
+    @Parameter( defaultValue = &quot;${plugin}&quot;, required = true, readonly = true )
+    private PluginDescriptor pluginDescriptor;
+
+    @Parameter
+    private File workingDirectory;
+
+    @Component
+    private Invoker invoker;
+
+    /**
+     * Possibly to multithreading..
+     * 
+     * @throws MojoFailureException in case of failure.
+     */
+    // private int numberOfThreads;
+
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if ( isSkip() )</span>
+        {
+<span class="nc" id="L76">            getLog().info( &quot;Skip by user request.&quot; );</span>
+<span class="nc" id="L77">            return;</span>
+        }
+
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if ( isNoneSet() )</span>
+        {
+<span class="nc" id="L82">            throw new MojoExecutionException( &quot;You have to use at least one. &quot; + &quot;Either items, &quot;</span>
+                + &quot;itemsWithProperties, content or folder element!&quot; );
+        }
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if ( isMoreThanOneSet() )</span>
+        {
+<span class="nc" id="L88">            throw new MojoExecutionException( &quot;You can use only one element. &quot;</span>
+                + &quot;Either items, itemsWithProperties, content or folder element but not more than one of them.&quot; );
+        }
+
+<span class="nc" id="L92">        File localRepository = new File( getMavenSession().getSettings().getLocalRepository() );</span>
+
+<span class="nc" id="L94">        invoker.setLocalRepositoryDirectory( localRepository );</span>
+        // invoker.setOutputHandler(outputHandler);
+        // TODO: Check how it looks if we will use the invokerLogger?
+        // invoker.setLogger();
+
+        // getLog().info(&quot;local repository: &quot; + localRepository);
+        // // getLog().isDebugEnabled()
+        // getLog().info(&quot;Invoker:&quot; + invoker);
+
+<span class="nc" id="L103">        List&lt;Exception&gt; exceptions = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        for ( ItemWithProperties item : getItemsConverted() )</span>
+        {
+            try
+            {
+<span class="nc" id="L109">                createLogOutput( item );</span>
+<span class="nc" id="L110">                InvocationResult result = mavenCall( item );</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if ( result.getExitCode() == 0 )</span>
+                {
+<span class="nc" id="L114">                    getLog().info( &quot;------ Maven call was Ok.&quot; );</span>
+<span class="nc" id="L115">                    continue;</span>
+                }
+
+<span class="nc" id="L118">                getLog().error( &quot;------ Maven call was NOT Ok. for iteration &quot; + item.getName() + &quot; ( return code: &quot; + result.getExitCode() + &quot; )&quot; );</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                if ( result.getExecutionException() != null )</span>
+                {
+<span class="nc" id="L121">                    getLog().error( result.getExecutionException().getMessage(),</span>
+                                    result.getExecutionException().getCause() );
+                }
+
+<span class="nc" id="L125">                String failureMessage =</span>
+                    &quot;Maven call failed with return code &quot; + result.getExitCode() + &quot; for iteration: &quot; + item.getName();
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                if ( isFailAtEnd() )</span>
+                {
+<span class="nc" id="L130">                    exceptions.add( new RuntimeException( failureMessage ) );</span>
+                }
+                else
+                {
+<span class="nc" id="L134">                    throw new MojoFailureException( failureMessage );</span>
+                }
+
+            }
+<span class="nc" id="L138">            catch ( MavenInvocationException e )</span>
+            {
+                // This will stop any iteration.
+<span class="nc" id="L141">                getLog().error( &quot;------ ***** Command line options are wrong:&quot;, e );</span>
+<span class="nc" id="L142">                throw new MojoExecutionException( &quot;Command line options are wrong:&quot;, e );</span>
+<span class="nc" id="L143">            }</span>
+<span class="nc" id="L144">        }</span>
+
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if ( !exceptions.isEmpty() )</span>
+        {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            for ( Exception exception : exceptions )</span>
+            {
+<span class="nc" id="L150">                getLog().error( exception );</span>
+<span class="nc" id="L151">            }</span>
+<span class="nc" id="L152">            throw new MojoExecutionException( &quot;Failures during iterations.&quot; );</span>
+        }
+<span class="nc" id="L154">    }</span>
+
+    private File getWorkingDirectoryAfterPlaceHolderIsReplaced( ItemWithProperties currentValue )
+    {
+<span class="nc" id="L158">        File baseDir = getWorkingDirectory();</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">        if ( baseDir != null &amp;&amp; baseDir.toString().contains( getPlaceHolder() ) )</span>
+        {
+<span class="nc" id="L161">            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue.getName() ) );</span>
+        }
+<span class="nc" id="L163">        return baseDir;</span>
+    }
+
+    private InvocationResult mavenCall( ItemWithProperties item )
+        throws MavenInvocationException
+    {
+<span class="nc" id="L169">        InvocationRequest request = createAndConfigureAnInvocationRequest( item );</span>
+
+<span class="nc" id="L171">        OutputConsumer output = new OutputConsumer( getLog() );</span>
+<span class="nc" id="L172">        request.setOutputHandler( output );</span>
+
+<span class="nc" id="L174">        invoker.setWorkingDirectory( getWorkingDirectoryAfterPlaceHolderIsReplaced( item ) );</span>
+
+<span class="nc" id="L176">        return invoker.execute( request );</span>
+    }
+
+    private void createLogOutput( ItemWithProperties item )
+    {
+<span class="nc" id="L181">        StringBuilder sb = new StringBuilder( &quot;------ &quot; );</span>
+<span class="nc" id="L182">        sb.append( &quot; iterator-maven-plugin &quot; );</span>
+<span class="nc" id="L183">        sb.append( &quot;( iteration: &quot; );</span>
+<span class="nc" id="L184">        sb.append( item.getName() );</span>
+<span class="nc" id="L185">        sb.append( &quot; )&quot; );</span>
+<span class="nc" id="L186">        getLog().info( sb.toString() );</span>
+<span class="nc" id="L187">    }</span>
+
+    public void setThreads( String threads )
+    {
+<span class="nc" id="L191">        this.threads = threads;</span>
+<span class="nc" id="L192">    }</span>
+
+    public File getWorkingDirectory()
+    {
+<span class="nc" id="L196">        return workingDirectory;</span>
+    }
+
+    public void setWorkingDirectory( File workingDirectory )
+    {
+<span class="nc" id="L201">        this.workingDirectory = workingDirectory;</span>
+<span class="nc" id="L202">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

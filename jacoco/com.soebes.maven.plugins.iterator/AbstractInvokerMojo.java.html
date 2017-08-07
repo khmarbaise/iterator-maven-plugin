@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractInvokerMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">The Iterator Maven Plugin.</a> &gt; <a href="index.source.html" class="el_package">com.soebes.maven.plugins.iterator</a> &gt; <span class="el_source">AbstractInvokerMojo.java</span></div><h1>AbstractInvokerMojo.java</h1><pre class="source lang-java linenums">package com.soebes.maven.plugins.iterator;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.InvocationRequest;
+
+/**
+ * @author Karl-Heinz Marbaise &lt;a href=&quot;mailto:khmarbaise@apache.org&quot;&gt;khmarbaise@apache.org&lt;/a&gt;
+ */
+<span class="nc" id="L37">public abstract class AbstractInvokerMojo</span>
+    extends AbstractIteratorMojo
+{
+
+    /**
+     * The list of goals which will be called during each invocation of Maven. TODO: Change the name, cause we are
+     * calling life cycle phases instead of goal but we can if we like things like site:site ?
+     */
+<span class="nc" id="L45">    @Parameter</span>
+    private List&lt;String&gt; goals = Collections.singletonList( &quot;clean&quot; );
+
+    /**
+     * This will set &lt;code&gt;--batch-mode&lt;/code&gt;
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean interactive;
+
+    /**
+     * This will &lt;code&gt;--also-make&lt;/code&gt;
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean alsoMake;
+
+    /**
+     * This will activate &lt;code&gt;--also-make-dependents&lt;/code&gt;
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean alsoMakeDependents;
+
+    /**
+     * Sets the path to the base directory of the POM for the Maven invocation. If {@link #getPomFile()} does not return
+     * &lt;code&gt;null&lt;/code&gt;, this setting only affects the working directory for the Maven invocation. Here you can use the
+     * placeholder like: EXAMPLE
+     */
+    @Parameter
+    private File baseDirectory;
+
+    /**
+     * &lt;code&gt;-Ddebug=true&lt;/code&gt;
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean debug;
+
+    /**
+     * The valid values are {@link InvocationRequest#REACTOR_FAIL_AT_END}, {@link InvocationRequest#REACTOR_FAIL_FAST},
+     * {@link InvocationRequest#REACTOR_FAIL_NEVER}.
+     * 
+     * @see {@link InvocationRequest#REACTOR_FAIL_AT_END}, {@link InvocationRequest#REACTOR_FAIL_FAST},
+     *      {@link InvocationRequest#REACTOR_FAIL_NEVER}
+     * @FIXME: Check if we need to create a setter which checks the valid values
+     */
+    @Parameter( defaultValue = InvocationRequest.REACTOR_FAIL_FAST )
+    private String failureBehaviour;
+
+    /**
+     * Sets the checksum mode of the Maven invocation. Equivalent of {@code -c} or {@code --lax-checksums}, {@code -C}
+     * or {@code --strict-checksums}
+     * 
+     * @param globalChecksumPolicy The checksum mode, must be one of {@link InvocationRequest#CHECKSUM_POLICY_WARN} and
+     *            {@link InvocationRequest#CHECKSUM_POLICY_FAIL}.
+     */
+    @Parameter( defaultValue = InvocationRequest.CHECKSUM_POLICY_WARN )
+    private String globalChecksumPolicy;
+
+    /**
+     * The path to the global settings for the Maven invocation or &lt;code&gt;null&lt;/code&gt; to load the global settings from
+     * the default location.
+     */
+    @Parameter
+    private File globalSettingsFile;
+
+    /**
+     * If &lt;code&gt;null&lt;/code&gt; the default location from &lt;code&gt;settings.xml&lt;/code&gt; will be used.
+     */
+    @Parameter
+    private File localRepositoryDirectory;
+
+    /**
+     * If &lt;code&gt;null&lt;/code&gt;.
+     */
+    @Parameter
+    private String mavenOpts;
+
+    /**
+     * If true &lt;code&gt;--no-plugin-updates&lt;/code&gt; will be used.
+     */
+    @Parameter
+    private boolean nonPluginUpdates;
+
+    /**
+     * &lt;code&gt;true&lt;/code&gt; Maven will be executed in off-line mode ( &lt;code&gt;--offline&lt;/code&gt;).
+     */
+    @Parameter
+    private boolean offline;
+
+    /**
+     * The list of profiles.
+     */
+    @Parameter
+    private List&lt;String&gt; profiles;
+
+    /**
+     * Sets the reactor project list. Equivalent of {@code -pl} or {@code --projects} projects the reactor project list
+     */
+    @Parameter
+    private List&lt;String&gt; projects;
+
+    /**
+     * Sets the system properties for the Maven invocation, may be &lt;code&gt;null&lt;/code&gt; if not set.
+     */
+    @Parameter
+    private Properties properties;
+
+    /**
+     * Sets the recursion behavior of a reactor invocation. &lt;em&gt;Inverse&lt;/em&gt; equivalent of {@code -N} and
+     * {@code --non-recursive}
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean recursive;
+
+    /**
+     * Specify the reactor project to resume from.
+     */
+    @Parameter
+    private String resumeFrom;
+
+    /**
+     * Indicates whether the environment variables of the current process should be propagated to the Maven invocation.
+     * By default, the current environment variables are inherited by the new Maven invocation.
+     */
+    @Parameter( defaultValue = &quot;true&quot; )
+    private boolean shellEnvironmentInherited;
+
+    /**
+     * Gets the exception output mode of the Maven invocation. By default, Maven will not print stack traces of build
+     * exceptions.
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean showErrors;
+
+    /**
+     * The show version behaviour {@code -V} option.
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean showVersion;
+
+    /**
+     * {@code -T} option of Maven.
+     */
+    @Parameter
+    protected String threads;
+
+    /**
+     * Set the path to the custom toolchains file
+     */
+    @Parameter
+    private File toolchains;
+
+    /**
+     * Indicates whether Maven should enforce an update check for plugins and snapshots. By default, no update check is
+     * performed {@code --update-snapshots}.
+     */
+    @Parameter( defaultValue = &quot;false&quot; )
+    private boolean updateSnapshots;
+
+    /**
+     * Sets the path to the user settings for the Maven invocation.
+     */
+    @Parameter
+    private File userSettings;
+        
+    private File getBaseDirectoryAfterPlaceHolderIsReplaced( String currentValue )
+    {
+<span class="fc" id="L210">        File baseDir = getBaseDirectory();</span>
+<span class="pc bpc" id="L211" title="1 of 4 branches missed.">        if ( baseDir != null &amp;&amp; baseDir.toString().contains( getPlaceHolder() ) )</span>
+        {
+<span class="fc" id="L213">            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue ) );</span>
+        }
+<span class="fc" id="L215">        return baseDir;</span>
+    }
+
+    private List&lt;String&gt; replacePlaceholderInElements( String currentValue, List&lt;String&gt; goals )
+    {
+<span class="fc" id="L220">        List&lt;String&gt; result = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        for ( String string : goals )</span>
+        {
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">            if ( string.contains( getPlaceHolder() ) )</span>
+            {
+<span class="fc" id="L225">                result.add( string.replaceAll( getPlaceHolder(), currentValue ) );</span>
+            }
+            else
+            {
+<span class="nc" id="L229">                result.add( string );</span>
+            }
+<span class="fc" id="L231">        }</span>
+<span class="fc" id="L232">        return result;</span>
+    }
+
+    private List&lt;String&gt; getGoalsAfterPlaceHolderIsReplaced( String currentValue )
+    {
+<span class="fc" id="L237">        List&lt;String&gt; goals = getGoals();</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">        if ( goals == null )</span>
+        {
+<span class="fc" id="L240">            return null;</span>
+        }
+
+<span class="fc" id="L243">        List&lt;String&gt; result = replacePlaceholderInElements( currentValue, goals );</span>
+<span class="fc" id="L244">        return result;</span>
+    }
+
+    private List&lt;String&gt; getProfilesAfterPlaceHolderIsReplaced( String currentValue )
+    {
+<span class="fc" id="L249">        List&lt;String&gt; profiles = getProfiles();</span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        if ( profiles == null )</span>
+        {
+<span class="fc" id="L252">            return null;</span>
+        }
+
+<span class="fc" id="L255">        List&lt;String&gt; result = replacePlaceholderInElements( currentValue, profiles );</span>
+<span class="fc" id="L256">        return result;</span>
+    }
+
+    private List&lt;String&gt; getProjectsAfterPlaceHolderIsReplaced( String currentValue )
+    {
+<span class="fc" id="L261">        List&lt;String&gt; projects = getProjects();</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">        if ( projects == null )</span>
+        {
+<span class="fc" id="L264">            return null;</span>
+        }
+
+<span class="fc" id="L267">        List&lt;String&gt; result = replacePlaceholderInElements( currentValue, projects );</span>
+<span class="fc" id="L268">        return result;</span>
+    }
+
+    protected InvocationRequest createAndConfigureAnInvocationRequest( ItemWithProperties currentValue )
+    {
+<span class="fc" id="L273">        InvocationRequest request = new DefaultInvocationRequest();</span>
+
+<span class="fc" id="L275">        request.setAlsoMake( isAlsoMake() );</span>
+<span class="fc" id="L276">        request.setAlsoMakeDependents( isAlsoMakeDependents() );</span>
+<span class="fc" id="L277">        request.setDebug( isDebug() );</span>
+<span class="fc" id="L278">        request.setFailureBehavior( getFailureBehaviour() );</span>
+<span class="fc" id="L279">        request.setGlobalChecksumPolicy( getGlobalChecksumPolicy() );</span>
+<span class="fc" id="L280">        request.setGlobalSettingsFile( getGlobalSettingsFile() );</span>
+<span class="fc" id="L281">        request.setInteractive( isInteractive() );</span>
+
+<span class="fc" id="L283">        request.setLocalRepositoryDirectory( getLocalRepositoryDirectory() );</span>
+<span class="fc" id="L284">        request.setMavenOpts( getMavenOpts() );</span>
+<span class="fc" id="L285">        request.setNonPluginUpdates( isNonPluginUpdates() );</span>
+<span class="fc" id="L286">        request.setOffline( isOffline() );</span>
+
+//        request.setProperties( properties )
+//        ;
+        // @TODO: Think about it.
+        // request.setPomFile(pomFile);
+        // @TODO: Think about it.
+        // request.setPomFileName(pomFilename);
+
+        // The following parameter do make sense to use a placeholder
+        // base directory
+        // cd @item@
+        // mvn clean package
+<span class="fc" id="L299">        request.setBaseDirectory( getBaseDirectoryAfterPlaceHolderIsReplaced( currentValue.getName() ) );</span>
+        // goals:
+        // mvn plugin-name:@item@
+        //
+<span class="fc" id="L303">        request.setGoals( getGoalsAfterPlaceHolderIsReplaced( currentValue.getName() ) );</span>
+        // Profiles:
+        // mvn -Pxyz-@item@ clean package
+        // mvn -P@item@
+<span class="fc" id="L307">        request.setProfiles( getProfilesAfterPlaceHolderIsReplaced( currentValue.getName() ) );</span>
+        // Projects:
+        // mvn -pl xyz-@item@ clean package
+<span class="fc" id="L310">        request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue.getName() ) );</span>
+
+<span class="fc" id="L312">        Properties props = getMergedProperties(currentValue );</span>
+<span class="fc" id="L313">        request.setProperties( props );</span>
+
+<span class="fc" id="L315">        request.setRecursive( isRecursive() );</span>
+<span class="fc" id="L316">        request.setResumeFrom( getResumeFrom() );</span>
+<span class="fc" id="L317">        request.setShellEnvironmentInherited( isShellEnvironmentInherited() );</span>
+<span class="fc" id="L318">        request.setShowErrors( isShowErrors() );</span>
+<span class="fc" id="L319">        request.setShowVersion( isShowVersion() );</span>
+<span class="fc" id="L320">        request.setThreads( getThreads() );</span>
+<span class="fc" id="L321">        request.setToolchainsFile( getToolchains() );</span>
+<span class="fc" id="L322">        request.setUpdateSnapshots( isUpdateSnapshots() );</span>
+<span class="fc" id="L323">        request.setUserSettingsFile( getUserSettings() );</span>
+        
+<span class="fc" id="L325">        return request;</span>
+    }
+
+    private Properties getMergedProperties( ItemWithProperties item ) 
+    {
+<span class="fc" id="L330">        Properties props = new Properties();</span>
+<span class="pc bpc" id="L331" title="1 of 2 branches missed.">        if ( getMavenProject().getProperties() != null ) </span>
+        {
+<span class="fc" id="L333">            props.putAll( getMavenProject().getProperties() );</span>
+        }
+        
+<span class="pc bpc" id="L336" title="1 of 2 branches missed.">        if ( getProperties() != null ) </span>
+        {
+<span class="fc" id="L338">            props.putAll( getProperties() );</span>
+        }
+        
+<span class="pc bpc" id="L341" title="1 of 2 branches missed.">        if ( item.getProperties() != null ) </span>
+        {
+<span class="fc" id="L343">            props.putAll( item.getProperties() );</span>
+        }
+        
+<span class="fc bfc" id="L346" title="All 2 branches covered.">        for ( Map.Entry&lt;Object, Object&gt; property : props.entrySet() ) </span>
+        {
+<span class="fc" id="L348">            String key = (String) property.getKey();</span>
+<span class="fc" id="L349">            String systemPropertyValue = System.getProperty( key );</span>
+
+<span class="fc bfc" id="L351" title="All 2 branches covered.">            if ( systemPropertyValue != null ) </span>
+            {
+<span class="fc" id="L353">                props.put( key, systemPropertyValue );</span>
+            }
+<span class="fc" id="L355">        }</span>
+        
+<span class="fc" id="L357">        return props;</span>
+    }
+
+    public List&lt;String&gt; getGoals()
+    {
+<span class="fc" id="L362">        return goals;</span>
+    }
+
+    public boolean isInteractive()
+    {
+<span class="fc" id="L367">        return interactive;</span>
+    }
+
+    public void setInteractive( boolean interactive )
+    {
+<span class="nc" id="L372">        this.interactive = interactive;</span>
+<span class="nc" id="L373">    }</span>
+
+    public boolean isAlsoMake()
+    {
+<span class="fc" id="L377">        return alsoMake;</span>
+    }
+
+    public void setAlsoMake( boolean alsoMake )
+    {
+<span class="nc" id="L382">        this.alsoMake = alsoMake;</span>
+<span class="nc" id="L383">    }</span>
+
+    public boolean isAlsoMakeDependents()
+    {
+<span class="fc" id="L387">        return alsoMakeDependents;</span>
+    }
+
+    public void setAlsoMakeDependents( boolean alsoMakeDependents )
+    {
+<span class="nc" id="L392">        this.alsoMakeDependents = alsoMakeDependents;</span>
+<span class="nc" id="L393">    }</span>
+
+    public File getBaseDirectory()
+    {
+<span class="fc" id="L397">        return baseDirectory;</span>
+    }
+
+    public void setBaseDirectory( File baseDirectory )
+    {
+<span class="fc" id="L402">        this.baseDirectory = baseDirectory;</span>
+<span class="fc" id="L403">    }</span>
+
+    public boolean isDebug()
+    {
+<span class="fc" id="L407">        return debug;</span>
+    }
+
+    public void setDebug( boolean debug )
+    {
+<span class="nc" id="L412">        this.debug = debug;</span>
+<span class="nc" id="L413">    }</span>
+
+    public String getFailureBehaviour()
+    {
+<span class="fc" id="L417">        return failureBehaviour;</span>
+    }
+
+    public void setFailureBehaviour( String failureBehaviour )
+    {
+<span class="nc" id="L422">        this.failureBehaviour = failureBehaviour;</span>
+<span class="nc" id="L423">    }</span>
+
+    public String getGlobalChecksumPolicy()
+    {
+<span class="fc" id="L427">        return globalChecksumPolicy;</span>
+    }
+
+    public void setGlobalChecksumPolicy( String globalChecksumPolicy )
+    {
+<span class="nc" id="L432">        this.globalChecksumPolicy = globalChecksumPolicy;</span>
+<span class="nc" id="L433">    }</span>
+
+    public File getGlobalSettingsFile()
+    {
+<span class="fc" id="L437">        return globalSettingsFile;</span>
+    }
+
+    public void setGlobalSettingsFile( File globalSettingsFile )
+    {
+<span class="nc" id="L442">        this.globalSettingsFile = globalSettingsFile;</span>
+<span class="nc" id="L443">    }</span>
+
+    public File getLocalRepositoryDirectory()
+    {
+<span class="fc" id="L447">        return localRepositoryDirectory;</span>
+    }
+
+    public void setLocalRepositoryDirectory( File localRepositoryDirectory )
+    {
+<span class="nc" id="L452">        this.localRepositoryDirectory = localRepositoryDirectory;</span>
+<span class="nc" id="L453">    }</span>
+
+    public String getMavenOpts()
+    {
+<span class="fc" id="L457">        return mavenOpts;</span>
+    }
+
+    public void setMavenOpts( String mavenOpts )
+    {
+<span class="nc" id="L462">        this.mavenOpts = mavenOpts;</span>
+<span class="nc" id="L463">    }</span>
+
+    public boolean isNonPluginUpdates()
+    {
+<span class="fc" id="L467">        return nonPluginUpdates;</span>
+    }
+
+    public void setNonPluginUpdates( boolean nonPluginUpdates )
+    {
+<span class="nc" id="L472">        this.nonPluginUpdates = nonPluginUpdates;</span>
+<span class="nc" id="L473">    }</span>
+
+    public boolean isOffline()
+    {
+<span class="fc" id="L477">        return offline;</span>
+    }
+
+    public void setOffline( boolean offline )
+    {
+<span class="nc" id="L482">        this.offline = offline;</span>
+<span class="nc" id="L483">    }</span>
+
+    public List&lt;String&gt; getProfiles()
+    {
+<span class="fc" id="L487">        return profiles;</span>
+    }
+
+    public void setProfiles( List&lt;String&gt; profiles )
+    {
+<span class="fc" id="L492">        this.profiles = profiles;</span>
+<span class="fc" id="L493">    }</span>
+
+    public List&lt;String&gt; getProjects()
+    {
+<span class="fc" id="L497">        return projects;</span>
+    }
+
+    public void setProjects( List&lt;String&gt; projects )
+    {
+<span class="fc" id="L502">        this.projects = projects;</span>
+<span class="fc" id="L503">    }</span>
+
+    public Properties getProperties()
+    {
+<span class="fc" id="L507">        return properties;</span>
+    }
+
+    public void setProperties( Properties properties )
+    {
+<span class="fc" id="L512">        this.properties = properties;</span>
+<span class="fc" id="L513">    }</span>
+
+    public boolean isRecursive()
+    {
+<span class="fc" id="L517">        return recursive;</span>
+    }
+
+    public void setRecursive( boolean recursive )
+    {
+<span class="nc" id="L522">        this.recursive = recursive;</span>
+<span class="nc" id="L523">    }</span>
+
+    public String getResumeFrom()
+    {
+<span class="fc" id="L527">        return resumeFrom;</span>
+    }
+
+    public void setResumeFrom( String resumeFrom )
+    {
+<span class="nc" id="L532">        this.resumeFrom = resumeFrom;</span>
+<span class="nc" id="L533">    }</span>
+
+    public boolean isShellEnvironmentInherited()
+    {
+<span class="fc" id="L537">        return shellEnvironmentInherited;</span>
+    }
+
+    public void setShellEnvironmentInherited( boolean shellEnvironmentInherited )
+    {
+<span class="nc" id="L542">        this.shellEnvironmentInherited = shellEnvironmentInherited;</span>
+<span class="nc" id="L543">    }</span>
+
+    public boolean isShowErrors()
+    {
+<span class="fc" id="L547">        return showErrors;</span>
+    }
+
+    public void setShowErrors( boolean showErrors )
+    {
+<span class="nc" id="L552">        this.showErrors = showErrors;</span>
+<span class="nc" id="L553">    }</span>
+
+    public boolean isShowVersion()
+    {
+<span class="fc" id="L557">        return showVersion;</span>
+    }
+
+    public void setShowVersion( boolean showVersion )
+    {
+<span class="nc" id="L562">        this.showVersion = showVersion;</span>
+<span class="nc" id="L563">    }</span>
+
+    public String getThreads()
+    {
+<span class="fc" id="L567">        return threads;</span>
+    }
+
+    public File getToolchains()
+    {
+<span class="fc" id="L572">        return toolchains;</span>
+    }
+
+    public void setToolchains( File toolchains )
+    {
+<span class="nc" id="L577">        this.toolchains = toolchains;</span>
+<span class="nc" id="L578">    }</span>
+
+    public boolean isUpdateSnapshots()
+    {
+<span class="fc" id="L582">        return updateSnapshots;</span>
+    }
+
+    public void setUpdateSnapshots( boolean updateSnapshots )
+    {
+<span class="nc" id="L587">        this.updateSnapshots = updateSnapshots;</span>
+<span class="nc" id="L588">    }</span>
+
+    public File getUserSettings()
+    {
+<span class="fc" id="L592">        return userSettings;</span>
+    }
+
+    public void setUserSettings( File userSettings )
+    {
+<span class="nc" id="L597">        this.userSettings = userSettings;</span>
+<span class="nc" id="L598">    }</span>
+
+    public void setGoals( List&lt;String&gt; goals )
+    {
+<span class="fc" id="L602">        this.goals = goals;</span>
+<span class="fc" id="L603">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

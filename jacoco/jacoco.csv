@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,ItemWithProperties,104,42,22,4,29,13,16,8,5,6
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,PluginExecutor,24,0,0,0,11,0,7,0,7,0
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,IteratorMojo,633,19,54,4,118,6,40,2,12,1
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,OutputConsumer,11,0,0,0,5,0,2,0,2,0
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,HelpMojo,909,0,112,0,158,0,72,0,16,0
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,AbstractInvokerMojo,87,388,5,19,41,102,25,44,20,37
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,AbstractIteratorMojo,213,289,52,34,41,57,48,36,14,27
+The Iterator Maven Plugin.,com.soebes.maven.plugins.iterator,InvokerMojo,259,0,22,0,56,0,19,0,8,0

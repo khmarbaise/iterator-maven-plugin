@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractIteratorMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">The Iterator Maven Plugin.</a> &gt; <a href="index.source.html" class="el_package">com.soebes.maven.plugins.iterator</a> &gt; <span class="el_source">AbstractIteratorMojo.java</span></div><h1>AbstractIteratorMojo.java</h1><pre class="source lang-java linenums">package com.soebes.maven.plugins.iterator;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.apache.commons.io.comparator.NameFileComparator;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+
+/**
+ * @author Karl-Heinz Marbaise &lt;a href=&quot;mailto:khmarbaise@apache.org&quot;&gt;khmarbaise@apache.org&lt;/a&gt;
+ */
+<span class="nc" id="L42">public abstract class AbstractIteratorMojo</span>
+    extends AbstractMojo
+{
+    /**
+     * The project currently being build.
+     */
+    @Parameter( required = true, readonly = true, defaultValue = &quot;${project}&quot; )
+    private MavenProject mavenProject;
+
+    /**
+     * The current Maven session.
+     */
+    @Parameter( required = true, readonly = true, defaultValue = &quot;${session}&quot; )
+    private MavenSession mavenSession;
+
+    /**
+     * If you like to skip the execution.
+     */
+    @Parameter( property = &quot;iterator.skip&quot;, defaultValue = &quot;false&quot; )
+    private boolean skip;
+
+    /**
+     * Fail the execution at the end of all iterations or fail the whole if one iteration step fails.
+     */
+    @Parameter( property = &quot;iterator.failAtEnd&quot;, defaultValue = &quot;false&quot; )
+    private boolean failAtEnd;
+
+    /**
+     * The token the iterator placeholder begins with.
+     */
+    @Parameter( required = true, defaultValue = &quot;@&quot; )
+    private String beginToken;
+
+    /**
+     * The token the iterator placeholder ends with.
+     */
+    @Parameter( required = true, defaultValue = &quot;@&quot; )
+    private String endToken;
+
+    /**
+     * The name of the iterator variable.
+     */
+    @Parameter( required = true, defaultValue = &quot;item&quot; )
+    private String iteratorName;
+
+    /**
+     * Here you can define the items which will be iterated through.
+     * 
+     * &lt;pre&gt;
+     * {@code 
+     *   &lt;items&gt;
+     *     &lt;item&gt;one&lt;/item&gt;
+     *     &lt;item&gt;two&lt;/item&gt;
+     *     &lt;item&gt;three&lt;/item&gt;
+     *     ..
+     *   &lt;/items&gt;}
+     * &lt;/pre&gt;
+     */
+    @Parameter( property = &quot;iterator.items&quot; )
+    private List&lt;String&gt; items;
+
+    /**
+     * If you like to have items to iterate through which also contain supplemental properties. This can be done by
+     * using the following:
+     * 
+     * &lt;pre&gt;
+     * {@code 
+     *   &lt;itemsWithProperties&gt;
+     *     &lt;itemWithProperty&gt;
+     *       &lt;name&gt;one&lt;/name&gt;
+     *       &lt;properties&gt;
+     *         &lt;xyz&gt;google&lt;/xyz&gt;
+     *       &lt;/properties&gt;
+     *     &lt;/itemWithProperty&gt;
+     *     &lt;itemWithProperty&gt;
+     *       &lt;name&gt;two&lt;/name&gt;
+     *       &lt;properties&gt;
+     *         &lt;xyz&gt;theseverside&lt;/xyz&gt;
+     *       &lt;/properties&gt;
+     *     &lt;/itemWithProperty&gt;
+     *     ..
+     *   &lt;/items&gt;}
+     * &lt;/pre&gt;
+     * 
+     * You are not determined having the same properties for the iterations. You can use different properties for each
+     * iteration.
+     */
+    @Parameter
+    private List&lt;ItemWithProperties&gt; itemsWithProperties;
+
+    /**
+     * The list of items which will be iterated through. {@code &lt;content&gt;one, two, three&lt;/content&gt;}
+     */
+    @Parameter
+    private String content;
+
+    /**
+     * The delimiter which will be used to split the {@link #content}.
+     */
+    @Parameter( defaultValue = &quot;,&quot; )
+    private String delimiter;
+
+    /**
+     * By using this folder you define a folder which sub folders will be used to iterate over. It will be iterated over
+     * the directories but not the sub folders so no recursion will be done. The order of the iterated elements is done
+     * by {@link #sortOrder}.
+     */
+    @Parameter
+    private File folder;
+
+    /**
+     * This defines the sort order for the folders which will be iterated over.
+     * {@link NameFileComparator#NAME_COMPARATOR} {@link NameFileComparator#NAME_INSENSITIVE_COMPARATOR}
+     * {@link NameFileComparator#NAME_INSENSITIVE_REVERSE} {@link NameFileComparator#NAME_REVERSE}
+     * {@link NameFileComparator#NAME_SYSTEM_COMPARATOR} {@link NameFileComparator#NAME_SYSTEM_REVERSE}
+     */
+    @Parameter( defaultValue = &quot;NAME_COMPARATOR&quot; )
+    private String sortOrder;
+
+    public boolean isSortOrderValid( String sortOrder )
+    {
+<span class="nc bnc" id="L163" title="All 12 branches missed.">        boolean result = sortOrder.equalsIgnoreCase( &quot;NAME_COMPARATOR&quot; )</span>
+            || sortOrder.equalsIgnoreCase( &quot;NAME_INSENSITIVE_COMPARATOR&quot; )
+            || sortOrder.equalsIgnoreCase( &quot;NAME_INSENSITIVE_REVERSE&quot; ) || sortOrder.equalsIgnoreCase( &quot;NAME_REVERSE&quot; )
+            || sortOrder.equalsIgnoreCase( &quot;NAME_SYSTEM_COMPARATOR&quot; )
+            || sortOrder.equalsIgnoreCase( &quot;NAME_SYSTEM_REVERSE&quot; );
+<span class="nc" id="L168">        return result;</span>
+    }
+
+    protected Comparator&lt;File&gt; convertSortOrder()
+    {
+<span class="fc" id="L173">        Comparator&lt;File&gt; result = NameFileComparator.NAME_COMPARATOR;</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">        if ( getSortOrder().equalsIgnoreCase( &quot;NAME_INSENSITIVE_COMPARATOR&quot; ) )</span>
+        {
+<span class="nc" id="L176">            result = NameFileComparator.NAME_INSENSITIVE_COMPARATOR;</span>
+        }
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">        else if ( getSortOrder().equalsIgnoreCase( &quot;NAME_INSENSITIVE_REVERSE&quot; ) )</span>
+        {
+<span class="nc" id="L180">            result = NameFileComparator.NAME_INSENSITIVE_REVERSE;</span>
+        }
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        else if ( getSortOrder().equalsIgnoreCase( &quot;NAME_REVERSE&quot; ) )</span>
+        {
+<span class="fc" id="L184">            result = NameFileComparator.NAME_REVERSE;</span>
+        }
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        else if ( getSortOrder().equalsIgnoreCase( &quot;NAME_SYSTEM_COMPARATOR&quot; ) )</span>
+        {
+<span class="nc" id="L188">            result = NameFileComparator.NAME_SYSTEM_COMPARATOR;</span>
+        }
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        else if ( getSortOrder().equalsIgnoreCase( &quot;NAME_SYSTEM_REVERSE&quot; ) )</span>
+        {
+<span class="nc" id="L192">            result = NameFileComparator.NAME_SYSTEM_REVERSE;</span>
+        }
+<span class="fc" id="L194">        return result;</span>
+    }
+
+    public List&lt;String&gt; getFolders()
+        throws MojoExecutionException
+    {
+<span class="fc" id="L200">        IOFileFilter folders = FileFilterUtils.and( HiddenFileFilter.VISIBLE, DirectoryFileFilter.DIRECTORY );</span>
+<span class="fc" id="L201">        IOFileFilter makeSVNAware = FileFilterUtils.makeSVNAware( folders );</span>
+<span class="fc" id="L202">        IOFileFilter makeCVSAware = FileFilterUtils.makeCVSAware( makeSVNAware );</span>
+
+<span class="fc" id="L204">        String[] list = folder.list( makeCVSAware );</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if ( list == null )</span>
+        {
+<span class="fc" id="L207">            throw new MojoExecutionException( &quot;The specified folder doesn't exist: &quot; + folder );</span>
+        }
+
+<span class="fc" id="L210">        List&lt;File&gt; listOfDirectories = new ArrayList&lt;File&gt;();</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        for ( String item : list )</span>
+        {
+<span class="fc" id="L213">            listOfDirectories.add( new File( folder, item ) );</span>
+        }
+
+<span class="fc" id="L216">        Collections.sort( listOfDirectories, convertSortOrder() );</span>
+<span class="fc" id="L217">        List&lt;String&gt; resultList = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        for ( File file : listOfDirectories )</span>
+        {
+<span class="fc" id="L220">            resultList.add( file.getName() );</span>
+<span class="fc" id="L221">        }</span>
+<span class="fc" id="L222">        return resultList;</span>
+    }
+
+    private List&lt;String&gt; getContentAsList()
+    {
+<span class="nc" id="L227">        List&lt;String&gt; result = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L228">        String[] resultArray = content.split( delimiter );</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        for ( String item : resultArray )</span>
+        {
+<span class="nc" id="L231">            result.add( item.trim() );</span>
+        }
+<span class="nc" id="L233">        return result;</span>
+    }
+
+    /**
+     * Convert all types {@code content}, {@code items} or {@code ItemsWithProperties} into the same type.
+     * 
+     * @return list {@link ItemWithProperties}
+     * @throws MojoExecutionException In case of an error.
+     */
+    protected List&lt;ItemWithProperties&gt; getItemsConverted()
+        throws MojoExecutionException
+    {
+<span class="nc" id="L245">        List&lt;ItemWithProperties&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if ( isItemsWithPropertiesSet() )</span>
+        {
+<span class="nc" id="L249">            result = getItemsWithProperties();</span>
+        }
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        else if ( isContentSet() )</span>
+        {
+<span class="nc bnc" id="L253" title="All 2 branches missed.">            for ( String itemName : getContentAsList() )</span>
+            {
+<span class="nc" id="L255">                result.add( new ItemWithProperties( itemName, ItemWithProperties.NO_PROPERTIES ) );</span>
+<span class="nc" id="L256">            }</span>
+        }
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        else if ( isItemsSet() )</span>
+        {
+<span class="nc bnc" id="L260" title="All 2 branches missed.">            for ( String itemName : getItems() )</span>
+            {
+<span class="nc" id="L262">                result.add( new ItemWithProperties( itemName, ItemWithProperties.NO_PROPERTIES ) );</span>
+<span class="nc" id="L263">            }</span>
+        }
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        else if ( isFolderSet() )</span>
+        {
+<span class="nc bnc" id="L267" title="All 2 branches missed.">            for ( String itemName : getFolders() )</span>
+            {
+<span class="nc" id="L269">                result.add( new ItemWithProperties( itemName, ItemWithProperties.NO_PROPERTIES ) );</span>
+<span class="nc" id="L270">            }</span>
+        }
+
+<span class="nc" id="L273">        return result;</span>
+    }
+
+    /**
+     * This is just a convenience method to get the combination of {@link #getBeginToken()}, {@link #getIteratorName()}
+     * and {@link #getEndToken()}.
+     * 
+     * @return The combined string.
+     */
+    protected String getPlaceHolder()
+    {
+<span class="fc" id="L284">        return getBeginToken() + getIteratorName() + getEndToken();</span>
+    }
+
+    protected boolean isItemsNull()
+    {
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        return items == null;</span>
+    }
+
+    protected boolean isItemsWithPropertiesNull()
+    {
+<span class="fc bfc" id="L294" title="All 2 branches covered.">        return itemsWithProperties == null;</span>
+    }
+
+    protected boolean isItemsWithPropertiesSet()
+    {
+<span class="pc bpc" id="L299" title="1 of 4 branches missed.">        return !isItemsWithPropertiesNull() &amp;&amp; !itemsWithProperties.isEmpty();</span>
+    }
+
+    protected boolean isItemsSet()
+    {
+<span class="pc bpc" id="L304" title="2 of 4 branches missed.">        return !isItemsNull() &amp;&amp; !items.isEmpty();</span>
+    }
+
+    protected boolean isContentNull()
+    {
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        return content == null;</span>
+    }
+
+    protected boolean isContentSet()
+    {
+        // @TODO: Check if content.trim() couldn't be done more efficient?
+<span class="pc bpc" id="L315" title="2 of 4 branches missed.">        return content != null &amp;&amp; content.trim().length() &gt; 0;</span>
+    }
+
+    protected boolean isFolderSet()
+    {
+<span class="fc bfc" id="L320" title="All 2 branches covered.">        return this.folder != null;</span>
+    }
+
+    protected boolean isFolderNull()
+    {
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">        return this.folder == null;</span>
+    }
+
+    public File getFolder()
+    {
+<span class="nc" id="L330">        return this.folder;</span>
+    }
+
+    public void setFolder( File folder )
+    {
+<span class="fc" id="L335">        this.folder = folder;</span>
+<span class="fc" id="L336">    }</span>
+
+    protected boolean isMoreThanOneSet()
+    {
+        // a ^ b ^ c &amp;&amp; ! (a &amp;&amp; b &amp;&amp; c)
+<span class="pc bpc" id="L341" title="9 of 10 branches missed.">        boolean result = isItemsSet() ^ isContentSet() ^ isItemsWithPropertiesSet() ^ isFolderSet()</span>
+            &amp;&amp; !( isItemsSet() &amp;&amp; isContentSet() &amp;&amp; isItemsWithPropertiesSet() &amp;&amp; isFolderSet() );
+<span class="pc bpc" id="L343" title="1 of 2 branches missed.">        return !result;</span>
+    }
+
+    protected boolean isNoneSet()
+    {
+<span class="pc bpc" id="L348" title="3 of 8 branches missed.">        return isItemsNull() &amp;&amp; isContentNull() &amp;&amp; isItemsWithPropertiesNull() &amp;&amp; isFolderNull();</span>
+    }
+
+    public void setSortOrder( String sortOrder )
+    {
+<span class="nc" id="L353">        this.sortOrder = sortOrder;</span>
+<span class="nc" id="L354">    }</span>
+
+    public String getSortOrder()
+    {
+<span class="fc" id="L358">        return sortOrder;</span>
+    }
+
+    public String getContent()
+    {
+<span class="nc" id="L363">        return content;</span>
+    }
+
+    public void setContent( String content )
+    {
+<span class="fc" id="L368">        this.content = content;</span>
+<span class="fc" id="L369">    }</span>
+
+    public String getDelimiter()
+    {
+<span class="nc" id="L373">        return delimiter;</span>
+    }
+
+    public void setDelimiter( String delimiter )
+    {
+<span class="nc" id="L378">        this.delimiter = delimiter;</span>
+<span class="nc" id="L379">    }</span>
+
+    public String getBeginToken()
+    {
+<span class="fc" id="L383">        return beginToken;</span>
+    }
+
+    public void setBeginToken( String beginToken )
+    {
+<span class="fc" id="L388">        this.beginToken = beginToken;</span>
+<span class="fc" id="L389">    }</span>
+
+    public String getEndToken()
+    {
+<span class="fc" id="L393">        return endToken;</span>
+    }
+
+    public void setEndToken( String endToken )
+    {
+<span class="fc" id="L398">        this.endToken = endToken;</span>
+<span class="fc" id="L399">    }</span>
+
+    public String getIteratorName()
+    {
+<span class="fc" id="L403">        return iteratorName;</span>
+    }
+
+    public void setIteratorName( String iteratorName )
+    {
+<span class="fc" id="L408">        this.iteratorName = iteratorName;</span>
+<span class="fc" id="L409">    }</span>
+
+    public void setItems( List&lt;String&gt; items )
+    {
+<span class="fc" id="L413">        this.items = items;</span>
+<span class="fc" id="L414">    }</span>
+
+    public List&lt;String&gt; getItems()
+    {
+<span class="nc" id="L418">        return items;</span>
+    }
+
+    public boolean isSkip()
+    {
+<span class="fc" id="L423">        return skip;</span>
+    }
+
+    public boolean isFailAtEnd()
+    {
+<span class="nc" id="L428">        return failAtEnd;</span>
+    }
+
+    public List&lt;ItemWithProperties&gt; getItemsWithProperties()
+    {
+<span class="nc" id="L433">        return itemsWithProperties;</span>
+    }
+
+    public void setItemsWithProperties( List&lt;ItemWithProperties&gt; itemsWithProperties )
+    {
+<span class="fc" id="L438">        this.itemsWithProperties = itemsWithProperties;</span>
+<span class="fc" id="L439">    }</span>
+
+    public MavenProject getMavenProject()
+    {
+<span class="fc" id="L443">        return mavenProject;</span>
+    }
+
+    public void setMavenProject( MavenProject mavenProject )
+    {
+<span class="fc" id="L448">        this.mavenProject = mavenProject;</span>
+<span class="fc" id="L449">    }</span>
+
+    public MavenSession getMavenSession()
+    {
+<span class="nc" id="L453">        return mavenSession;</span>
+    }
+
+    public void setMavenSession( MavenSession mavenSession )
+    {
+<span class="nc" id="L458">        this.mavenSession = mavenSession;</span>
+<span class="nc" id="L459">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

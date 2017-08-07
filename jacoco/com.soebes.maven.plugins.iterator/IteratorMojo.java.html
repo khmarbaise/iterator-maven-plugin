@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IteratorMojo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">The Iterator Maven Plugin.</a> &gt; <a href="index.source.html" class="el_package">com.soebes.maven.plugins.iterator</a> &gt; <span class="el_source">IteratorMojo.java</span></div><h1>IteratorMojo.java</h1><pre class="source lang-java linenums">package com.soebes.maven.plugins.iterator;
+
+import java.util.ArrayList;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.PluginConfigurationException;
+import org.apache.maven.plugin.PluginDescriptorParsingException;
+import org.apache.maven.plugin.PluginManagerException;
+import org.apache.maven.plugin.PluginResolutionException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.reporting.exec.MavenPluginManagerHelper;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.Xpp3DomUtils;
+
+/**
+ * Executor will execute a given plugin by iterating through the given items.
+ *
+ * @author Karl-Heinz Marbaise &lt;a href=&quot;mailto:khmarbaise@apache.org&quot;&gt;khmarbaise@apache.org&lt;/a&gt;
+ */
+@Mojo( name = &quot;iterator&quot;, defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.TEST, requiresProject = true, threadSafe = true )
+<span class="nc" id="L57">public class IteratorMojo</span>
+    extends AbstractIteratorMojo
+{
+
+    /**
+     * By using the pluginExecutors you can define a list of plugins which will be executed during executor.
+     * 
+     * &lt;pre&gt;
+     * {@code
+     * &lt;pluginExecutors&gt;
+     *   &lt;pluginExecutor&gt;
+     *     ..Plugin
+     *   &lt;/pluginExecutor&gt;
+     * &lt;/pluginExecutors&gt;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * A plugin must be defined by using the plugin tag. You can omit the version tag if you have defined the plugin's
+     * version in the pluginManagement section.
+     * 
+     * &lt;pre&gt;
+     * {@code
+     * &lt;plugin&gt;
+     *   &lt;groupId&gt;..&lt;/groupId&gt;
+     *   &lt;artifactId&gt;..&lt;/artifactId&gt;
+     *   &lt;version&gt;..&lt;/version&gt;
+     * &lt;/plugin&gt;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * Furthermore you need to define the goal of the given plugin by using the tag:
+     * 
+     * &lt;pre&gt;
+     * {@code
+     * &lt;goal&gt;...&lt;/goal&gt;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * And finally you need to define the configuration for the plugin by using the following:
+     * 
+     * &lt;pre&gt;
+     * {@code
+     * &lt;configuration&gt;
+     *   Plugin Configuration
+     * &lt;/configuration&gt;
+     * }
+     * &lt;/pre&gt;
+     */
+    @Parameter( required = true )
+    private List&lt;PluginExecutor&gt; pluginExecutors;
+
+    /**
+     * This is the helper class to support Maven 3.1 and before.
+     */
+    @Component
+    protected MavenPluginManagerHelper mavenPluginManagerHelper;
+
+    /**
+     * The Maven BuildPluginManager component.
+     */
+    @Component
+    private BuildPluginManager pluginManager;
+
+    @Parameter( defaultValue = &quot;${plugin}&quot;, required = true, readonly = true )
+    private PluginDescriptor pluginDescriptor;
+
+    /**
+     * This will copy the configuration from &lt;b&gt;src&lt;/b&gt; to the result whereas the placeholder will be replaced with the
+     * current value.
+     */
+    private PlexusConfiguration copyConfiguration( Xpp3Dom src, String iteratorName, String value )
+    {
+
+<span class="nc" id="L130">        XmlPlexusConfiguration dom = new XmlPlexusConfiguration( src.getName() );</span>
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if ( src.getValue() == null )</span>
+        {
+<span class="nc" id="L134">            dom.setValue( src.getValue() );</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            if ( src.getValue().contains( iteratorName ) )</span>
+            {
+<span class="nc" id="L140">                dom.setValue( src.getValue().replaceAll( iteratorName, value ) );</span>
+            }
+            else
+            {
+<span class="nc" id="L144">                dom.setValue( src.getValue() );</span>
+            }
+        }
+
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        for ( String attributeName : src.getAttributeNames() )</span>
+        {
+<span class="nc" id="L150">            dom.setAttribute( attributeName, src.getAttribute( attributeName ) );</span>
+        }
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        for ( Xpp3Dom child : src.getChildren() )</span>
+        {
+<span class="nc" id="L155">            dom.addChild( copyConfiguration( child, iteratorName, value ) );</span>
+        }
+
+<span class="nc" id="L158">        return dom;</span>
+    }
+
+    /**
+     * This method will give back the plugin information which has been given as parameter in case of an not existing
+     * pluginManagement section or if the version of the plugin is already defined. Otherwise the version will be got
+     * from the pluginManagement area if the plugin can be found in it.
+     * 
+     * @param plugin The plugin which should be checked against the pluginManagement area.
+     * @return The plugin version. If the plugin version is not defined it means that neither the version has been
+     *         defined by the pluginManagement section nor by the user itself.
+     */
+    private Plugin getPluginVersionFromPluginManagement( Plugin plugin )
+    {
+
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if ( !isPluginManagementDefined() )</span>
+        {
+<span class="nc" id="L175">            return plugin;</span>
+        }
+
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if ( isPluginVersionDefined( plugin ) )</span>
+        {
+<span class="nc" id="L180">            return plugin;</span>
+        }
+
+<span class="nc" id="L183">        Map&lt;String, Plugin&gt; plugins = getMavenProject().getPluginManagement().getPluginsAsMap();</span>
+
+<span class="nc" id="L185">        Plugin result = plugins.get( plugin.getKey() );</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if ( result == null )</span>
+        {
+<span class="nc" id="L188">            return plugin;</span>
+        }
+        else
+        {
+<span class="nc" id="L192">            return result;</span>
+        }
+    }
+
+    private boolean isPluginVersionDefined( Plugin plugin )
+    {
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        return plugin.getVersion() != null;</span>
+    }
+
+    private boolean isPluginManagementDefined()
+    {
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        return getMavenProject().getPluginManagement() != null;</span>
+    }
+
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
+
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if ( isSkip() )</span>
+        {
+<span class="nc" id="L212">            getLog().info( &quot;Skip by user request.&quot; );</span>
+<span class="nc" id="L213">            return;</span>
+        }
+
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        if ( isNoneSet() )</span>
+        {
+<span class="fc" id="L218">            getLog().warn(&quot;Neither items, itemsWithProperties, content nor folder have been set.&quot;);</span>
+<span class="fc" id="L219">            return;</span>
+        }
+
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        if ( isMoreThanOneSet() )</span>
+        {
+<span class="fc" id="L224">            throw new MojoExecutionException( &quot;You can use only one element. &quot;</span>
+                + &quot;Either items, itemsWithProperties, content or folder element but not more than one of them.&quot; );
+        }
+
+<span class="nc" id="L228">        List&lt;Exception&gt; exceptions = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        for ( ItemWithProperties item : getItemsConverted() )</span>
+        {
+<span class="nc bnc" id="L231" title="All 2 branches missed.">            for ( PluginExecutor pluginExecutor : pluginExecutors )</span>
+            {
+                try
+                {
+<span class="nc" id="L235">                    handlePluginExecution( item, pluginExecutor );</span>
+                }
+<span class="nc" id="L237">                catch ( MojoExecutionException e )</span>
+                {
+<span class="nc bnc" id="L239" title="All 2 branches missed.">                    if ( isFailAtEnd() )</span>
+                    {
+<span class="nc" id="L241">                        exceptions.add( e );</span>
+                    }
+                    else
+                    {
+<span class="nc" id="L245">                        throw e;</span>
+                    }
+                }
+<span class="nc" id="L248">                catch ( MojoFailureException e )</span>
+                {
+                    // An Failure will stop the iteration under any circumstances.
+<span class="nc" id="L251">                    throw e;</span>
+<span class="nc" id="L252">                }</span>
+<span class="nc" id="L253">            }</span>
+<span class="nc" id="L254">        }</span>
+
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        if ( !exceptions.isEmpty() )</span>
+        {
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            for ( Exception exception : exceptions )</span>
+            {
+<span class="nc" id="L260">                getLog().error( exception );</span>
+<span class="nc" id="L261">            }</span>
+<span class="nc" id="L262">            throw new MojoExecutionException( &quot;Failures during iteration&quot; );</span>
+        }
+<span class="nc" id="L264">    }</span>
+
+    /**
+     * This will inject the iteration into the current properties and furthermore the properties if they have given and
+     * execute the plugin with the appropriate context.
+     * 
+     * @param item The items which are using for the current iteration.
+     * @param pluginExecutor The {@link PluginExecutor}
+     * @throws MojoExecutionException in case of an error.
+     * @throws MojoFailureException failure during the run of a plugin.
+     */
+    private void handlePluginExecution( ItemWithProperties item, PluginExecutor pluginExecutor )
+        throws MojoExecutionException, MojoFailureException
+    {
+<span class="nc" id="L278">        Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">        if ( executePlugin.getVersion() == null )</span>
+        {
+<span class="nc" id="L281">            throw new MojoExecutionException( &quot;Unknown plugin version. You have to define the version either directly or via pluginManagement.&quot; );</span>
+        }
+
+<span class="nc" id="L284">        Xpp3Dom resultConfiguration = handlePluginConfigurationFromPluginManagement( pluginExecutor, executePlugin );</span>
+
+<span class="nc" id="L286">        PlexusConfiguration plexusConfiguration =</span>
+            copyConfiguration( resultConfiguration, getPlaceHolder(), item.getName() );
+
+<span class="nc" id="L289">        createLogOutput( pluginExecutor, executePlugin, item.getName() );</span>
+
+        // Put the value of the current iteration into the current context.
+<span class="nc" id="L292">        getMavenProject().getProperties().put( getIteratorName(), item.getName() );</span>
+
+<span class="nc bnc" id="L294" title="All 2 branches missed.">        if ( item.hasProperties() )</span>
+        {
+            // Add all properties to the context.
+<span class="nc bnc" id="L297" title="All 2 branches missed.">            for ( Entry&lt;Object, Object&gt; entry : item.getProperties().entrySet() )</span>
+            {
+<span class="nc" id="L299">                getMavenProject().getProperties().put( entry.getKey(), entry.getValue() );</span>
+<span class="nc" id="L300">            }</span>
+        }
+
+        try
+        {
+<span class="nc" id="L305">            executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );</span>
+        }
+<span class="nc" id="L307">        catch ( MojoExecutionException e )</span>
+        {
+<span class="nc" id="L309">            throw e;</span>
+        }
+<span class="nc" id="L311">        catch ( MojoFailureException e )</span>
+        {
+<span class="nc" id="L313">            throw e;</span>
+        }
+<span class="nc" id="L315">        catch ( PluginResolutionException e )</span>
+        {
+<span class="nc" id="L317">            getLog().error( &quot;PluginresourceException:&quot;, e );</span>
+<span class="nc" id="L318">            throw new MojoExecutionException( &quot;PluginRescourceException&quot;, e );</span>
+        }
+<span class="nc" id="L320">        catch ( PluginDescriptorParsingException e )</span>
+        {
+<span class="nc" id="L322">            getLog().error( &quot;PluginDescriptorParsingException:&quot;, e );</span>
+<span class="nc" id="L323">            throw new MojoExecutionException( &quot;PluginDescriptorParsingException&quot;, e );</span>
+        }
+<span class="nc" id="L325">        catch ( InvalidPluginDescriptorException e )</span>
+        {
+<span class="nc" id="L327">            getLog().error( &quot;InvalidPluginDescriptorException:&quot;, e );</span>
+<span class="nc" id="L328">            throw new MojoExecutionException( &quot;InvalidPluginDescriptorException&quot;, e );</span>
+        }
+<span class="nc" id="L330">        catch ( PluginConfigurationException e )</span>
+        {
+<span class="nc" id="L332">            getLog().error( &quot;PluginConfigurationException:&quot;, e );</span>
+<span class="nc" id="L333">            throw new MojoExecutionException( &quot;PluginConfigurationException&quot;, e );</span>
+        }
+<span class="nc" id="L335">        catch ( PluginManagerException e )</span>
+        {
+<span class="nc" id="L337">            getLog().error( &quot;PluginManagerException:&quot;, e );</span>
+<span class="nc" id="L338">            throw new MojoExecutionException( &quot;PluginManagerException&quot;, e );</span>
+        }
+        finally
+        {
+            // Remove the old key from context.
+<span class="nc" id="L343">            getMavenProject().getProperties().remove( getIteratorName() );</span>
+<span class="nc bnc" id="L344" title="All 4 branches missed.">            if ( item.hasProperties() )</span>
+            {
+                // Remove all old properties from context.
+<span class="nc bnc" id="L347" title="All 4 branches missed.">                for ( Object entry : item.getProperties().keySet() )</span>
+                {
+<span class="nc" id="L349">                    getMavenProject().getProperties().remove( entry );</span>
+<span class="nc" id="L350">                }</span>
+            }
+
+        }
+<span class="nc" id="L354">    }</span>
+
+    private Xpp3Dom handlePluginConfigurationFromPluginManagement( PluginExecutor pluginExecutor, Plugin executePlugin )
+    {
+<span class="nc" id="L358">        Xpp3Dom resultConfiguration = toXpp3Dom( pluginExecutor.getConfiguration() );</span>
+<span class="nc" id="L359">        getLog().debug( &quot;Configuration: &quot; + resultConfiguration.toString() );</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if ( executePlugin.getConfiguration() != null )</span>
+        {
+<span class="nc" id="L362">            Xpp3Dom x = (Xpp3Dom) executePlugin.getConfiguration();</span>
+<span class="nc" id="L363">            resultConfiguration = Xpp3DomUtils.mergeXpp3Dom( toXpp3Dom( pluginExecutor.getConfiguration() ), x );</span>
+
+<span class="nc" id="L365">            getLog().debug( &quot;ConfigurationExecutePlugin: &quot; + executePlugin.getConfiguration().toString() );</span>
+
+        }
+<span class="nc" id="L368">        return resultConfiguration;</span>
+    }
+
+    /**
+     * Taken from MojoExecutor of Don Brown. Make it working with Maven 3.1.
+     * 
+     * @param plugin
+     * @param goal
+     * @param configuration
+     * @param env
+     * @throws MojoExecutionException
+     * @throws PluginResolutionException
+     * @throws PluginDescriptorParsingException
+     * @throws InvalidPluginDescriptorException
+     * @throws PluginManagerException
+     * @throws PluginConfigurationException
+     * @throws MojoFailureException
+     */
+    private void executeMojo( Plugin plugin, String goal, Xpp3Dom configuration )
+        throws MojoExecutionException, PluginResolutionException, PluginDescriptorParsingException,
+        InvalidPluginDescriptorException, MojoFailureException, PluginConfigurationException, PluginManagerException
+    {
+
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        if ( configuration == null )</span>
+        {
+<span class="nc" id="L393">            throw new NullPointerException( &quot;configuration may not be null&quot; );</span>
+        }
+
+<span class="nc" id="L396">        PluginDescriptor pluginDescriptor = getPluginDescriptor( plugin );</span>
+
+<span class="nc" id="L398">        MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( goal );</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">        if ( mojoDescriptor == null )</span>
+        {
+<span class="nc" id="L401">            throw new MojoExecutionException( &quot;Could not find goal '&quot; + goal + &quot;' in plugin &quot; + plugin.getGroupId()</span>
+                + &quot;:&quot; + plugin.getArtifactId() + &quot;:&quot; + plugin.getVersion() );
+        }
+
+<span class="nc" id="L405">        MojoExecution exec = mojoExecution( mojoDescriptor, configuration );</span>
+<span class="nc" id="L406">        pluginManager.executeMojo( getMavenSession(), exec );</span>
+<span class="nc" id="L407">    }</span>
+
+    private PluginDescriptor getPluginDescriptor( Plugin plugin )
+        throws PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException
+    {
+<span class="nc" id="L412">        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenProject().getRemotePluginRepositories(),</span>
+                                                             getMavenSession() );
+    }
+
+    private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )
+    {
+<span class="nc" id="L418">        Xpp3Dom resultConfiguration =</span>
+            Xpp3DomUtils.mergeXpp3Dom( configuration, toXpp3Dom( mojoDescriptor.getMojoConfiguration() ) );
+<span class="nc" id="L420">        return new MojoExecution( mojoDescriptor, resultConfiguration );</span>
+    }
+
+    /**
+     * Taken from MojoExecutor of Don Brown. Converts PlexusConfiguration to a Xpp3Dom.
+     * 
+     * @param config the PlexusConfiguration. Must not be {@code null}.
+     * @return the Xpp3Dom representation of the PlexusConfiguration
+     */
+    public Xpp3Dom toXpp3Dom( PlexusConfiguration config )
+    {
+<span class="nc" id="L431">        Xpp3Dom result = new Xpp3Dom( config.getName() );</span>
+<span class="nc" id="L432">        result.setValue( config.getValue( null ) );</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">        for ( String name : config.getAttributeNames() )</span>
+        {
+<span class="nc" id="L435">            result.setAttribute( name, config.getAttribute( name ) );</span>
+        }
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        for ( PlexusConfiguration child : config.getChildren() )</span>
+        {
+<span class="nc" id="L439">            result.addChild( toXpp3Dom( child ) );</span>
+        }
+<span class="nc" id="L441">        return result;</span>
+    }
+
+    /**
+     * Will create the output during the executions for the plugins like &lt;code&gt;groupId:artifactId:version:goal&lt;/code&gt;.
+     * 
+     * @param pluginExecutor
+     * @param executePlugin
+     */
+    private void createLogOutput( PluginExecutor pluginExecutor, Plugin executePlugin, String item )
+    {
+<span class="nc" id="L452">        StringBuilder sb = new StringBuilder( &quot;------ &quot; );</span>
+<span class="nc" id="L453">        sb.append( &quot;(&quot; );</span>
+<span class="nc" id="L454">        sb.append( item );</span>
+<span class="nc" id="L455">        sb.append( &quot;) &quot; );</span>
+<span class="nc" id="L456">        sb.append( executePlugin.getKey() );</span>
+<span class="nc" id="L457">        sb.append( &quot;:&quot; );</span>
+<span class="nc" id="L458">        sb.append( executePlugin.getVersion() );</span>
+<span class="nc" id="L459">        sb.append( &quot;:&quot; );</span>
+<span class="nc" id="L460">        sb.append( pluginExecutor.getGoal() );</span>
+<span class="nc" id="L461">        getLog().info( sb.toString() );</span>
+<span class="nc" id="L462">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
