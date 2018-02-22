@@ -24,10 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Properties;
-import org.apache.maven.project.MavenProject;
 
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.assertj.core.groups.Tuple;
 import org.mockito.Mockito;
