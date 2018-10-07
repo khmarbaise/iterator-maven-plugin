@@ -13,4 +13,4 @@ cache:
 # in script step.
 install: yes
 script:
-  - mvn -Prun-its clean verify
+  - mvn -Prun-its clean verify -Dhttps.protocols=TLSv1.2
