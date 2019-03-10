@@ -3,10 +3,10 @@ language: java
 # see http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
 jdk:
-  - openjdk7
   - oraclejdk8
   - openjdk9
   - openjdk10
+  - openjdk11
 cache:
   directories:
   - $HOME/.m2/repository
@@ -14,7 +14,7 @@ cache:
 # cause everything is done
 # in script step.
 env:
-  - MAVEN_VERSION=3.5.4
+  - MAVEN_VERSION=3.6.0
 
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
