@@ -218,11 +218,15 @@ public class IteratorMojo
             getLog().warn("Neither items, itemsWithProperties, content nor folder have been set.");
             return;
         }
-
-        if ( isMoreThanOneSet() )
+        if(atLeastOneItemFound())
         {
-            throw new MojoExecutionException( "You can use only one element. "
-                + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
+            if ( isMoreThanOneSet() )
+            {
+                throw new MojoExecutionException( "You can use only one element. "
+                    + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
+            }
+        }else{
+            getLog().info( "The list of items to iterate on is empty. Nothing will be done..." );
         }
 
         List<Exception> exceptions = new ArrayList<>();
