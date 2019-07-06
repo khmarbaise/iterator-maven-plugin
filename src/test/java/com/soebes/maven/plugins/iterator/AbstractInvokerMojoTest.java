@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  */
 public class AbstractInvokerMojoTest
 {
-
+    private static final String PROPERTY_KEY = "prop-key";
+        
     private AbstractInvokerMojo mock;
 
     @BeforeMethod
@@ -50,6 +51,8 @@ public class AbstractInvokerMojoTest
         mock.setEndToken( "@" );
         mock.setMavenProject(new MavenProject());
         mock.setProperties(new Properties());
+        
+        System.getProperties().remove(PROPERTY_KEY);
     }
 
     @Test
@@ -136,9 +139,32 @@ public class AbstractInvokerMojoTest
     }
     
     @Test
-    public void shouldAddProjectProperties()
+    public void shouldNotAddAllProjectProperties()
     {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+        mock.getMavenProject().getProperties().put(PROPERTY_KEY, "value1" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() ).isEmpty();
+    }
+    
+    @Test
+    public void shouldNotAddAllSystemProperties()
+    {
+        System.getProperties().put(PROPERTY_KEY, "value1" );
+        
+        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
+        
+        assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() ).isEmpty();
+    }
+    
+    @Test
+    public void shouldAddSystemPropertyAlsoDefinedAsProjectProperty()
+    {
+        mock.getMavenProject().getProperties().put(PROPERTY_KEY, "value1" );
+        System.getProperties().put(PROPERTY_KEY, "value2" );
         
         ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
@@ -146,14 +172,14 @@ public class AbstractInvokerMojoTest
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
                 .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value1" ));
+                .containsExactly(Tuple.tuple(PROPERTY_KEY, "value2" ));
     }
     
     @Test
     public void shouldAddPluginProperties()
     {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+        mock.getMavenProject().getProperties().put(PROPERTY_KEY, "value1" );
+        mock.getProperties().put(PROPERTY_KEY, "value2" );
         
         ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
@@ -161,16 +187,16 @@ public class AbstractInvokerMojoTest
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
                 .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value2" ));
+                .containsExactly(Tuple.tuple(PROPERTY_KEY, "value2" ));
     }
 
     @Test
     public void shouldAddItemProperties()
     {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+        mock.getMavenProject().getProperties().put(PROPERTY_KEY, "value1" );
+        mock.getProperties().put(PROPERTY_KEY, "value2" );
         Properties itemProperties = new Properties();
-        itemProperties.put( "prop1", "value3" );
+        itemProperties.put(PROPERTY_KEY, "value3" );
         
         ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
@@ -178,17 +204,17 @@ public class AbstractInvokerMojoTest
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
                 .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value3" ));
+                .containsExactly(Tuple.tuple(PROPERTY_KEY, "value3" ));
     }
     
     @Test
     public void shouldAddSystemProperties()
     {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+        mock.getMavenProject().getProperties().put(PROPERTY_KEY, "value1" );
+        mock.getProperties().put(PROPERTY_KEY, "value2" );
         Properties itemProperties = new Properties();
-        itemProperties.put( "prop1", "value3" );
-        System.getProperties().put( "prop1", "value4" );
+        itemProperties.put(PROPERTY_KEY, "value3" );
+        System.getProperties().put(PROPERTY_KEY, "value4" );
         
         ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
@@ -196,6 +222,6 @@ public class AbstractInvokerMojoTest
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
                 .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value4" ));
+                .containsExactly(Tuple.tuple(PROPERTY_KEY, "value4" ));
     }
 }

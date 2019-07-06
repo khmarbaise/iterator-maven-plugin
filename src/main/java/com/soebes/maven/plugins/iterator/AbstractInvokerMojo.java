@@ -22,9 +22,11 @@ package com.soebes.maven.plugins.iterator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -308,7 +310,7 @@ public abstract class AbstractInvokerMojo
         // mvn -pl xyz-@item@ clean package
         request.setProjects( getProjectsAfterPlaceHolderIsReplaced( currentValue.getName() ) );
 
-        Properties props = getMergedProperties(currentValue );
+        Properties props = getMergedProperties( currentValue );
         request.setProperties( props );
 
         request.setRecursive( isRecursive() );
@@ -327,10 +329,6 @@ public abstract class AbstractInvokerMojo
     private Properties getMergedProperties( ItemWithProperties item ) 
     {
         Properties props = new Properties();
-        if ( getMavenProject().getProperties() != null ) 
-        {
-            props.putAll( getMavenProject().getProperties() );
-        }
         
         if ( getProperties() != null ) 
         {
@@ -342,10 +340,18 @@ public abstract class AbstractInvokerMojo
             props.putAll( item.getProperties() );
         }
         
-        for ( Map.Entry<Object, Object> property : props.entrySet() ) 
+        Set<Object> relevantKeys = new HashSet<>(props.keySet());
+        
+        // Simply adding all project properties can cause issues with the command line character limit
+        // Thus only explicitly "activated" properties are added (plugin, item and relevant system-properties)
+        if ( getMavenProject().getProperties() != null ) 
         {
-            String key = (String) property.getKey();
-            String systemPropertyValue = System.getProperty( key );
+            relevantKeys.addAll( getMavenProject().getProperties().keySet() );
+        }
+                
+        for ( Object key : relevantKeys ) 
+        {
+            String systemPropertyValue = System.getProperty( (String) key );
 
             if ( systemPropertyValue != null ) 
             {
