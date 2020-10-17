@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.assertj.core.groups.Tuple;
@@ -53,8 +54,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInBaseDirectory()
-    {
+    public void shouldReplaceInBaseDirectory() throws MojoExecutionException {
         mock.setBaseDirectory( new File( "first-@item@" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
@@ -64,8 +64,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInGoal()
-    {
+    public void shouldReplaceInGoal() throws MojoExecutionException {
         mock.setGoals( Collections.singletonList( "java:@item@-environment" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
@@ -75,8 +74,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInMultipleGoals()
-    {
+    public void shouldReplaceInMultipleGoals() throws MojoExecutionException {
         mock.setGoals( Arrays.asList( "java:@item@-environment", "@item@", "selection-@item@-choice" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
@@ -88,8 +86,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInProfile()
-    {
+    public void shouldReplaceInProfile() throws MojoExecutionException {
         mock.setProfiles( Collections.singletonList( "profile-@item@" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
@@ -99,8 +96,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInMultipleProfiles()
-    {
+    public void shouldReplaceInMultipleProfiles() throws MojoExecutionException {
         mock.setProfiles( Arrays.asList( "profile-@item@", "profile-second-@item@", "@item@-profile" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
@@ -112,8 +108,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInProject()
-    {
+    public void shouldReplaceInProject() throws MojoExecutionException {
         mock.setProjects( Collections.singletonList( "project-@item@-a" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
@@ -123,8 +118,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInMultipleProjects()
-    {
+    public void shouldReplaceInMultipleProjects() throws MojoExecutionException {
         mock.setProjects( Arrays.asList( "project-@item@-a", "@item@project", "@item@" ) );
 
         ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
@@ -136,8 +130,7 @@ public class AbstractInvokerMojoTest
     }
     
     @Test
-    public void shouldAddProjectProperties()
-    {
+    public void shouldAddProjectProperties() throws MojoExecutionException {
         mock.getMavenProject().getProperties().put( "prop1", "value1" );
         
         ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
@@ -150,8 +143,7 @@ public class AbstractInvokerMojoTest
     }
     
     @Test
-    public void shouldAddPluginProperties()
-    {
+    public void shouldAddPluginProperties() throws MojoExecutionException {
         mock.getMavenProject().getProperties().put( "prop1", "value1" );
         mock.getProperties().put( "prop1", "value2" );
         
@@ -165,8 +157,7 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldAddItemProperties()
-    {
+    public void shouldAddItemProperties() throws MojoExecutionException {
         mock.getMavenProject().getProperties().put( "prop1", "value1" );
         mock.getProperties().put( "prop1", "value2" );
         Properties itemProperties = new Properties();
@@ -182,8 +173,7 @@ public class AbstractInvokerMojoTest
     }
     
     @Test
-    public void shouldAddSystemProperties()
-    {
+    public void shouldAddSystemProperties() throws MojoExecutionException {
         mock.getMavenProject().getProperties().put( "prop1", "value1" );
         mock.getProperties().put( "prop1", "value2" );
         Properties itemProperties = new Properties();

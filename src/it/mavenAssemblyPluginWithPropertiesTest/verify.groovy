@@ -17,10 +17,7 @@
  * under the License.
  */
 
-import java.io.*
-import java.util.*
-import java.util.zip.ZipFile;
-
+import java.util.zip.ZipFile
 
 t = new IntegrationBase()
 
@@ -59,10 +56,10 @@ def buildLogFile = new File( basedir, "build.log");
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ mavenAssemblyPluginWithPropertiesTest ---',
-    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
-    '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
-    '[INFO] ------ (production) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
-    '[INFO] ------ (qa) org.apache.maven.plugins:maven-assembly-plugin:2.5.2:single',
+    '[INFO] ------ (dev) org.apache.maven.plugins:maven-assembly-plugin:3.2.0:single',
+    '[INFO] ------ (test) org.apache.maven.plugins:maven-assembly-plugin:3.2.0:single',
+    '[INFO] ------ (production) org.apache.maven.plugins:maven-assembly-plugin:3.2.0:single',
+    '[INFO] ------ (qa) org.apache.maven.plugins:maven-assembly-plugin:3.2.0:single',
 
     '[INFO] Reading assembly descriptor: ' + basedir + '/src/assembly/archive.xml',
     '[INFO] Building war: ' + basedir + t.convertPathIntoPlatform('/target/mavenAssemblyPluginWithPropertiesTest-0.1-SNAPSHOT-dev.war'),

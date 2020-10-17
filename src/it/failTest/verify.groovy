@@ -16,11 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import java.io.*
-import java.util.*
-
-
 t = new IntegrationBase()
 
 
@@ -53,7 +48,7 @@ t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] ------  iterator-maven-plugin ( iteration: 1 )',
     '[ERROR] ------ Maven call was NOT Ok. for iteration 1 ( return code: 1 )',
     '[INFO] [INFO] BUILD FAILURE',
-    "[INFO] [ERROR] Could not find goal 'anton' in plugin org.apache.maven.plugins:maven-surefire-plugin:2.18.1 among available goals help, test -> [Help 1]",
+    "[INFO] [ERROR] Could not find goal 'anton' in plugin org.apache.maven.plugins:maven-surefire-plugin:3.0.0-M4 among available goals help, test -> [Help 1]",
     '[INFO] BUILD FAILURE',
 ])
 

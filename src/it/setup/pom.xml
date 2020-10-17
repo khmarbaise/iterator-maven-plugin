@@ -28,7 +28,7 @@
 
   <groupId>com.soebes.maven.plugins.test.integration</groupId>
   <artifactId>parent</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
 
   <packaging>pom</packaging>
 
@@ -45,7 +45,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.8</version>
+        <version>@junit.version@</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -57,57 +57,57 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18.1</version>
+          <version>@maven-surefire-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.18.1</version>
+          <version>@maven-failsafe-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.2</version>
+          <version>@maven-compiler-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>2.6.1</version>
+          <version>@maven-clean-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>@maven-assembly-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.5</version>
+          <version>@maven-jar-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>@maven-install-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>2.5</version>
+          <version>@maven-war-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.7</version>
+          <version>@maven-resources-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>com.soebes.maven.plugins</groupId>
-          <artifactId>maven-echo-plugin</artifactId>
-          <version>0.1</version>
+          <artifactId>echo-maven-plugin</artifactId>
+          <version>@echo-maven-plugin.version@</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>1.4.0</version>
+          <version>@exec-maven-plugin.version@</version>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.soebes.maven.plugins.iterator.resolver.ItemResolverType;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -154,17 +155,26 @@ public class InvokerMojo
     }
 
     private File getWorkingDirectoryAfterPlaceHolderIsReplaced( ItemWithProperties currentValue )
+        throws MojoExecutionException
     {
         File baseDir = getWorkingDirectory();
-        if ( baseDir != null && baseDir.toString().contains( getPlaceHolder() ) )
+        if ( baseDir != null )
         {
-            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue.getName() ) );
+            final PlaceHolderPattern itemPlaceHolderPattern = getItemPlaceHolderPattern();
+            if ( baseDir.toString().contains( itemPlaceHolderPattern.getPlaceHolder(
+                ItemResolverType.DEFAULT ) ) )
+            {
+                baseDir = new File( itemPlaceHolderPattern.replace(
+                    baseDir.toString(),
+                    currentValue.getName(),
+                    ItemResolverType.DEFAULT ) );
+            }
         }
         return baseDir;
     }
 
     private InvocationResult mavenCall( ItemWithProperties item )
-        throws MavenInvocationException
+        throws MavenInvocationException, MojoExecutionException
     {
         InvocationRequest request = createAndConfigureAnInvocationRequest( item );
 

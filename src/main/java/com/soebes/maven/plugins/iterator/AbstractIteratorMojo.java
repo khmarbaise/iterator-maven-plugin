@@ -20,21 +20,22 @@ package com.soebes.maven.plugins.iterator;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.soebes.maven.plugins.iterator.io.DirectoryScan;
 import org.apache.commons.io.comparator.NameFileComparator;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.HiddenFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.StringUtils;
 
 /**
  * @author Karl-Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
@@ -86,9 +87,9 @@ public abstract class AbstractIteratorMojo
 
     /**
      * Here you can define the items which will be iterated through.
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      *   <items>
      *     <item>one</item>
      *     <item>two</item>
@@ -103,9 +104,9 @@ public abstract class AbstractIteratorMojo
     /**
      * If you like to have items to iterate through which also contain supplemental properties. This can be done by
      * using the following:
-     * 
+     *
      * <pre>
-     * {@code 
+     * {@code
      *   <itemsWithProperties>
      *     <itemWithProperty>
      *       <name>one</name>
@@ -122,7 +123,7 @@ public abstract class AbstractIteratorMojo
      *     ..
      *   </items>}
      * </pre>
-     * 
+     * <p>
      * You are not determined having the same properties for the iterations. You can use different properties for each
      * iteration.
      */
@@ -158,14 +159,51 @@ public abstract class AbstractIteratorMojo
     @Parameter( defaultValue = "NAME_COMPARATOR" )
     private String sortOrder;
 
+    /**
+     * This defines if the folder search should include files
+     * @since 0.5.2
+     */
+    @Parameter( defaultValue = "false" )
+    private boolean includeFiles;
+
+    /**
+     * This defines if it should return the full path of the folder / files
+     */
+    @Parameter( defaultValue = "false" )
+    private boolean fullPath;
+
+    /**
+     * A set of file patterns that allow you to exclude certain files/folders from
+     * being processed.
+     * @since 0.5.2
+     */
+    @Parameter( property = "excludes" )
+    private String[] excludes;
+
+    /**
+     * A set of file patterns that dictate which files or folders should be included.
+     * @since 0.5.2
+     */
+    @Parameter( property = "includes" )
+    private String[] includes;
+
+    /**
+     * Set the maximum depth for file scanning. Only applies to include and exclude filters.
+     * @since 0.5.2
+     */
+    @Parameter( property = "depth", defaultValue = "-1" )
+    private int depth;
+
+
     public boolean isSortOrderValid( String sortOrder )
     {
-        boolean result = sortOrder.equalsIgnoreCase( "NAME_COMPARATOR" )
+
+        return sortOrder.equalsIgnoreCase( "NAME_COMPARATOR" )
             || sortOrder.equalsIgnoreCase( "NAME_INSENSITIVE_COMPARATOR" )
-            || sortOrder.equalsIgnoreCase( "NAME_INSENSITIVE_REVERSE" ) || sortOrder.equalsIgnoreCase( "NAME_REVERSE" )
+            || sortOrder.equalsIgnoreCase( "NAME_INSENSITIVE_REVERSE" )
+            || sortOrder.equalsIgnoreCase( "NAME_REVERSE" )
             || sortOrder.equalsIgnoreCase( "NAME_SYSTEM_COMPARATOR" )
             || sortOrder.equalsIgnoreCase( "NAME_SYSTEM_REVERSE" );
-        return result;
     }
 
     protected Comparator<File> convertSortOrder()
@@ -197,34 +235,35 @@ public abstract class AbstractIteratorMojo
     public List<String> getFolders()
         throws MojoExecutionException
     {
-        IOFileFilter folders = FileFilterUtils.and( HiddenFileFilter.VISIBLE, DirectoryFileFilter.DIRECTORY );
-        IOFileFilter makeSVNAware = FileFilterUtils.makeSVNAware( folders );
-        IOFileFilter makeCVSAware = FileFilterUtils.makeCVSAware( makeSVNAware );
 
-        String[] list = folder.list( makeCVSAware );
-        if ( list == null )
+        if ( !folder.canRead() )
         {
             throw new MojoExecutionException( "The specified folder doesn't exist: " + folder );
         }
-
-        List<File> listOfDirectories = new ArrayList<File>();
-        for ( String item : list )
+        initializeIncludes();
+        initializeExcludes();
+        initializeDepth();
+        try
         {
-            listOfDirectories.add( new File( folder, item ) );
+            return find().stream().map( File::toString ).collect( Collectors.toList() );
         }
-
-        Collections.sort( listOfDirectories, convertSortOrder() );
-        List<String> resultList = new ArrayList<String>();
-        for ( File file : listOfDirectories )
+        catch ( IOException e )
         {
-            resultList.add( file.getName() );
+            throw new MojoExecutionException( "Cannot scan directory", e );
         }
-        return resultList;
+    }
+
+    private void initializeDepth()
+    {
+        if ( includes.length == 0 && excludes.length == 0 )
+        {
+            depth = 1;
+        }
     }
 
     private List<String> getContentAsList()
     {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         String[] resultArray = content.split( delimiter );
         for ( String item : resultArray )
         {
@@ -235,7 +274,6 @@ public abstract class AbstractIteratorMojo
 
     /**
      * Convert all types {@code content}, {@code items} or {@code ItemsWithProperties} into the same type.
-     * 
      * @return list {@link ItemWithProperties}
      * @throws MojoExecutionException In case of an error.
      */
@@ -276,12 +314,11 @@ public abstract class AbstractIteratorMojo
     /**
      * This is just a convenience method to get the combination of {@link #getBeginToken()}, {@link #getIteratorName()}
      * and {@link #getEndToken()}.
-     * 
-     * @return The combined string.
+     * @return The combined FolderResult.
      */
-    protected String getPlaceHolder()
+    protected PlaceHolderPattern getItemPlaceHolderPattern()
     {
-        return getBeginToken() + getIteratorName() + getEndToken();
+        return new PlaceHolderPattern( getBeginToken(), getIteratorName(), getEndToken() );
     }
 
     protected boolean isItemsNull()
@@ -311,8 +348,7 @@ public abstract class AbstractIteratorMojo
 
     protected boolean isContentSet()
     {
-        // @TODO: Check if content.trim() couldn't be done more efficient?
-        return content != null && content.trim().length() > 0;
+        return !StringUtils.isBlank( content );
     }
 
     protected boolean isFolderSet()
@@ -339,7 +375,7 @@ public abstract class AbstractIteratorMojo
     {
         // a ^ b ^ c && ! (a && b && c)
         boolean result = isItemsSet() ^ isContentSet() ^ isItemsWithPropertiesSet() ^ isFolderSet()
-            && !( isItemsSet() && isContentSet() && isItemsWithPropertiesSet() && isFolderSet() );
+            && !(isItemsSet() && isContentSet() && isItemsWithPropertiesSet() && isFolderSet());
         return !result;
     }
 
@@ -458,4 +494,90 @@ public abstract class AbstractIteratorMojo
         this.mavenSession = mavenSession;
     }
 
+    public boolean isIncludeFiles()
+    {
+        return includeFiles;
+    }
+
+    public void setIncludeFiles( boolean includeFiles )
+    {
+        this.includeFiles = includeFiles;
+    }
+
+    public void setExcludes( final String[] excludes )
+    {
+
+        this.excludes = excludes;
+    }
+
+    public void setIncludes( final String[] includes )
+    {
+
+        this.includes = includes;
+    }
+
+    public boolean isFullPath()
+    {
+        return fullPath;
+    }
+
+    public void setFullPath( boolean fullPath )
+    {
+        this.fullPath = fullPath;
+    }
+
+    public void setDepth( final int depth )
+    {
+
+        this.depth = depth;
+    }
+
+    protected List<File> find()
+        throws IOException
+    {
+
+        DirectoryScan dirScanner = new DirectoryScan( folder, depth, Arrays.asList( includes.clone() ),
+            Arrays.asList( excludes.clone() ) );
+
+        final List<Path> result = dirScanner.getResult().stream()
+            .map( Path::toFile )
+            .map( File::getAbsoluteFile )
+            .filter( this::filterFiles )
+            .sorted( convertSortOrder() )
+            .map( File::toPath )
+            .map( Path::normalize )
+            .collect( Collectors.toList() );
+
+        final Path root = folder.getAbsoluteFile().toPath().normalize();
+
+        final List<Path> paths = isFullPath()
+            ? result
+            : result.stream()
+            .map( root::relativize )
+            .collect( Collectors.toList() );
+
+        return paths.stream().map( Path::toFile ).collect( Collectors.toList() );
+    }
+
+
+    private boolean filterFiles( final File p )
+    {
+        return includeFiles || p.isDirectory();
+    }
+
+    protected void initializeExcludes()
+    {
+        if ( excludes == null || excludes.length == 0 )
+        {
+            excludes = new String[0];
+        }
+    }
+
+    protected void initializeIncludes()
+    {
+        if ( includes == null || includes.length == 0 )
+        {
+            includes = new String[0];
+        }
+    }
 }

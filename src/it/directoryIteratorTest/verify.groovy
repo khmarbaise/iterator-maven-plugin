@@ -16,11 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import java.io.*
-import java.util.*
-
-
 t = new IntegrationBase()
 
 def getProjectVersion() {
@@ -45,11 +40,11 @@ def logFileInput = new File(basedir, "build.log")
 
 t.checkExistenceAndContentOfAFile(logFileInput, [
     '[INFO] --- iterator-maven-plugin:' + projectVersion + ':iterator (default) @ directoryIteratorTest ---',
-    '[INFO] ------ (first) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (first) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: first',
-    '[INFO] ------ (second) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (second) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: second',
-    '[INFO] ------ (third) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (third) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: third',
     '[INFO] BUILD SUCCESS',
 ])

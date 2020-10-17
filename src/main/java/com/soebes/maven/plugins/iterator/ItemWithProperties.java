@@ -76,26 +76,14 @@ public class ItemWithProperties
 
     public boolean hasProperties()
     {
-        if ( properties == NO_PROPERTIES )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+
+        return properties != NO_PROPERTIES;
     }
 
     public boolean hasName()
     {
-        if ( name == NO_NAME )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+
+        return !name.equals( NO_NAME );
     }
 
     @Override
@@ -127,12 +115,12 @@ public class ItemWithProperties
             return false;
         if ( properties == null )
         {
-            if ( other.properties != null )
-                return false;
+            return other.properties == null;
         }
-        else if ( !properties.equals( other.properties ) )
-            return false;
-        return true;
+        else
+        {
+            return properties.equals( other.properties );
+        }
     }
 
 }

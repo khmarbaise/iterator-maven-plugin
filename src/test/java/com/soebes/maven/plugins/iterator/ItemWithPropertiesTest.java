@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  */
 public class ItemWithPropertiesTest
 {
-    public class ItemNullTest
+    public static class ItemNullTest
     {
         @Test( expectedExceptions = {
             NullPointerException.class }, expectedExceptionsMessageRegExp = "name is not allowed to be null." )
@@ -62,7 +62,7 @@ public class ItemWithPropertiesTest
 
     }
 
-    public class ItemContentTest
+    public static class ItemContentTest
     {
         @Test
         public void hasNameShouldBeFalseForNO_NAMEValue()

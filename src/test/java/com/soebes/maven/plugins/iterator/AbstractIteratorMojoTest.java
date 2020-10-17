@@ -20,11 +20,17 @@ package com.soebes.maven.plugins.iterator;
  */
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +47,10 @@ import org.testng.annotations.Test;
  */
 public class AbstractIteratorMojoTest {
 
-    public class IteratorFoldersTest {
+    public static class IteratorFoldersTest
+    {
+
+        private static final Class<AbstractIteratorMojoTest> MOJO_TEST_CLASS = AbstractIteratorMojoTest.class;
         private IteratorMojo mock;
 
         @BeforeMethod
@@ -70,10 +79,77 @@ public class AbstractIteratorMojoTest {
             mock.getFolders();
         }
 
+
+        @Test
+        public void shouldReturnTheSubfoldersInOrderFullPath()
+            throws MojoExecutionException,
+            IOException
+        {
+            when( mock.getSortOrder() ).thenReturn( "NAME_COMPARATOR" );
+            mock.setFullPath( true );
+            final File baseDir = mock.getFolder().getCanonicalFile();
+            final List<String> folders = mock.getFolders();
+            final List<String> resultFolders =
+                Arrays.asList( new String[]{ "it", "main", "site", "test" }.clone() );
+
+            assertThat( folders ).containsSequence( resultFolders.stream()
+                .map( s -> new File( baseDir, s ) )
+                .map( File::getAbsolutePath ).toArray( String[]::new ) );
+        }
+
+
+        @Test
+        public void shouldReturnAbstractMojoTestClass()
+            throws MojoExecutionException, URISyntaxException
+        {
+            when( mock.getSortOrder() ).thenReturn( "NAME_COMPARATOR" );
+
+            mock.setFolder( new File( "./" ) );
+            mock.setIncludes( new String[]{
+                String.format( "**/%s.class", MOJO_TEST_CLASS.getSimpleName() ) } );
+            mock.setIncludeFiles( true );
+            mock.setFullPath( true );
+            mock.setDepth( -1 );
+            final List<String> folders = mock.getFolders();
+            final File f = getAbstractMojoCompiledClass();
+            assertEquals( folders.size(), 1 );
+            assertThat( f.getAbsolutePath() ).containsSequence( folders.get( 0 ) );
+        }
+
+
+        @Test
+        public void shouldExcludeAbstractMojoTestClass()
+            throws MojoExecutionException, URISyntaxException
+        {
+            when( mock.getSortOrder() ).thenReturn( "NAME_COMPARATOR" );
+
+            mock.setFolder( new File( "./" ) );
+            mock.setIncludes( new String[]{ "**/*MojoTest.class" } );
+            mock.setExcludes( new String[]{
+                String.format( "**/%s.class", MOJO_TEST_CLASS.getSimpleName() ) } );
+            mock.setIncludeFiles( true );
+            mock.setFullPath( true );
+            mock.setDepth( -1 );
+            final List<String> folders = mock.getFolders();
+            assertFalse( folders.isEmpty() );
+            final File f = getAbstractMojoCompiledClass();
+            assertFalse( folders.contains( f.getAbsolutePath() ) );
+        }
+
+
+        private File getAbstractMojoCompiledClass()
+            throws URISyntaxException
+        {
+            final URI location = MOJO_TEST_CLASS.getProtectionDomain().getCodeSource().getLocation().toURI();
+            return new File( location.getPath(),
+                MOJO_TEST_CLASS.getName().replace( ".", File.separator ) + ".class" );
+        }
+
+
     }
 
-    public class IteratorEmptyTest {
-
+    public static class IteratorEmptyTest
+    {
         private IteratorMojo mock;
 
         @BeforeMethod

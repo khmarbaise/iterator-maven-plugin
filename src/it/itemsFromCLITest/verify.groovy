@@ -46,15 +46,15 @@ def buildLogFile = new File( basedir, "build.log");
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
   '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ items-from-cli-test ---',
-  '[INFO] ------ (zwei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (zwei) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
   '[INFO] This is a message: zwei',
-  '[INFO] ------ (mal) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (mal) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
   '[INFO] This is a message: mal',
-  '[INFO] ------ (drei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (drei) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
   '[INFO] This is a message: drei',
-  '[INFO] ------ (macht) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (macht) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
   '[INFO] This is a message: macht',
-  '[INFO] ------ (vier) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+  '[INFO] ------ (vier) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
   '[INFO] This is a message: vier',
   '[INFO] BUILD SUCCESS',
 ])
