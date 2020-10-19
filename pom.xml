@@ -109,7 +109,11 @@
               <exclude>README.md</exclude>
               <exclude>src/site/resources/attached-includes/css/shCoreDefault.css</exclude>
               <exclude>.travis.yml</exclude>
+              <exclude>maven-wrapper.properties</exclude>
+              <exclude>MavenWrapperDownloader.java</exclude>
+              <exclude>rat.txt</exclude>
             </excludes>
+            <consoleOutput>true</consoleOutput>
           </configuration>
         </plugin>
 
