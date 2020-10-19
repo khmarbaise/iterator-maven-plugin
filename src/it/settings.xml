@@ -20,11 +20,11 @@ under the License.
 -->
 
 <settings>
- <mirrors>
+  <mirrors>
     <mirror>
-      <id>it-repo</id>
-      <name>RPM</name>
-      <url>@localRepositoryUrl@</url>
+      <id>mrm-maven-plugin</id>
+      <name>Mock Repository Manager</name>
+      <url>@repository.proxy.url@</url>
       <mirrorOf>*</mirrorOf>
     </mirror>
   </mirrors>
@@ -38,7 +38,7 @@ under the License.
       <repositories>
         <repository>
           <id>local.central</id>
-          <url>@localRepositoryUrl@</url>
+          <url>@repository.proxy.url@</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -50,7 +50,7 @@ under the License.
       <pluginRepositories>
         <pluginRepository>
           <id>local.central</id>
-          <url>@localRepositoryUrl@</url>
+          <url>@repository.proxy.url@</url>
           <releases>
             <enabled>true</enabled>
           </releases>

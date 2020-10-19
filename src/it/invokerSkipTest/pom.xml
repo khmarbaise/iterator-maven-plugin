@@ -29,12 +29,10 @@ under the License.
   <parent>
     <groupId>com.soebes.maven.plugins.test.integration</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.soebes.maven.plugins.test.integration</groupId>
   <artifactId>invoker-skip-test</artifactId>
-  <version>0.1-SNAPSHOT</version>
 
   <name>iterator-maven-plugin Inovker Skip Test</name>
   <url>http://www.soebes.de</url>

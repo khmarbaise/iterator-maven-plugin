@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.soebes.maven.plugins.iterator.resolver.ItemResolverType;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -203,35 +205,31 @@ public abstract class AbstractInvokerMojo
      */
     @Parameter
     private File userSettings;
-        
+
     private File getBaseDirectoryAfterPlaceHolderIsReplaced( String currentValue )
+        throws MojoExecutionException
     {
         File baseDir = getBaseDirectory();
-        if ( baseDir != null && baseDir.toString().contains( getPlaceHolder() ) )
+        if ( baseDir != null )
         {
-            baseDir = new File( baseDir.toString().replaceAll( getPlaceHolder(), currentValue ) );
+            baseDir = new File( getItemPlaceHolderPattern().replace( baseDir.toString(), currentValue, ItemResolverType.DEFAULT ) );
         }
         return baseDir;
     }
 
     private List<String> replacePlaceholderInElements( String currentValue, List<String> goals )
+        throws MojoExecutionException
     {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for ( String string : goals )
         {
-            if ( string.contains( getPlaceHolder() ) )
-            {
-                result.add( string.replaceAll( getPlaceHolder(), currentValue ) );
-            }
-            else
-            {
-                result.add( string );
-            }
+            result.add( getItemPlaceHolderPattern().replace( string, currentValue, ItemResolverType.DEFAULT ) );
         }
         return result;
     }
 
     private List<String> getGoalsAfterPlaceHolderIsReplaced( String currentValue )
+        throws MojoExecutionException
     {
         List<String> goals = getGoals();
         if ( goals == null )
@@ -244,6 +242,7 @@ public abstract class AbstractInvokerMojo
     }
 
     private List<String> getProfilesAfterPlaceHolderIsReplaced( String currentValue )
+        throws MojoExecutionException
     {
         List<String> profiles = getProfiles();
         if ( profiles == null )
@@ -256,6 +255,7 @@ public abstract class AbstractInvokerMojo
     }
 
     private List<String> getProjectsAfterPlaceHolderIsReplaced( String currentValue )
+        throws MojoExecutionException
     {
         List<String> projects = getProjects();
         if ( projects == null )
@@ -268,6 +268,7 @@ public abstract class AbstractInvokerMojo
     }
 
     protected InvocationRequest createAndConfigureAnInvocationRequest( ItemWithProperties currentValue )
+        throws MojoExecutionException
     {
         InvocationRequest request = new DefaultInvocationRequest();
 

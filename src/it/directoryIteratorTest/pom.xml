@@ -29,12 +29,10 @@
   <parent>
     <groupId>com.soebes.maven.plugins.test.integration</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.soebes.maven.plugins.test.integration</groupId>
   <artifactId>directoryIteratorTest</artifactId>
-  <version>0.1-SNAPSHOT</version>
 
   <name>Iterator Executor Invoker Maven Plugin directoryIteratorTest</name>
   <url>http://www.soebes.de</url>
@@ -68,7 +66,7 @@
                 <pluginExecutor>
                   <plugin>
                     <groupId>com.soebes.maven.plugins</groupId>
-                    <artifactId>maven-echo-plugin</artifactId>
+                    <artifactId>echo-maven-plugin</artifactId>
                   </plugin>
                   <goal>echo</goal>
                   <configuration>

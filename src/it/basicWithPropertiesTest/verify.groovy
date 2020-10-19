@@ -16,11 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import java.io.*
-import java.util.*
-
-
 t = new IntegrationBase()
 
 
@@ -46,11 +41,11 @@ def buildLogFile = new File( basedir, "build.log");
 
 t.checkExistenceAndContentOfAFile(buildLogFile, [
     '[INFO] --- iterator-maven-plugin:' +projectVersion + ':iterator (default) @ basic-with-properties-test ---',
-    '[INFO] ------ (eins) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (eins) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: item: eins Prop: First',
-    '[INFO] ------ (zwei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (zwei) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: item: zwei Prop: Second',
-    '[INFO] ------ (drei) com.soebes.maven.plugins:maven-echo-plugin:0.1:echo',
+    '[INFO] ------ (drei) com.soebes.maven.plugins:echo-maven-plugin:0.4.0:echo',
     '[INFO] This is a message: item: drei Prop: Third',
     '[INFO] BUILD SUCCESS',
 ])

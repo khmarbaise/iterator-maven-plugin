@@ -1,7 +1,5 @@
 package com.soebes.maven.plugins.iterator;
 
-import java.util.ArrayList;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,10 +19,13 @@ import java.util.ArrayList;
  * under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.soebes.maven.plugins.iterator.resolver.ItemResolverType;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
@@ -124,7 +125,8 @@ public class IteratorMojo
      * This will copy the configuration from <b>src</b> to the result whereas the placeholder will be replaced with the
      * current value.
      */
-    private PlexusConfiguration copyConfiguration( Xpp3Dom src, String iteratorName, String value )
+    private PlexusConfiguration copyConfiguration( Xpp3Dom src, PlaceHolderPattern iteratorName, String value )
+        throws MojoExecutionException
     {
 
         XmlPlexusConfiguration dom = new XmlPlexusConfiguration( src.getName() );
@@ -135,13 +137,13 @@ public class IteratorMojo
         }
         else
         {
-            if ( src.getValue().contains( iteratorName ) )
+            if ( isIncludeFiles() )
             {
-                dom.setValue( src.getValue().replaceAll( iteratorName, value ) );
+                dom.setValue( iteratorName.replaceAll( src.getValue(), value ) );
             }
             else
             {
-                dom.setValue( src.getValue() );
+                dom.setValue( iteratorName.replace( src.getValue(), value, ItemResolverType.DEFAULT ) );
             }
         }
 
@@ -203,6 +205,8 @@ public class IteratorMojo
         return getMavenProject().getPluginManagement() != null;
     }
 
+
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
@@ -225,32 +229,10 @@ public class IteratorMojo
                 + "Either items, itemsWithProperties, content or folder element but not more than one of them." );
         }
 
-        List<Exception> exceptions = new ArrayList<>();
+        List<Exception> exceptions = Collections.synchronizedList( new ArrayList<>() );
         for ( ItemWithProperties item : getItemsConverted() )
         {
-            for ( PluginExecutor pluginExecutor : pluginExecutors )
-            {
-                try
-                {
-                    handlePluginExecution( item, pluginExecutor );
-                }
-                catch ( MojoExecutionException e )
-                {
-                    if ( isFailAtEnd() )
-                    {
-                        exceptions.add( e );
-                    }
-                    else
-                    {
-                        throw e;
-                    }
-                }
-                catch ( MojoFailureException e )
-                {
-                    // An Failure will stop the iteration under any circumstances.
-                    throw e;
-                }
-            }
+            invokePipeline( exceptions, item );
         }
 
         if ( !exceptions.isEmpty() )
@@ -260,6 +242,37 @@ public class IteratorMojo
                 getLog().error( exception );
             }
             throw new MojoExecutionException( "Failures during iteration" );
+        }
+    }
+
+
+    private synchronized void invokePipeline(
+        List<Exception> exceptions,
+        ItemWithProperties item )
+        throws MojoExecutionException, MojoFailureException
+    {
+        for ( PluginExecutor pluginExecutor : pluginExecutors )
+        {
+            try
+            {
+                handlePluginExecution( item, pluginExecutor );
+            }
+            catch ( MojoExecutionException e )
+            {
+                if ( isFailAtEnd() )
+                {
+                    exceptions.add( e );
+                }
+                else
+                {
+                    throw e;
+                }
+            }
+            catch ( MojoFailureException e )
+            {
+                // An Failure will stop the iteration under any circumstances.
+                throw e;
+            }
         }
     }
 
@@ -278,13 +291,18 @@ public class IteratorMojo
         Plugin executePlugin = getPluginVersionFromPluginManagement( pluginExecutor.getPlugin() );
         if ( executePlugin.getVersion() == null )
         {
-            throw new MojoExecutionException( "Unknown plugin version. You have to define the version either directly or via pluginManagement." );
+            throw new MojoExecutionException(
+                String.format(
+                    "Unknown plugin version for %s:%s. "
+                        + "You have to define the version either directly or via pluginManagement.",
+                    executePlugin.getGroupId(),
+                    executePlugin.getArtifactId() ) );
         }
 
         Xpp3Dom resultConfiguration = handlePluginConfigurationFromPluginManagement( pluginExecutor, executePlugin );
 
         PlexusConfiguration plexusConfiguration =
-            copyConfiguration( resultConfiguration, getPlaceHolder(), item.getName() );
+            copyConfiguration( resultConfiguration, getItemPlaceHolderPattern(), item.getName() );
 
         createLogOutput( pluginExecutor, executePlugin, item.getName() );
 
@@ -304,11 +322,7 @@ public class IteratorMojo
         {
             executeMojo( executePlugin, pluginExecutor.getGoal(), toXpp3Dom( plexusConfiguration ) );
         }
-        catch ( MojoExecutionException e )
-        {
-            throw e;
-        }
-        catch ( MojoFailureException e )
+        catch ( MojoExecutionException | MojoFailureException e )
         {
             throw e;
         }
@@ -374,7 +388,6 @@ public class IteratorMojo
      * @param plugin
      * @param goal
      * @param configuration
-     * @param env
      * @throws MojoExecutionException
      * @throws PluginResolutionException
      * @throws PluginDescriptorParsingException
@@ -398,8 +411,12 @@ public class IteratorMojo
         MojoDescriptor mojoDescriptor = pluginDescriptor.getMojo( goal );
         if ( mojoDescriptor == null )
         {
-            throw new MojoExecutionException( "Could not find goal '" + goal + "' in plugin " + plugin.getGroupId()
-                + ":" + plugin.getArtifactId() + ":" + plugin.getVersion() );
+            throw new MojoExecutionException(
+                String.format( "Could not find goal '%s' in plugin %s:%s:%s",
+                    goal,
+                    plugin.getGroupId(),
+                    plugin.getArtifactId(),
+                    plugin.getVersion() ) );
         }
 
         MojoExecution exec = mojoExecution( mojoDescriptor, configuration );
@@ -409,8 +426,7 @@ public class IteratorMojo
     private PluginDescriptor getPluginDescriptor( Plugin plugin )
         throws PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException
     {
-        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenProject().getRemotePluginRepositories(),
-                                                             getMavenSession() );
+        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenSession() );
     }
 
     private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )

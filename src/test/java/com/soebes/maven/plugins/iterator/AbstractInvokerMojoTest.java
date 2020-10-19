@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.assertj.core.groups.Tuple;
@@ -39,71 +40,81 @@ import org.testng.annotations.Test;
 public class AbstractInvokerMojoTest
 {
 
+    private static final String PROP_1 = "prop1";
+    private static final String KEY = "key";
+    private static final String ITEM = "item";
+    private static final String TOKEN = "@";
+
+    private static final String ONE = "one";
+    private static final String TWO = "two";
+    private static final String THREE = "three";
+
+    private static final String VALUE = "value";
+    private static final String VALUE_1 = "value1";
+    private static final String VALUE_2 = "value2";
+    private static final String VALUE_3 = "value3";
+    private static final String VALUE_4 = "value4";
+
     private AbstractInvokerMojo mock;
 
     @BeforeMethod
     public void beforeMethod()
     {
         mock = Mockito.mock( AbstractInvokerMojo.class, Mockito.CALLS_REAL_METHODS );
-        mock.setIteratorName( "item" );
-        mock.setBeginToken( "@" );
-        mock.setEndToken( "@" );
+        mock.setIteratorName( ITEM );
+        mock.setBeginToken( TOKEN );
+        mock.setEndToken( TOKEN );
         mock.setMavenProject(new MavenProject());
         mock.setProperties(new Properties());
     }
 
     @Test
-    public void shouldReplaceInBaseDirectory()
-    {
+    public void shouldReplaceInBaseDirectory() throws MojoExecutionException {
         mock.setBaseDirectory( new File( "first-@item@" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( ONE, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getBaseDirectory() ).isEqualTo( new File( "first-one" ) );
     }
 
     @Test
-    public void shouldReplaceInGoal()
-    {
+    public void shouldReplaceInGoal() throws MojoExecutionException {
         mock.setGoals( Collections.singletonList( "java:@item@-environment" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( ONE, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 1 ).containsExactly( "java:one-environment" );
     }
 
     @Test
-    public void shouldReplaceInMultipleGoals()
-    {
+    public void shouldReplaceInMultipleGoals() throws MojoExecutionException {
         mock.setGoals( Arrays.asList( "java:@item@-environment", "@item@", "selection-@item@-choice" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "one", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( ONE, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getGoals() ).hasSize( 3 ).containsExactly( "java:one-environment",
-                                                                                                     "one",
+            ONE,
                                                                                                      "selection-one-choice" );
     }
 
     @Test
-    public void shouldReplaceInProfile()
-    {
+    public void shouldReplaceInProfile() throws MojoExecutionException {
         mock.setProfiles( Collections.singletonList( "profile-@item@" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( TWO, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 1 ).containsExactly( "profile-two" );
     }
 
     @Test
-    public void shouldReplaceInMultipleProfiles()
-    {
+    public void shouldReplaceInMultipleProfiles() throws MojoExecutionException {
         mock.setProfiles( Arrays.asList( "profile-@item@", "profile-second-@item@", "@item@-profile" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "two", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( TWO, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getProfiles() ).hasSize( 3 ).containsExactly( "profile-two",
@@ -112,90 +123,84 @@ public class AbstractInvokerMojoTest
     }
 
     @Test
-    public void shouldReplaceInProject()
-    {
+    public void shouldReplaceInProject() throws MojoExecutionException {
         mock.setProjects( Collections.singletonList( "project-@item@-a" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( THREE, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 1 ).containsExactly( "project-three-a" );
     }
 
     @Test
-    public void shouldReplaceInMultipleProjects()
-    {
+    public void shouldReplaceInMultipleProjects() throws MojoExecutionException {
         mock.setProjects( Arrays.asList( "project-@item@-a", "@item@project", "@item@" ) );
 
-        ItemWithProperties prop = new ItemWithProperties( "three", ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( THREE, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
 
         assertThat( createAndConfigureAnInvocationRequest.getProjects() ).hasSize( 3 ).containsExactly( "project-three-a",
                                                                                                         "threeproject",
-                                                                                                        "three" );
+            THREE );
     }
     
     @Test
-    public void shouldAddProjectProperties()
-    {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
+    public void shouldAddProjectProperties() throws MojoExecutionException {
+        mock.getMavenProject().getProperties().put( PROP_1, VALUE_1 );
         
-        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( ITEM, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
         
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
-                .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value1" ));
+                .extracting( KEY, VALUE )
+                .containsExactly(Tuple.tuple( PROP_1, VALUE_1 ));
     }
     
     @Test
-    public void shouldAddPluginProperties()
-    {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+    public void shouldAddPluginProperties() throws MojoExecutionException {
+        mock.getMavenProject().getProperties().put( PROP_1, VALUE_1 );
+        mock.getProperties().put( PROP_1, VALUE_2 );
         
-        ItemWithProperties prop = new ItemWithProperties( "item" , ItemWithProperties.NO_PROPERTIES );
+        ItemWithProperties prop = new ItemWithProperties( ITEM, ItemWithProperties.NO_PROPERTIES );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
         
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
-                .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value2" ));
+                .extracting( KEY, VALUE )
+                .containsExactly(Tuple.tuple( PROP_1, VALUE_2 ));
     }
 
     @Test
-    public void shouldAddItemProperties()
-    {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+    public void shouldAddItemProperties() throws MojoExecutionException {
+        mock.getMavenProject().getProperties().put( PROP_1, VALUE_1 );
+        mock.getProperties().put( PROP_1, VALUE_2 );
         Properties itemProperties = new Properties();
-        itemProperties.put( "prop1", "value3" );
+        itemProperties.put( PROP_1, VALUE_3 );
         
-        ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
+        ItemWithProperties prop = new ItemWithProperties( ITEM, itemProperties );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
         
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
-                .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value3" ));
+                .extracting( KEY, VALUE )
+                .containsExactly(Tuple.tuple( PROP_1, VALUE_3 ));
     }
     
     @Test
-    public void shouldAddSystemProperties()
-    {
-        mock.getMavenProject().getProperties().put( "prop1", "value1" );
-        mock.getProperties().put( "prop1", "value2" );
+    public void shouldAddSystemProperties() throws MojoExecutionException {
+        mock.getMavenProject().getProperties().put( PROP_1, VALUE_1 );
+        mock.getProperties().put( PROP_1, VALUE_2 );
         Properties itemProperties = new Properties();
-        itemProperties.put( "prop1", "value3" );
-        System.getProperties().put( "prop1", "value4" );
+        itemProperties.put( PROP_1, VALUE_3 );
+        System.getProperties().put( PROP_1, VALUE_4 );
         
-        ItemWithProperties prop = new ItemWithProperties( "item" , itemProperties );
+        ItemWithProperties prop = new ItemWithProperties( ITEM, itemProperties );
         InvocationRequest createAndConfigureAnInvocationRequest = mock.createAndConfigureAnInvocationRequest( prop );
         
         assertThat( createAndConfigureAnInvocationRequest.getProperties().entrySet() )
                 .hasSize( 1 )
-                .extracting( "key", "value" )
-                .containsExactly(Tuple.tuple( "prop1", "value4" ));
+                .extracting( KEY, VALUE )
+                .containsExactly(Tuple.tuple( PROP_1, VALUE_4 ));
     }
 }

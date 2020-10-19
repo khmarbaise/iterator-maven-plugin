@@ -29,12 +29,10 @@
   <parent>
     <groupId>com.soebes.maven.plugins.test.integration</groupId>
     <artifactId>parent</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.soebes.maven.plugins.test.integration</groupId>
   <artifactId>iterator-skip-test</artifactId>
-  <version>0.1-SNAPSHOT</version>
 
   <name>iterator-maven-plugin Iterator Skip Test</name>
   <url>http://www.soebes.de</url>
@@ -82,8 +80,8 @@
                 <pluginExecutor>
                   <plugin>
                     <groupId>com.soebes.maven.plugins</groupId>
-                    <artifactId>maven-echo-plugin</artifactId>
-                    <version>0.1</version>
+                    <artifactId>echo-maven-plugin</artifactId>
+                    <version>@echo-maven-plugin.version@</version>
                   </plugin>
                   <goal>echo</goal>
                   <configuration>
