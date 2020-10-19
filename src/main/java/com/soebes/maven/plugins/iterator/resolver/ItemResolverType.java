@@ -31,6 +31,12 @@ import com.soebes.maven.plugins.iterator.resolver.types.ParentFolderName;
 import com.soebes.maven.plugins.iterator.resolver.types.ParentFolderPath;
 import org.apache.maven.plugin.MojoExecutionException;
 
+/**
+ * Enum ItemResolverType
+ *
+ * @author tvorschuetz
+ *      Created on 16.10.20
+ */
 public enum ItemResolverType
 {
     DEFAULT( DefaultItem.class ),
@@ -43,21 +49,27 @@ public enum ItemResolverType
     BASENAME( BaseName.class );
 
 
+
+    /** Field SUBTYPE_DELIMITTER  used for delimitting subtypes of item variable for folder and file extended types*/
+    static final char SUBTYPE_DELIMITTER = '.';
+
+
+    /** Field resolverClass determines the resolver class using for resolving the given subtype */
+    private final Class<? extends ItemResolver> resolverClass;
+
     /**
-     * Enum ItemResolverType ...
-     * @author tvorschuetz
-     *     Created on 16.10.20
+     * Constructor ItemResolverType creates a new ItemResolverType instance.
+     *
+     * @param resolverClass of type Class<? extends ItemResolver>
      */
-    private final Class<? extends ItemResolver> replace;
-
-
-    ItemResolverType( Class<? extends ItemResolver> replace )
+    ItemResolverType( Class<? extends ItemResolver> resolverClass )
     {
-        this.replace = replace;
+        this.resolverClass = resolverClass;
     }
 
     /**
      * Method getResolver returns the resolver of this ItemResolverType object.
+     *
      * @return the resolver (type ItemResolver) of this ItemResolverType object.
      * @throws MojoExecutionException when
      */
@@ -66,7 +78,7 @@ public enum ItemResolverType
     {
         try
         {
-            return replace.getConstructor().newInstance();
+            return resolverClass.getConstructor().newInstance();
         }
         catch ( InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e )
         {
@@ -76,10 +88,11 @@ public enum ItemResolverType
 
     /**
      * Method getSuffix returns the suffix of this ItemResolverType object.
+     *
      * @return the suffix (type String) of this ItemResolverType object.
      */
     public String getSuffix()
     {
-        return this.equals( DEFAULT ) ? "" : '.' + this.name().toLowerCase();
+        return this.equals( DEFAULT ) ? "" : SUBTYPE_DELIMITTER + this.name().toLowerCase();
     }
 }

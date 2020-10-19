@@ -22,11 +22,12 @@ package com.soebes.maven.plugins.iterator.resolver.types;
 import java.io.File;
 
 import com.soebes.maven.plugins.iterator.resolver.ItemResolver;
-import org.apache.commons.io.FilenameUtils;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.maven.shared.utils.StringUtils;
+import org.apache.maven.shared.utils.io.FileUtils;
 
 /**
  * Class ParentFolderPath
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */
@@ -36,6 +37,7 @@ public class ParentFolderPath
 
     /**
      * Returns the parent folder path of the item.
+     *
      * @param item the first function argument
      * @return the function result
      */
@@ -47,7 +49,7 @@ public class ParentFolderPath
 
     protected static String getParentFolder( String s )
     {
-        String path = FilenameUtils.getPath( s );
+        String path = FileUtils.dirname( s );
         String parentFolder = !StringUtils.isBlank( path )
             ? new File( path ).getParent()
             : null;

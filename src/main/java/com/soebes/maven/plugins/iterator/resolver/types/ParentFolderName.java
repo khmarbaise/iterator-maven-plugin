@@ -22,10 +22,11 @@ package com.soebes.maven.plugins.iterator.resolver.types;
 import java.io.File;
 
 import com.soebes.maven.plugins.iterator.resolver.ItemResolver;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.maven.shared.utils.StringUtils;
 
 /**
  * Class ParentFolderName
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */
@@ -35,6 +36,7 @@ public class ParentFolderName
 
     /**
      * Returns the parent folder name of the item.
+     *
      * @param item the first function argument
      * @return the function result
      */

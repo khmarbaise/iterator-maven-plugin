@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 /**
  * Interface ItemResolver
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */

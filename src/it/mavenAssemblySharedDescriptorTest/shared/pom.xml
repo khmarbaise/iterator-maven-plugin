@@ -26,9 +26,9 @@ under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.test.parent</groupId>
+    <groupId>com.soebes.maven.plugins.test.integration</groupId>
     <artifactId>root</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>package-shared</artifactId>

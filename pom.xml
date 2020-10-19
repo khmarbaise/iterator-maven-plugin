@@ -25,7 +25,7 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp-plugins</artifactId>
-    <version>5.1.0</version>
+    <version>4.1.1</version>
   </parent>
 
   <groupId>com.soebes.maven.plugins</groupId>
@@ -62,12 +62,8 @@
     <scmpublish.content>target/staging/${project.artifactId}</scmpublish.content>
 
     <echo-maven-plugin.version>0.4.0</echo-maven-plugin.version>
-    <wagon-ssh.version>3.0.0</wagon-ssh.version>
-    <plexus-utils.version>3.3.0</plexus-utils.version>
-    <smpp.version>${project.parent.version}</smpp.version>
-    <commons-lang3.version>3.4</commons-lang3.version>
-    <junit.version>4.12</junit.version>
-    <hamcrest-core.version>2.1</hamcrest-core.version>
+    <junit.version>4.13.1</junit.version>
+    <maven.version>3.6.0</maven.version>
   </properties>
 
   <!-- Must be overwritten in every project. -->
@@ -182,9 +178,21 @@
     </dependency>
 
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
     </dependency>
 
     <dependency>
@@ -200,6 +208,7 @@
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
+      <version>${maven.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -223,13 +232,38 @@
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
       <artifactId>maven-reporting-exec</artifactId>
-      <version>1.1</version>
+      <version>1.5.1</version>
     </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.4</version>
+      <version>2.7</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.soebes.maven.plugins</groupId>
+      <artifactId>echo-maven-plugin</artifactId>
+      <version>${echo-maven-plugin.version}</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-archiver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-filtering</artifactId>
     </dependency>
   </dependencies>
 
@@ -242,11 +276,16 @@
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>gmaven-plugin</artifactId>
           </plugin>
-
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>mrm-maven-plugin</artifactId>
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
+            <version>${maven-invoker-plugin.version}</version>
             <configuration>
+              <settingsFile>src/it/settings.xml</settingsFile>
               <setupIncludes>
                 <setupInclude>setup/pom.xml</setupInclude>
               </setupIncludes>
@@ -254,55 +293,10 @@
                 <pomInclude>*/pom.xml</pomInclude>
               </pomIncludes>
             </configuration>
-            <executions>
-              <execution>
-                <id>pre-integration-tests</id>
-                <goals>
-                  <goal>install</goal>
-                </goals>
-                <configuration>
-                  <extraArtifacts>
-                    <extraArtifact>org.hamcrest:hamcrest-core:${hamcrest-core.version}:jar</extraArtifact>
-                    <extraArtifact>junit:junit:${junit.version}:jar</extraArtifact>
-                    <extraArtifact>org.codehaus.mojo:exec-maven-plugin:${exec-maven-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.surefire:surefire-junit4:${maven-surefire-plugin.version}:jar</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-compiler-plugin:${maven-compiler-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-install-plugin:${maven-install-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:${maven-clean-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:${maven-surefire-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:${maven-assembly-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:${maven-jar-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-war-plugin:${maven-war-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:${maven-resources-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-site-plugin:${maven-site-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.wagon:wagon-ssh:${wagon-ssh.version}:jar</extraArtifact>
-                    <extraArtifact>org.codehaus.plexus:plexus-utils:${plexus-utils.version}:jar</extraArtifact>
-                    <extraArtifact>com.soebes.smpp:smpp:${smpp.version}:pom</extraArtifact>
-                    <extraArtifact>com.soebes.maven.plugins:echo-maven-plugin:${echo-maven-plugin.version}:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.commons:commons-lang3:${commons-lang3.version}:jar</extraArtifact>
-                  </extraArtifacts>
-                </configuration>
-              </execution>
-              <execution>
-                <id>integration-tests</id>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-invoker-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
-
   </profiles>
 
 

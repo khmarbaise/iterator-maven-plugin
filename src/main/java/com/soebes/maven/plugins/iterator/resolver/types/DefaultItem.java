@@ -23,6 +23,7 @@ import com.soebes.maven.plugins.iterator.resolver.ItemResolver;
 
 /**
  * Class DefaultItem
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */
@@ -31,6 +32,7 @@ public class DefaultItem
 {
     /**
      * Returns the item.
+     *
      * @param item the first function argument
      * @return the function result
      */

@@ -19,7 +19,6 @@ package com.soebes.maven.plugins.iterator.io;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -34,7 +33,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Class DirectoryScan
+ * Class DirectoryScan implements glob file system scan using include and exclude patterns.
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */
@@ -43,7 +43,7 @@ public class DirectoryScan
 
     private static final String GLOB = "glob:";
 
-    final File basedir;
+    final Path basedir;
 
     final int depth;
 
@@ -56,56 +56,62 @@ public class DirectoryScan
 
     /**
      * Constructor DirectoryScan creates a new DirectoryScan instance.
+     *
      * @param basedir of type File
-     * @param depth of type int
      * @param includes of type List<String>
      * @param excludes of type List<String>
+     * @param depth of type int determines the depth level for recursion
      */
     public DirectoryScan(
-        File basedir,
-        int depth,
+        Path basedir,
         List<String> includes,
-        List<String> excludes )
+        List<String> excludes,
+        int depth )
     {
         this.basedir = basedir;
-        this.depth = depth;
         this.includes = null != includes ? includes : new ArrayList<>();
         this.excludes = null != excludes ? excludes : new ArrayList<>();
+        this.depth = depth;
     }
 
-
     /**
-     * Constructor DirectoryScan creates a new DirectoryScan instance.
+     * Constructor DirectoryScan creates a new DirectoryScan instance using infinity depth.
+     *
      * @param basedir of type File
      * @param includes of type List<String>
      * @param excludes of type List<String>
      */
     public DirectoryScan(
-        File basedir,
+        Path basedir,
         List<String> includes,
-        List<String> excludes )
+        List<String> excludes)
     {
-        this.basedir = basedir;
-        this.depth = -1;
-        this.includes = includes;
-        this.excludes = excludes;
+        this(basedir,includes,excludes,-1);
     }
-
 
     /**
      * Method getResult returns the result of this DirectoryScan object.
+     *
      * @return the result (type Set<Path>) of this DirectoryScan object.
      * @throws IOException when
      */
     public Set<Path> getResult()
         throws IOException
     {
-        return listFilesUsingFileWalk();
+        try ( Stream<Path> stream =
+                  Files.walk( basedir, depth == -1 ? Integer.MAX_VALUE : depth ) )
+        {
+            return stream
+                .filter( path -> path != basedir )
+                .filter( this::filterPath )
+                .collect( Collectors.toCollection( LinkedHashSet::new ) );
+        }
     }
 
 
     /**
-     * Method filterPath ...
+     * Method filterPath returns true of both include and exclude filters are empty
+     *
      * @param nioPath of type Path
      * @return boolean
      */
@@ -121,7 +127,9 @@ public class DirectoryScan
     }
 
     /**
-     * Method getIncludeMatchers returns the includeMatchers of this DirectoryScan object.
+     * Method getIncludeMatchers returns the includeMatchers of this DirectoryScan object
+     * or creates the machers lazily.
+     *
      * @return the includeMatchers (type Set<PathMatcher>) of this DirectoryScan object.
      */
     private Set<PathMatcher> getIncludeMatchers()
@@ -134,7 +142,9 @@ public class DirectoryScan
     }
 
     /**
-     * Method getExcludeMatchers returns the excludeMatchers of this DirectoryScan object.
+     * Method getExcludeMatchers returns the excludeMatchers of this DirectoryScan object
+     * or creates the machers lazily.
+     *
      * @return the excludeMatchers (type Set<PathMatcher>) of this DirectoryScan object.
      */
     private Set<PathMatcher> getExcludeMatchers()
@@ -147,18 +157,20 @@ public class DirectoryScan
     }
 
     /**
-     * Method matches ...
-     * @param nio of type Path
-     * @param matchers of type Set<PathMatcher>
+     * Method matches evaluates the macher set against the path.
+     *
+     * @param nioPath of type Path to scan
+     * @param matchers of type Set<PathMatcher> representing the pattern machers
      * @return boolean
      */
-    private boolean matches( Path nio, Set<PathMatcher> matchers )
+    private boolean matches( Path nioPath, Set<PathMatcher> matchers )
     {
-        return matchers.stream().anyMatch( m -> m.matches( nio ) );
+        return matchers.stream().anyMatch( m -> m.matches( nioPath ) );
     }
 
     /**
      * Method buildPatterns ...
+     *
      * @param patterns of type List<String>
      * @return Set<PathMatcher>
      */
@@ -170,21 +182,4 @@ public class DirectoryScan
             .collect( Collectors.toSet() );
     }
 
-    /**
-     * Method listFilesUsingFileWalk ...
-     * @return Set<Path>
-     * @throws IOException when
-     */
-    private Set<Path> listFilesUsingFileWalk()
-        throws IOException
-    {
-        try ( Stream<Path> stream =
-                  Files.walk( basedir.toPath(), depth == -1 ? Integer.MAX_VALUE : depth ) )
-        {
-            return stream
-                .filter( path -> path != basedir.toPath() )
-                .filter( this::filterPath )
-                .collect( Collectors.toCollection( LinkedHashSet::new ) );
-        }
-    }
 }

@@ -20,10 +20,11 @@ package com.soebes.maven.plugins.iterator.resolver.types;
  */
 
 import com.soebes.maven.plugins.iterator.resolver.ItemResolver;
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.maven.shared.utils.io.FileUtils;
 
 /**
  * Class FolderPath
+ *
  * @author tvorschuetz
  *     Created on 16.10.20
  */
@@ -33,12 +34,13 @@ public class FolderPath
 
     /**
      * Returns the current folder of the item.
+     *
      * @param item the first function argument
      * @return the function result
      */
     @Override
     public String apply( String item )
     {
-        return FileUtils.getPath( item );
+        return FileUtils.dirname( item );
     }
 }

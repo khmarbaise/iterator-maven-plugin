@@ -28,12 +28,10 @@
   <parent>
     <groupId>com.soebes.maven.plugins.test.integration</groupId>
     <artifactId>parent</artifactId>
-    <version>0.2</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.test.parent</groupId>
   <artifactId>root</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 

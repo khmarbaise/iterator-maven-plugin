@@ -536,8 +536,8 @@ public abstract class AbstractIteratorMojo
         throws IOException
     {
 
-        DirectoryScan dirScanner = new DirectoryScan( folder, depth, Arrays.asList( includes.clone() ),
-            Arrays.asList( excludes.clone() ) );
+        DirectoryScan dirScanner = new DirectoryScan( folder.toPath(), Arrays.asList( includes.clone() ), Arrays.asList( excludes.clone() ), depth
+        );
 
         final List<Path> result = dirScanner.getResult().stream()
             .map( Path::toFile )

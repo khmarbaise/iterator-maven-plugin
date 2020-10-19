@@ -426,8 +426,7 @@ public class IteratorMojo
     private PluginDescriptor getPluginDescriptor( Plugin plugin )
         throws PluginResolutionException, PluginDescriptorParsingException, InvalidPluginDescriptorException
     {
-        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenProject().getRemotePluginRepositories(),
-                                                             getMavenSession() );
+        return mavenPluginManagerHelper.getPluginDescriptor( plugin, getMavenSession() );
     }
 
     private MojoExecution mojoExecution( MojoDescriptor mojoDescriptor, Xpp3Dom configuration )

@@ -29,7 +29,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @author tvorschuetz
  *     Created on 16.10.20
  */
-class PlaceHolderPattern
+public class PlaceHolderPattern
 {
 
     private final String itemProperty;
